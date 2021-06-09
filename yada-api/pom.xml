@@ -63,9 +63,32 @@
                 <goals>
                   <goal>exec</goal>
                 </goals>
+                <configuration>
+                  <skip>${skip.db.load}</skip>
+                  <executable>/bin/bash</executable>
+                  <arguments>
+                    <argument>${project.build.testOutputDirectory}/conf/dbLoad.sh</argument>
+                    <argument>PostgreSQL</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>test-webapp</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <skip>${skip.jetty.launch}</skip>
+                  <executable>java</executable>
+                  <arguments>
+                    <argument>-jar</argument>
+                    <argument>${project.basedir}/yada-assembly/target/${project.build.finalName}-bin/${project.build.finalName}/${project.build.finalName}.jar</argument>
+                  </arguments>
+                </configuration>
               </execution>
             </executions>
-          </plugin>
+          </plugin> -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
@@ -182,9 +205,13 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
+          <finalName>yada-${project.version}</finalName>
           <archive>
-            <addMavenDescriptor>false</addMavenDescriptor>
-            <manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib</classpathPrefix>
+              <mainClass>com.novartis.opensource.yada.server.YADAServer</mainClass>
+            </manifest>
           </archive>
         </configuration>
         <executions>
@@ -228,8 +255,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.2</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
       <plugin>
@@ -541,6 +568,14 @@
     <!-- You may need to install this jar manually in your maven repo -->
     <!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc14</artifactId>
       <version>10.2.0.4.0</version> <scope>test</scope> </dependency> -->
+    <!-- <dependency> <groupId>org.xerial</groupId> <artifactId>sqlite-jdbc</artifactId>
+      <scope>test</scope> </dependency> -->
+    <!-- <dependency> <groupId>org.elasticsearch</groupId> <artifactId>elasticsearch</artifactId>
+      <version>2.1.1</version> </dependency> -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId> 
+    </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
@@ -643,6 +678,27 @@
       <groupId>io.burt</groupId>
       <artifactId>jmespath-jackson</artifactId>
       <version>0.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>10.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.http2</groupId>
+      <artifactId>http2-server</artifactId>
+      <version>10.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-rewrite</artifactId>
+      <version>10.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-ri</artifactId>
+      <version>2.3.2</version>
+      <type>pom</type>
     </dependency>
   </dependencies>
 </project>

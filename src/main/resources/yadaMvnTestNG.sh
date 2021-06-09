@@ -33,10 +33,11 @@ PROFILE=
 YADA_PROPS=
 SKIP_SUREFIRE=
 SKIP_FAILSAFE=
+SKIP_JETTY_LAUNCH=
 DEPLOY_SNAPSHOT=0
 INTERACTIVE=0
 MVN_REPO=""
-CONTAINER_OPT="-Dcargo.tomcat.connector.relaxedQueryChars='^&#96;{}[]|&quot;&lt;&gt;'"
+# CONTAINER_OPT="-Dcargo.tomcat.connector.relaxedQueryChars='^&#96;{}[]|&quot;&lt;&gt;'"
 
 OPTERR=0
 while getopts "Xtdisx:p:T:r:" opt; do
@@ -50,21 +51,21 @@ while getopts "Xtdisx:p:T:r:" opt; do
     s )
       DEPLOY_SNAPSHOT=1
       SKIP_SUREFIRE=-Dsurefire.skip=true
-      SKIP_FAILSAFE="-Dskip.tests=true -Dskip.deploy.war=true"
+      SKIP_FAILSAFE="-Dskip.tests=true -Dskip.jetty.launch=true"
       ;;
     T )
       if [ "surefire" == "$OPTARG" ]
       then
         SKIP_SUREFIRE=
-        SKIP_FAILSAFE="-Dskip.tests=true -Dskip.deploy.war=true"
+        SKIP_FAILSAFE="-Dskip.tests=true -Dskip.jetty.launch=true"
       elif [ "failsafe" == "$OPTARG" ]
       then
         SKIP_SUREFIRE=-Dsurefire.skip=true
         SKIP_FAILSAFE=
-      elif [ -z "$OPTARG" ]
+      elif [ -z "$OPTARG" ] || [ "skip" == "$OPTARG" ]
       then
         SKIP_SUREFIRE=-Dsurefire.skip=true
-        SKIP_FAILSAFE="-Dskip.tests=true -Dskip.deploy.war=true"
+        SKIP_FAILSAFE="-Dskip.tests=true -Dskip.jetty.launch=true"
       fi
       ;;
     x )
@@ -103,9 +104,9 @@ CMD=
 MAVEN=mvn
 WORKSPACE=/Users/dvaron/Documents/work
 YADA_SRCDIR=$WORKSPACE/YADA
-CONTAINER=tomcat
-TOMCAT_VERSION=8x
-YADA_LOCAL_TOMCAT_HOME=-DYADA.local.tomcat.home=$WORKSPACE/containers/$CONTAINER$TOMCAT_VERSION/
+# CONTAINER=tomcat
+# TOMCAT_VERSION=8x
+# YADA_LOCAL_TOMCAT_HOME=-DYADA.local.tomcat.home=$WORKSPACE/containers/$CONTAINER$TOMCAT_VERSION/
 MVN_DEPLOYMENT_GOAL=-Ddeployment.goal=start
 LOG=$YADA_SRCDIR/src/main/resources/testng.log
 LOG_STDOUT=-Dlog.stdout=true
@@ -122,6 +123,7 @@ $SKIP_SUREFIRE \
 $SKIP_FAILSAFE \
 $SKIP_LICENSE \
 $SKIP_DB_LOAD \
+$SKIP_JETTY_LAUNCH \
 $SKIP_JAVADOC \
 $SKIP_SOURCE \
 $TOGGLE_TESTS \
@@ -157,14 +159,14 @@ elif [ 1 -eq "$INTERACTIVE" ]
 then
   if [ 1 -eq "$FAILSAFE_X" ]
   then
-    DEBUG="-Dcargo.start.jvmargs='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE'"
+    DEBUG="'-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE'"
   fi
-  GOAL=org.codehaus.cargo:cargo-maven2-plugin:run
-  CONTAINER_ID=-Dcargo.maven.containerId=tomcat8x
-  CONTAINER_URL=-Dcargo.maven.containerUrl=https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/8.5.49/tomcat-8.5.49.zip
-  CMD="${MAVEN} ${GOAL} ${CONTAINER_ID} ${CONTAINER_URL} ${CONTAINER_OPT} ${DEBUG}"
+  # GOAL=org.codehaus.cargo:cargo-maven2-plugin:run
+  # CONTAINER_ID=-Dcargo.maven.containerId=tomcat8x
+  # CONTAINER_URL=-Dcargo.maven.containerUrl=https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/8.5.49/tomcat-8.5.49.zip
+  # CMD="${MAVEN} ${GOAL} ${CONTAINER_ID} ${CONTAINER_URL} ${CONTAINER_OPT} ${DEBUG}"
 else
-  CMD="$MAVEN $MAVEN_DEBUG clean verify -P${PROFILE},deploy-war $DEBUG -Dsuspend.debugger=$SUSPEND ${CONTAINER_OPT} $COMMON_VARS"
+  CMD="$MAVEN $MAVEN_DEBUG clean verify -P${PROFILE} $DEBUG -Dsuspend.debugger=$SUSPEND $COMMON_VARS"
 fi
 echo $CMD
 if [ 1 -eq "$INTERACTIVE" ]
