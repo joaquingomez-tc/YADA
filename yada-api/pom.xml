@@ -6,10 +6,9 @@
   <parent>
     <groupId>com.novartis.opensource</groupId>
     <artifactId>YADA</artifactId>
-    <version>9.4.0-SNAPSHOT</version>
+    <version>10.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>yada-api</artifactId>
-  <name>yada-api</name>
+  <artifactId>yada-api</artifactId>  
   <url>http://github.com/Novartis/YADA</url>
   <distributionManagement>
     <site>
