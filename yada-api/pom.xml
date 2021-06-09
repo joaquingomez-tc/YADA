@@ -164,10 +164,6 @@
         <targetPath>test</targetPath>
       </testResource>
       <testResource>
-        <directory>${basedir}/src/test/resources/test_pre9</directory>
-        <targetPath>test_pre9</targetPath>
-      </testResource>
-      <testResource>
         <directory>${basedir}/src/test/resources/bin</directory>
         <filtering>true</filtering>
         <targetPath>bin</targetPath>
@@ -270,11 +266,7 @@
           <execution>
             <id>html-it</id>
             <phase />
-          </execution>
-          <execution>
-            <id>copy-to-quickstart</id>
-            <phase />
-          </execution>
+          </execution>         
         </executions>
       </plugin>
       <plugin>
@@ -422,14 +414,9 @@
     </plugins>
   </reporting>
   <dependencies>
-    <!-- <dependency>
-      <groupId>com.auth0</groupId>
-      <artifactId>java-jwt</artifactId>
-    </dependency> -->
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
-      <!-- <version>3.3.0</version> -->
       <exclusions>
         <exclusion>
           <groupId>com.fasterxml.jackson.core</groupId>
@@ -462,11 +449,6 @@
       <artifactId>jsqlparser</artifactId>
       <version>0.9.6.1</version>
     </dependency>
-<!--     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.9.2</version>
-    </dependency> -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
@@ -517,11 +499,11 @@
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.7.7</version>
     </dependency>
-    <dependency>
+   <!--  <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
       <version>1.4.01</version>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -551,11 +533,6 @@
       <version>7.1.1-1</version> <scope>test</scope> </dependency> -->
     <!-- <dependency> <groupId>mysql</groupId> <artifactId>mysql-connector-java</artifactId>
       <version>5.1.31</version> <scope>test</scope> </dependency> -->
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- restore for oracle 11g -->
     <!-- You may need to install this jar manually in your maven repo -->
     <!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc6</artifactId>
@@ -574,45 +551,16 @@
       <artifactId>assumeng</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- unused -->
-    <!-- <dependency> <groupId>javax.xml.stream</groupId> <artifactId>stax-api</artifactId>
-      <version>1.0-2</version> </dependency> -->
-    <!-- <dependency> <groupId>org.pojava</groupId> <artifactId>persistence</artifactId>
-      <version>3.0.0</version> </dependency> -->
-    <!-- <dependency> <groupId>commons-beanutils</groupId> <artifactId>commons-beanutils</artifactId>
-      <version>1.8.3</version> </dependency> -->
-    <!-- <dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-compress</artifactId>
-      <version>1.4.1</version> </dependency> -->
-    <!-- <dependency> <groupId>commons-httpclient</groupId> <artifactId>commons-httpclient</artifactId>
-      <version>3.1</version> </dependency> -->
-    <!-- <dependency> <groupId>commons-io</groupId> <artifactId>commons-io</artifactId>
-      <version>2.4</version> </dependency> -->
-    <!-- <dependency> <groupId>dom4j</groupId> <artifactId>dom4j</artifactId>
-      <version>1.6.1</version> </dependency> -->
-    <!-- <dependency> <groupId>xalan</groupId> <artifactId>xalan</artifactId>
-      <version>2.7.1</version> </dependency> -->
-    <!-- <dependency> <groupId>xalan</groupId> <artifactId>serializer</artifactId>
-      <version>2.7.1</version> </dependency> -->
-    <!-- <dependency> <groupId>xerces</groupId> <artifactId>xercesImpl</artifactId>
-      <version>2.11.0</version> </dependency> -->
-    <!-- <dependency> <groupId>org.apache.xmlbeans</groupId> <artifactId>xmlbeans</artifactId>
-      <version>2.3.0</version> </dependency> -->
-    <!-- <dependency> <groupId>org.apache.xmlgraphics</groupId> <artifactId>xmlgraphics-commons</artifactId>
-      <version>1.4</version> </dependency> -->
     <dependency>
       <groupId>org.tuckey</groupId>
       <artifactId>urlrewritefilter</artifactId>
       <version>4.0.4</version>
     </dependency>
-    <!-- <dependency> <groupId>org.xerial</groupId> <artifactId>sqlite-jdbc</artifactId>
-      <scope>test</scope> </dependency> -->
     <dependency>
       <groupId>org.mozilla</groupId>
       <artifactId>rhino</artifactId>
       <version>1.7R5</version>
     </dependency>
-    <!-- <dependency> <groupId>org.elasticsearch</groupId> <artifactId>elasticsearch</artifactId>
-      <version>2.1.1</version> </dependency> -->
     <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
@@ -681,21 +629,11 @@
       <version>1.6-b1</version>
       <scope>runtime</scope>
     </dependency>
-    <!-- <dependency>
-      <groupId>org.renjin.cran</groupId>
-      <artifactId>jsonify</artifactId>
-      <version>0.2.1-b1</version>
-    </dependency> -->
     <dependency>
       <groupId>org.renjin.cran</groupId>
       <artifactId>rjson</artifactId>
       <version>0.2.15-renjin-21</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>com.github.jbytecode</groupId>
-      <artifactId>RCaller</artifactId>
-      <version>3.0.2</version>
-    </dependency> -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
