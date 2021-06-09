@@ -2681,6 +2681,7 @@ public class YADARequest {
    */
   public void setPageStart(String[] pageStart) {
     int i = Integer.valueOf(pageStart[0]);    
+    this.pageStart = i;
     l.debug(getFormattedDebugString("pageStart", String.valueOf(this.pageStart)));
   }
   
