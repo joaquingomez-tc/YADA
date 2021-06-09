@@ -56,7 +56,8 @@
 	</properties>
 	<modules>
 		<module>yada-api</module>
-		<module>yada-war</module>
+		<!-- <module>yada-war</module> -->
+        <module>yada-assembly</module>
 	</modules>
     <profiles>
         <profile>

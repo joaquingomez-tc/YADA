@@ -1,17 +1,16 @@
 #!/bin/bash
 
 usage() {
-printf "Usage: $0 [-T [surefire|failsafe]] [-x surefire|failsafe] [-p test|test_pre9] [-Xtdsi] \n\n \
-  -T  Execute either surefire (api) or failsafe (http) testing. Omit argument to suppress both. \n \
-      Failsafe suppression will also suppress cargo deployment. Default (option -T omitted altogether) \n \
-      is to execute both. \n \
+printf "Usage: $0 [-T [surefire|failsafe|skip|<empty string>]] [-x surefire|failsafe] [-p test] [-Xtdsi] \n \
+  -T  Execute either surefire (api) or failsafe (http) testing. Omit argument or set \n \
+      to 'skip' to suppress both. Failsafe suppression will also suppress jetty launch. \n \
+      Default (option -T omitted altogether) is to execute both. \n \
   -x  debug surefire or failsafe execution. Leave argument empty to debug both. \n \
   -p  choose the profile. 'test' is the currently preferred test profile.  \n \
-      If 'test_pre9' is selected, the YADA.properties will be modified accordingly. \n \
   -X  show maven debug output. \n \
   -t  use the 'tmp_toggle' file to cherry pick tests. Default is all tests. \n \
   -d  show java debug log output. Default log level is 'info'. \n \
-  -s  deloy snapshot to maven central.  Implies -T \n \
+  -s  deloy snapshot to maven central.  Implies '-T skip' \n \
   -i  print command to test webapp interactively. Combine with  '-x failsafe' to debug as well \n \
   -r  local maven repository \n \
   -?  show this help \n\n \
@@ -93,10 +92,6 @@ while getopts "Xtdisx:p:T:r:" opt; do
       ;;
     p )
       PROFILE="$OPTARG"
-      if [ "test_pre9" == "$PROFILE" ]
-      then
-        YADA_PROPS=-DYADA.properties.path=/YADA_pre9.properties
-      fi
       ;;
     ? ) usage
       ;;
