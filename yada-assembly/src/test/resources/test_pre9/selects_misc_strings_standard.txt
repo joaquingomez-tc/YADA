@@ -1,2 +1,0 @@
-q=YADA test SELECT string literal question mark&p=Z{"RESULTSET":{"total":3,"ROWS":[{"'?'":"?","'??'":"??"},{"'?'":"?","'??'":"??"},{"'?'":"?","'??'":"??"}],"qname":"YADA test SELECT string literal question mark","page":"1","records":3},"version":"10.0.0-SNAPSHOT"}
-qname=YADA test SELECT&params=Z{"RESULTSET":{"total":3,"ROWS":[{"'?'":"?","'??'":"??"},{"'?'":"?","'??'":"??"},{"'?'":"?","'??'":"??"}],"qname":"YADA test SELECT string literal question mark","page":"1","records":3},"version":"10.0.0-SNAPSHOT"}
