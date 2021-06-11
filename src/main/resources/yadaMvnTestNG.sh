@@ -1,11 +1,14 @@
 #!/bin/bash
 
 usage() {
-printf "Usage: $0 [-T [surefire|failsafe|skip|<empty string>]] [-x surefire|failsafe] [-p test] [-Xtdsi] \n \
+printf "Usage: $0 [-T [surefire|failsafe|skip|<empty string>]] [-x surefire|failsafe|jetty|all] [-p test] [-Xtdsi] \n \
   -T  Execute either surefire (api) or failsafe (http) testing. Omit argument or set \n \
       to 'skip' to suppress both. Failsafe suppression will also suppress jetty launch. \n \
       Default (option -T omitted altogether) is to execute both. \n \
-  -x  debug surefire or failsafe execution. Leave argument empty to debug both. \n \
+  -x  debug surefire or failsafe test, or jetty and failsafe execution. \n \
+      Leave argument empty to debug surefire, failsafe, and jetty. \n \
+      'jetty' implies 'failsafe' because maven won't wait for tests to execute long enough to \n \
+      launch the jetty debugger. \n \
   -p  choose the profile. 'test' is the currently preferred test profile.  \n \
   -X  show maven debug output. \n \
   -t  use the 'tmp_toggle' file to cherry pick tests. Default is all tests. \n \
@@ -28,6 +31,7 @@ TOGGLE_TESTS=
 LOG_LEVEL="-Dlog.level=info"
 SUREFIRE_X=0
 FAILSAFE_X=0
+JETTY_X=0
 DEBUG=
 PROFILE=
 YADA_PROPS=
@@ -70,16 +74,24 @@ while getopts "Xtdisx:p:T:r:" opt; do
       ;;
     x )
       SUSPEND=y
-      if [ "surefire" == "$OPTARG" ]
+      if [[ "$OPTARG" =~ .*surefire.* ]]
       then
         SUREFIRE_X=1
-      elif [ "failsafe" == "$OPTARG" ]
+      fi
+      if [[ "$OPTARG" =~ .*failsafe.* ]]
       then
         FAILSAFE_X=1
-      elif [ "all" = "$OPTARG" ] || [ -z "$OPTARG" ]
+      fi
+      if [[ "$OPTARG" =~ .*jetty.* ]]
+      then
+        JETTY_X=1
+        FAILSAFE_X=1
+      fi
+      if [ "all" = "$OPTARG" ] || [ -z "$OPTARG" ]
       then
         SUREFIRE_X=1
         FAILSAFE_X=1
+        JETTY_X=1
       fi
       ;;
     X )
@@ -140,6 +152,14 @@ cd $YADA_SRCDIR
 
 if [ "y" == "$SUSPEND" ]
 then
+  if [ 1 -eq "${JETTY_X}" ]
+  then
+    # the (possibly) easiest way to put jetty into debug mode is with a dedicated profile.
+    # passing debug args on the maven command line is a pain, and didn't work
+    # see the jettyDebug profile in yada-assembly.pom for details
+    PROFILE=${PROFILE},jettyDebug
+    FAILSAFE_DEBUG="-Dmaven.failsafe.debug"
+  fi
   SUREFIRE_DEBUG="-Dmaven.surefire.debug"
   FAILSAFE_DEBUG="-Dmaven.failsafe.debug"
   if [ 1 -eq "${SUREFIRE_X}" ]
