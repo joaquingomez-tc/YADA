@@ -2180,6 +2180,17 @@ public class YADARequest {
       }
     }
   }
+  
+  /**
+   * Alias for {@link #setHarmonyMap(String[])}
+   * @param harmonyMap json object conforming to harmony map spec
+   * @throws YADARequestException when {@code harmonyMap} contains a malformed
+   *                              json string
+   * @since 10.0.0
+   */
+  public void setHarmonymap(String[] harmonyMap) throws YADARequestException {
+    this.setHarmonyMap(harmonyMap);
+  }
 
   /**
    * Array mutator for variable, preferred for compatibility with
