@@ -115,29 +115,44 @@ public class YADAServer {
     // Set the Context
     ContextHandler contextHandler = new ContextHandler();
     String ctx = getProperties().getProperty(YADA_SERVER_CONTEXT);
+    // context will be "/" if unset, or "/whatever" if set.
     contextHandler.setContextPath(ctx.startsWith("/") ? ctx : "/"+ctx);    
     String ctxPath = contextHandler.getContextPath();
     
+    // Rewrites (for path-style and removing jsp refs)     
+    String pathRx  = "^(?:\\/)(.*[\\/{]?q(?:name)?[:\\/].+)$";
+    String pathFmt = ctxPath+"?yp=%s";       
+    String jspRx   = "/yada.jsp";
+    String jspFmt  = ctxPath+"?$Q";    
     
-    // Rewrites (for path-style)
-    RewriteHandler rewriteHandler = new RewriteHandler();
-    
-    String rxPath = "^(?:"+ctxPath+")?(.*[\\/{]q(?:name)?[:\\/].+)$";
-    String rxYp   = ctxPath+"?yp=%s";        
-    
-    RewriteRegexRule pathRule = new RewriteRegexRule(rxPath, String.format(rxYp,"$1"));    
-    RewriteRegexRule jspRule = new RewriteRegexRule("/yada.jsp",ctxPath+"?$Q");
-    
+    // This rule will change path-syntax into "/context?yp=uri" which is then handled by the Service class
+    RewriteRegexRule pathRule       = new RewriteRegexRule(pathRx, String.format(pathFmt,"$1"));  
+    // This rule will change requests for "yada.jsp?querystring" into "/context?querystring", i.e., strip off the jsp uri
+    RewriteRegexRule jspRule        = new RewriteRegexRule(jspRx, jspFmt);
+    RewriteHandler   rewriteHandler = new RewriteHandler();   
     rewriteHandler.addRule(pathRule);
     rewriteHandler.addRule(jspRule);
     
-    // Set the Handler
-    YADARequestHandler yadaRequsetHandler = new YADARequestHandler();
+    // Set the YADA Handler
+    YADARequestHandler yadaRequestHandler = new YADARequestHandler();
     
     // Set handlers
-    contextHandler.setHandler(rewriteHandler);
-    handlerList.addHandler(contextHandler);
-    handlerList.addHandler(yadaRequsetHandler);
+    rewriteHandler.setHandler(contextHandler);
+    handlerList.addHandler(rewriteHandler);
+    handlerList.addHandler(yadaRequestHandler);
+    
+    /* 
+     * Handler Hierarchy:
+     * 
+     * HandlerList
+     *      |
+     *      +-- RewriteHandler (2 Rules)
+     *      |        |
+     *      |        +-- ContextHandler
+     *      |
+     *      +-- YADARequestHandler        
+     * 
+     */
     
     // attach the handler to the server
     server.setHandler(handlerList);
