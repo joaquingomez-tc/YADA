@@ -95,95 +95,94 @@ public class YADARequestHandler extends AbstractHandler {
       throws IOException, ServletException {
     // Mark the request as handled so that it
     // will not be processed by other handlers.
-    baseRequest.setHandled(true);
-    Service service = new Service();
-    if(request.getParameter("yp") != null)
-    {
-      service.handleRequest(request, request.getParameter("yp"));
-    }
-    else
-    {
-      try
+      Service service = new Service();
+      if(request.getParameter("yp") != null)
       {
-        service.handleRequest(request);
+        service.handleRequest(request, request.getParameter("yp"));
       }
-      catch (YADARequestException e)
+      else
       {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    response.addHeader("X-YADA-VERSION","${project.version}");
-    if(request.getParameter("method") == null
-        || !request.getParameter("method").equals("upload"))
-    {
-      result = service.execute();
-      String fmt    = service.getYADARequest().getFormat();
-      // TODO confirm response content type defaults to json even though the call below follows
-      // the call to execute
-      boolean exception = result.matches(EXCEPTION);
-      
-      if (service.getYADARequest().getExport())
-      {
-        response.setStatus(HttpServletResponse.SC_CREATED);
-        response.addHeader("Location", result);
-        response.setContentType("text/plain");
-        fmt = YADARequest.FORMAT_PLAINTEXT;
-      }
-      
-      if (YADARequest.FORMAT_JSON.equals(fmt) || exception)
-      {
-        response.setContentType("application/json;charset=UTF-8");
-        if(exception)
+        try
         {
-          JSONObject e = new JSONObject(result);
-          String exceptionClass = e.getString("Exception");
-          Integer errorCode = statusCodes.get(UNHANDLED_EXCEPTION);
-          if(statusCodes.containsKey(exceptionClass))
+          service.handleRequest(request);
+        }
+        catch (YADARequestException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+      response.addHeader("X-YADA-VERSION","${project.version}");
+      if(request.getParameter("method") == null
+          || !request.getParameter("method").equals("upload"))
+      {
+        result = service.execute();
+        String fmt    = service.getYADARequest().getFormat();
+        // TODO confirm response content type defaults to json even though the call below follows
+        // the call to execute
+        boolean exception = result.matches(EXCEPTION);
+        
+        if (service.getYADARequest().getExport())
+        {
+          response.setStatus(HttpServletResponse.SC_CREATED);
+          response.addHeader("Location", result);
+          response.setContentType("text/plain");
+          fmt = YADARequest.FORMAT_PLAINTEXT;
+        }
+        
+        if (YADARequest.FORMAT_JSON.equals(fmt) || exception)
+        {
+          response.setContentType("application/json;charset=UTF-8");
+          if(exception)
           {
-            errorCode = statusCodes.get(exceptionClass);
+            JSONObject e = new JSONObject(result);
+            String exceptionClass = e.getString("Exception");
+            Integer errorCode = statusCodes.get(UNHANDLED_EXCEPTION);
+            if(statusCodes.containsKey(exceptionClass))
+            {
+              errorCode = statusCodes.get(exceptionClass);
+            }
+            int ec = errorCode.intValue();
+            e.put("Status",ec);
+            e.put("StatusText",statusText.get(errorCode));
+  //          request.getSession().setAttribute("YADAException",e.toString());
+            response.sendError(errorCode);
           }
-          int ec = errorCode.intValue();
-          e.put("Status",ec);
-          e.put("StatusText",statusText.get(errorCode));
-          request.getSession().setAttribute("YADAException",e.toString());
-          response.sendError(errorCode);
         }
-      }
-      else if (YADARequest.FORMAT_XML.equals(fmt))
-      {
-        response.setContentType("text/xml");
-      }
-      else if (YADARequest.FORMAT_CSV.equals(fmt))
-      {
-        response.setContentType("text/csv");
-      }
-      else if (YADARequest.FORMAT_TSV.equals(fmt) || YADARequest.FORMAT_TAB.equals(fmt))
-      {
-        response.setContentType("text/tab-separated-values");
-      }
-      else if (YADARequest.FORMAT_PIPE.equals(fmt))
-      {
-        response.setContentType("text/pipe-separated-values");
-      }
-      else if (YADARequest.FORMAT_HTML.equals(fmt))
-      {
-        response.setContentType("text/html");
-      }
-      else if (YADARequest.FORMAT_BINARY.equals(fmt))
-      {
-        String  ct = "application/octet-stream";
-        Pattern rx = Pattern.compile("^data:(.+/.+);base64, .+$",Pattern.DOTALL);
-        Matcher m  = rx.matcher(result);
-        if(m.matches())
+        else if (YADARequest.FORMAT_XML.equals(fmt))
         {
-          ct = m.group(1);
+          response.setContentType("text/xml");
         }
-        response.setContentType(ct);
+        else if (YADARequest.FORMAT_CSV.equals(fmt))
+        {
+          response.setContentType("text/csv");
+        }
+        else if (YADARequest.FORMAT_TSV.equals(fmt) || YADARequest.FORMAT_TAB.equals(fmt))
+        {
+          response.setContentType("text/tab-separated-values");
+        }
+        else if (YADARequest.FORMAT_PIPE.equals(fmt))
+        {
+          response.setContentType("text/pipe-separated-values");
+        }
+        else if (YADARequest.FORMAT_HTML.equals(fmt))
+        {
+          response.setContentType("text/html");
+        }
+        else if (YADARequest.FORMAT_BINARY.equals(fmt))
+        {
+          String  ct = "application/octet-stream";
+          Pattern rx = Pattern.compile("^data:(.+/.+);base64, .+$",Pattern.DOTALL);
+          Matcher m  = rx.matcher(result);
+          if(m.matches())
+          {
+            ct = m.group(1);
+          }
+          response.setContentType(ct);
+        }
       }
+      // result
+      response.getWriter().print(result);
+      baseRequest.setHandled(true);
     }
-    // result
-    response.getWriter().print(result);
-  }
-
 }

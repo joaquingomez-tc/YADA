@@ -5,21 +5,31 @@ package com.novartis.opensource.yada.server;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
-import org.eclipse.jetty.rewrite.handler.CompactPathRule;
-import org.eclipse.jetty.rewrite.handler.RedirectPatternRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
-import org.eclipse.jetty.server.*;
-
+import org.eclipse.jetty.server.AbstractNetworkConnector;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.SecuredRedirectHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.novartis.opensource.yada.Finder;
+import com.novartis.opensource.yada.YADARequest;
 
 
 /**
@@ -67,7 +77,19 @@ public class YADAServer {
   /**
    * Constant equal to {@value}. Used for setting server context path
    */
-  private final static String YADA_SERVER_CONTEXT =  "YADA.server.context";
+  public final static String YADA_SERVER_CONTEXT =  "YADA.server.context";
+  
+  /**
+   * Constant equal to {@value}. Used for setting keystore path
+   */
+  public final static String YADA_SERVER_KEYSTORE_PATH = "YADA.server.keystore.path";
+  
+  /**
+   * Constant equal to {@value}. Used for setting keystore path
+   */
+  public final static String YADA_SERVER_KEYSTORE_SECRET = "YADA.server.keystore.secret";
+  
+  
 
   /**
    * 
@@ -86,13 +108,18 @@ public class YADAServer {
     
     // Create and configure a ThreadPool.
     QueuedThreadPool threadPool = new QueuedThreadPool();
+    threadPool.setDetailedDump(true);
     threadPool.setName("yada");
 
     // Create a Server instance.
     org.eclipse.jetty.server.Server server = new Server(threadPool);
     
     // The HTTP configuration object.
+    int connectorPort = Integer.valueOf((String)getProperties().get(YADA_SERVER_HTTP_PORT));
+    int securePort = Integer.valueOf((String)getProperties().get(YADA_SERVER_HTTPS_PORT));
     HttpConfiguration httpConfig = new HttpConfiguration();
+    httpConfig.setSecurePort(securePort);
+    httpConfig.addCustomizer(new SecureRequestCustomizer());
 
     // The ConnectionFactory for HTTP/1.1.
     HttpConnectionFactory http11 = new HttpConnectionFactory(httpConfig);
@@ -102,56 +129,91 @@ public class YADAServer {
 
 
     // Create a ServerConnector to accept connections from clients.
-    Connector connector = new ServerConnector(server, http11, h2c);
-    ((AbstractNetworkConnector) connector).setPort((Integer.valueOf((String)getProperties().get(YADA_SERVER_HTTP_PORT))));
-
-
+    Connector connector = new ServerConnector(server, http11, h2c);    
+    ((AbstractNetworkConnector) connector).setPort(connectorPort);
+    
+    // Configure the SslContextFactory with the keyStore information.
+    SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+    String keystorePath = getProperties().getProperty(YADA_SERVER_KEYSTORE_PATH);
+    String keystoreSecret = getProperties().getProperty(YADA_SERVER_KEYSTORE_SECRET);
+    sslContextFactory.setKeyStorePath(keystorePath);
+    sslContextFactory.setKeyStorePassword(keystoreSecret);
+//    sslContextFactory.setExcludeProtocols("TLSv1.3");
+    
+    // The ConnectionFactory for TLS.
+    SslConnectionFactory tls = new SslConnectionFactory(sslContextFactory, http11.getProtocol());
+    ServerConnector secureConnector = new ServerConnector(server, tls, http11);
+    secureConnector.setPort(securePort);
+    
     // Add the Connector to the YADAServer
     server.addConnector(connector);
+    server.addConnector(secureConnector);
     
-    // Handlers
+    // Handlers    
     HandlerList handlerList = new HandlerList();
+    ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
+    SecuredRedirectHandler securedHandler = new SecuredRedirectHandler();
     
     // Set the Context
-    ContextHandler contextHandler = new ContextHandler();
+    ContextHandler yadaPropContextHandler = new ContextHandler();
+    yadaPropContextHandler.setAllowNullPathInfo(true);
     String ctx = getProperties().getProperty(YADA_SERVER_CONTEXT);
     // context will be "/" if unset, or "/whatever" if set.
-    contextHandler.setContextPath(ctx.startsWith("/") ? ctx : "/"+ctx);    
-    String ctxPath = contextHandler.getContextPath();
+    yadaPropContextHandler.setContextPath(ctx.startsWith("/") ? ctx : "/"+ctx);  
+    String ctxPath = yadaPropContextHandler.getContextPath();
     
-    // Rewrites (for path-style and removing jsp refs)     
-    String pathRx  = "^(?:\\/)(.*[\\/{]?q(?:name)?[:\\/].+)$";
-    String pathFmt = ctxPath+"?yp=%s";       
-    String jspRx   = "/yada.jsp";
-    String jspFmt  = ctxPath+"?$Q";    
-    
+        
+    // Rewrites for path-style, converts /param/value/param/value 
+    // into ?yp=param/value/param/value
+    String paramShortNames = String.join("|", YADARequest.fieldAliasMap.keySet());
+    String paramLongNames  = String.join("|", new HashSet<String>(YADARequest.fieldAliasMap.values()));
+    String dirtyParams     = "(?:" + paramShortNames + "|" + paramLongNames + ")";
+    String params          = dirtyParams.replaceAll("\\|q(?:name)?[|)]", "|");
+    String pathRx  = "^(?:\\/)??((?:" + params + "\\/.+)*?[\\/{]?q(?:name)?[:\\/].+)$";
+    String pathFmt = ctxPath+"?yp=%s";
     // This rule will change path-syntax into "/context?yp=uri" which is then handled by the Service class
-    RewriteRegexRule pathRule       = new RewriteRegexRule(pathRx, String.format(pathFmt,"$1"));  
-    // This rule will change requests for "yada.jsp?querystring" into "/context?querystring", i.e., strip off the jsp uri
-    RewriteRegexRule jspRule        = new RewriteRegexRule(jspRx, jspFmt);
-    RewriteHandler   rewriteHandler = new RewriteHandler();   
+    RewriteRegexRule pathRule = new RewriteRegexRule(pathRx, String.format(pathFmt,"$1"));  
+    pathRule.setTerminating(true);
+        
+    // This rule will change requests for "yada.jsp?querystring" into "/context?querystring", 
+    // i.e., strip off the jsp extension    
+    String jspRx   = "^\\/yada\\.jsp";
+    String jspFmt  = ctxPath+"?$Q";
+    RewriteRegexRule jspRule = new RewriteRegexRule(jspRx, jspFmt);            
+    
+    // Add the rules to the handler
+    RewriteHandler rewriteHandler = new RewriteHandler();
     rewriteHandler.addRule(pathRule);
     rewriteHandler.addRule(jspRule);
     
     // Set the YADA Handler
     YADARequestHandler yadaRequestHandler = new YADARequestHandler();
+           
+    // Set handlers hierarchy
     
-    // Set handlers
-    rewriteHandler.setHandler(contextHandler);
-    handlerList.addHandler(rewriteHandler);
-    handlerList.addHandler(yadaRequestHandler);
+    rewriteHandler.setHandler(yadaRequestHandler);
+    yadaPropContextHandler.setHandler(rewriteHandler);    
+    contextHandlerCollection.addHandler(yadaPropContextHandler);
+    securedHandler.setHandler(contextHandlerCollection);
+    handlerList.addHandler(securedHandler);    
+    handlerList.addHandler(new DefaultHandler());
     
     /* 
      * Handler Hierarchy:
      * 
      * HandlerList
      *      |
-     *      +-- RewriteHandler (2 Rules)
+     *      +-- SecuredHandler
      *      |        |
-     *      |        +-- ContextHandler
-     *      |
-     *      +-- YADARequestHandler        
-     * 
+     *      |        +-- ContextHandlerCollection
+     *      |                 |
+     *      |                 +-- ContextHandler (/context)
+     *      |                          |        
+     *      |                          +-- RewriteHandler (2 Rule)
+     *      |                                   |
+     *      |                                   +-- YADARequestHandler
+     *      |       
+     *      +-- DefaultHandler
      */
     
     // attach the handler to the server
