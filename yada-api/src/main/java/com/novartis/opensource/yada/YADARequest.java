@@ -928,7 +928,7 @@ public class YADARequest {
   /**
    * A thesaurus for long and short parameter name synonyms
    */
-  private static final Map<String, String> fieldAliasMap;
+  public static final Map<String, String> fieldAliasMap;
   /**
    * The plugin class for handling JMESPath parameters
    * 
