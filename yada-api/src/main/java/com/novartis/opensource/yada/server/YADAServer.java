@@ -106,6 +106,9 @@ public class YADAServer {
     
     System.out.println("Starting YADA Server...");
     
+    // Secure Handler (if needed)
+    SecuredRedirectHandler securedHandler = new SecuredRedirectHandler();
+    
     // Create and configure a ThreadPool.
     QueuedThreadPool threadPool = new QueuedThreadPool();
     threadPool.setDetailedDump(true);
@@ -115,12 +118,9 @@ public class YADAServer {
     org.eclipse.jetty.server.Server server = new Server(threadPool);
     
     // The HTTP configuration object.
-    int connectorPort = Integer.valueOf((String)getProperties().get(YADA_SERVER_HTTP_PORT));
-    int securePort = Integer.valueOf((String)getProperties().get(YADA_SERVER_HTTPS_PORT));
+    int connectorPort = Integer.valueOf((String)getProperties().get(YADA_SERVER_HTTP_PORT));    
     HttpConfiguration httpConfig = new HttpConfiguration();
-    httpConfig.setSecurePort(securePort);
-    httpConfig.addCustomizer(new SecureRequestCustomizer());
-
+    
     // The ConnectionFactory for HTTP/1.1.
     HttpConnectionFactory http11 = new HttpConnectionFactory(httpConfig);
 
@@ -131,28 +131,31 @@ public class YADAServer {
     // Create a ServerConnector to accept connections from clients.
     Connector connector = new ServerConnector(server, http11, h2c);    
     ((AbstractNetworkConnector) connector).setPort(connectorPort);
-    
-    // Configure the SslContextFactory with the keyStore information.
-    SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
-    String keystorePath = getProperties().getProperty(YADA_SERVER_KEYSTORE_PATH);
-    String keystoreSecret = getProperties().getProperty(YADA_SERVER_KEYSTORE_SECRET);
-    sslContextFactory.setKeyStorePath(keystorePath);
-    sslContextFactory.setKeyStorePassword(keystoreSecret);
-//    sslContextFactory.setExcludeProtocols("TLSv1.3");
-    
-    // The ConnectionFactory for TLS.
-    SslConnectionFactory tls = new SslConnectionFactory(sslContextFactory, http11.getProtocol());
-    ServerConnector secureConnector = new ServerConnector(server, tls, http11);
-    secureConnector.setPort(securePort);
-    
     // Add the Connector to the YADAServer
-    server.addConnector(connector);
-    server.addConnector(secureConnector);
+    server.addConnector(connector);    
+
+    if(isSecured())
+    {
+      // Configure the SslContextFactory with the keyStore information.
+      int securePort = Integer.valueOf((String)getProperties().get(YADA_SERVER_HTTPS_PORT));   
+      httpConfig.setSecurePort(securePort);
+      httpConfig.addCustomizer(new SecureRequestCustomizer());    
+      SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+      String keystorePath = getProperties().getProperty(YADA_SERVER_KEYSTORE_PATH);
+      String keystoreSecret = getProperties().getProperty(YADA_SERVER_KEYSTORE_SECRET);
+      sslContextFactory.setKeyStorePath(keystorePath);
+      sslContextFactory.setKeyStorePassword(keystoreSecret);
+      // The ConnectionFactory for TLS.
+      SslConnectionFactory tls = new SslConnectionFactory(sslContextFactory, http11.getProtocol());
+      ServerConnector secureConnector = new ServerConnector(server, tls, http11);
+      secureConnector.setPort(securePort);
+      server.addConnector(secureConnector);
+    }
     
+
     // Handlers    
     HandlerList handlerList = new HandlerList();
     ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
-    SecuredRedirectHandler securedHandler = new SecuredRedirectHandler();
     
     // Set the Context
     ContextHandler yadaPropContextHandler = new ContextHandler();
@@ -194,8 +197,16 @@ public class YADAServer {
     rewriteHandler.setHandler(yadaRequestHandler);
     yadaPropContextHandler.setHandler(rewriteHandler);    
     contextHandlerCollection.addHandler(yadaPropContextHandler);
-    securedHandler.setHandler(contextHandlerCollection);
-    handlerList.addHandler(securedHandler);    
+    
+    if(isSecured())
+    {
+      securedHandler.setHandler(contextHandlerCollection);
+      handlerList.addHandler(securedHandler);    
+    }
+    else
+    {
+      handlerList.addHandler(contextHandlerCollection);
+    }
     handlerList.addHandler(new DefaultHandler());
     
     /* 
@@ -267,5 +278,15 @@ public class YADAServer {
       System.exit(1);
     }
     return props;
+  }
+  
+  /**
+   * Returns {@code true} if the {@link #YADA_SERVER_HTTPS_PORT} property is set, implying
+   * the other security-related props are set and valid
+   * 
+   * @return {@code true} if the {@link #YADA_SERVER_HTTPS_PORT} property is set
+   */
+  private static boolean isSecured() {
+    return getProperties().get(YADA_SERVER_HTTPS_PORT) != null;
   }
 }
