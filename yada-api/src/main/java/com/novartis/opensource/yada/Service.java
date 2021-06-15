@@ -118,10 +118,12 @@ public class Service {
 	public void handleRequest(HttpServletRequest request, String parameterString)
 	{
 		Map<String, String[]> map = new LinkedHashMap<>();
-		String[] pathElements = parameterString.split("/");
+		String[] pathElements = parameterString.split("/");		
 		for(int i=1;i<pathElements.length;i=i+2)
 		{
-		  if(Finder.hasYADALib() && i == 1)
+		  if(Finder.hasYADALib() 
+		      && (pathElements[i-1].contentEquals(YADARequest.PS_QNAME)
+		          ||pathElements[i-1].contentEquals(YADARequest.PL_QNAME)))
 		    map.put(pathElements[i-1], new String[] {pathElements[i]+"/"+pathElements[++i]});
 		  else
 		    map.put(pathElements[i-1], new String[] {pathElements[i]});
