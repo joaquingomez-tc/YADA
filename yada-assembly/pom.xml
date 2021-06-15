@@ -15,43 +15,44 @@
       <build>
         <plugins>
           <plugin>
-        <groupId>com.bazaarvoice.maven.plugins</groupId>
-        <artifactId>process-exec-maven-plugin</artifactId>
-        <version>0.7</version>
-        <executions>
-          <execution>
-            <id>launch-jetty</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>start</goal>
-            </goals>
-            <configuration>
-              <name>launch-jetty</name>
-              <workingDir>${project.artifactId}-${project.version}-bin/${project.parent.name}-${project.version}/</workingDir>
-              <waitForInterrupt>false</waitForInterrupt>
-              <!-- <healthcheckUrl></healthcheckUrl> -->
-              <waitAfterLaunch>5</waitAfterLaunch>
-              <arguments>
-                <argument>java</argument>
-                <argument>-Xdebug</argument>
-                <argument>-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006</argument>
-                <argument>-Xnoagent</argument>
-                <argument>-Djava.compiler=NONE</argument>
-                <argument>-jar</argument>
-                <argument>yada-api-${project.version}.jar</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <!--Stop all processes in reverse order -->
-          <execution>
-            <id>stop-all</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop-all</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+            <groupId>com.bazaarvoice.maven.plugins</groupId>
+            <artifactId>process-exec-maven-plugin</artifactId>
+            <version>0.7</version>
+            <executions>
+              <execution>
+                <id>launch-jetty</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <configuration>
+                  <name>launch-jetty</name>
+                  <workingDir>${project.artifactId}-${project.version}-bin/${project.parent.name}-${project.version}/</workingDir>
+                  <waitForInterrupt>false</waitForInterrupt>
+                  <!-- <healthcheckUrl></healthcheckUrl> -->
+                  <waitAfterLaunch>5</waitAfterLaunch>
+                  <!-- java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-api-10.0.0-SNAPSHOT.jar-->
+                  <arguments>
+                    <argument>java</argument>
+                    <argument>-Xdebug</argument>
+                    <argument>-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006</argument>
+                    <argument>-Xnoagent</argument>
+                    <argument>-Djava.compiler=NONE</argument>
+                    <argument>-jar</argument>
+                    <argument>yada-api-${project.version}.jar</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <!--Stop all processes in reverse order -->
+              <execution>
+                <id>stop-all</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop-all</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
