@@ -19,11 +19,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -114,8 +116,9 @@ public class Service {
 	 * stores the request, and then calls {@link #handleRequest(String, Map)}
 	 * @param request the servlet request object handed off from the servlet container
 	 * @param parameterString the resource path from the url
+	 * @throws YADARequestException when an unknown parameter is passed in the path
 	 */
-	public void handleRequest(HttpServletRequest request, String parameterString)
+	public void handleRequest(HttpServletRequest request, String parameterString) throws YADARequestException
 	{
 		Map<String, String[]> map = new LinkedHashMap<>();
 		String[] pathElements = parameterString.split("/");		
@@ -124,9 +127,18 @@ public class Service {
 		  if(Finder.hasYADALib() 
 		      && (pathElements[i-1].contentEquals(YADARequest.PS_QNAME)
 		          ||pathElements[i-1].contentEquals(YADARequest.PL_QNAME)))
+		  {
 		    map.put(pathElements[i-1], new String[] {pathElements[i]+"/"+pathElements[++i]});
+		  }
 		  else
-		    map.put(pathElements[i-1], new String[] {pathElements[i]});
+		  {
+		    String key = pathElements[i-1];
+		    String[] value = {pathElements[i]};
+		    if(YADARequest.fieldAliasSet.contains(key))
+		      map.put(key, value);
+		    else
+		      throw new YADARequestException(String.format("Unknown parameter: %s",key));
+		  }
 		}
 		getYADARequest().setRequest(request);
 		handleRequest(request.getHeader("referer"), map);
@@ -138,7 +150,6 @@ public class Service {
 	 * @param request the servlet request created by the servlet container 
 	 * @throws YADARequestException when JSON body content is malformed 
 	 */
-	@SuppressWarnings("unchecked")
   public void handleRequest(HttpServletRequest request) throws YADARequestException
 	{
 		getYADARequest().setRequest(request);
@@ -157,9 +168,13 @@ public class Service {
         throw new YADARequestException(msg, e);
       }		  
 		}
-		else
+		else if(null != request.getParameterMap() && request.getParameterMap().size() > 0)
 		{
 		  handleRequest(request.getHeader("referer"), request.getParameterMap());
+		}
+		else
+		{
+		  throw new YADARequestException("Unknown parameter in request.");
 		}
 	}
 	
@@ -171,9 +186,10 @@ public class Service {
 	 * @param jo the json object passed in request body
 	 * 
 	 * @return a {@link Map} containing the JSON data reformatted for parsing
+	 * @throws YADARequestException if the {@code JSONObject} passed to the method contains an invalid parameter key
 	 * @since 9.3.5
 	 */
-	private Map<String,String[]> buildMapFromJSON(JSONObject jo) 
+	private Map<String,String[]> buildMapFromJSON(JSONObject jo) throws YADARequestException 
 	{
 	  Map<String, String[]> map = new HashMap<>();
 	  String[] props = JSONObject.getNames(jo);
@@ -183,7 +199,10 @@ public class Service {
 	    String value = prop.contentEquals(YADARequest.PS_JSONPARAMS) || prop.contentEquals(YADARequest.PL_JSONPARAMS)
 	                   ? jo.getJSONArray(prop).toString()
 	                   : jo.getString(prop);
- 	    map.put(props[i], new String[] {value});
+     if(YADARequest.fieldAliasSet.contains(props[i]))
+ 	     map.put(props[i], new String[] {value});
+     else
+       throw new YADARequestException(String.format("Unknown parameter: %s", props[i]));
 	  }
 	  return map;
 	}
@@ -193,11 +212,13 @@ public class Service {
 	 * The meaty method for parsing the request parameters into {@link YADARequest}.
 	 * @param referer the url of the referring page
 	 * @param paraMap the parameter map provided by the servlet request
+	 * @throws YADARequestException when a parameter is unknown or parameter value is malformed
 	 */
 	@SuppressWarnings("deprecation")
-	public void handleRequest(String referer, Map<String,String[]> paraMap) 
+	public void handleRequest(String referer, Map<String,String[]> paraMap) throws YADARequestException 
 	{	
-	  try
+	  Set<String> params = paraMap.keySet();
+	  if(YADARequest.fieldAliasSet.containsAll(params))
 	  {
   		if(paraMap.get(YADARequest.PL_ARGS) != null)
   		{
@@ -548,10 +569,14 @@ public class Service {
   		
   		l.debug("current settings:\n"+getYADARequest().toString());
 	  }
-	  catch(YADARequestException e)
+	  else
 	  {
-	    error(e.getMessage(),e);
+	    throw new YADARequestException(String.format("Unknown parameter"));
 	  }
+//	  catch(YADARequestException e)
+//	  {
+//	    error(e.getMessage(),e);
+//	  }
 	}
 	
 	/**
@@ -618,7 +643,7 @@ public class Service {
 			}
 			result = j.toString(2);
 		} 
-		catch (JSONException | YADAResourceException e1)
+		catch (JSONException e1)
 		{
 			e1.printStackTrace();
 		} 
@@ -630,111 +655,36 @@ public class Service {
 	 * 
 	 * @return String containing the result of execution.  This could be a string of data, a record count, 
 	 * a url, etc.
+	 * @throws YADAException {@link YADAException} is the superclass of all YADA exceptions, effectively 
+	 * any of which can be throw in this context
 	 */
 	@SuppressWarnings("deprecation")
-	public String execute()
+	public String execute() throws YADAException
 	{
-		String result = "";
-		try
+	  String result = null;
+		/*
+		 * At this point I have a collection of YADAQuery objects
+		 * 
+		 * If each query has it's own adaptor, even singletons, it precludes transactions (multiple queries)
+		 * If each request has a single adaptor, it precludes executing multiple queries across disparate sources 
+		 * 
+		 */
+		String method = getYADARequest().getMethod();
+		if (YADARequest.METHOD_UPLOAD.equals(method))
 		{
-			/*
-			 * At this point I have a collection of YADAQuery objects
-			 * 
-			 * If each query has it's own adaptor, even singletons, it precludes transactions (multiple queries)
-			 * If each request has a single adaptor, it precludes executing multiple queries across disparate sources 
-			 * 
-			 */
-			String method = getYADARequest().getMethod();
-			if (YADARequest.METHOD_UPLOAD.equals(method))
+			result = executeUpload();
+		}
+		else
+		{
+			// automatically set backwards-compatibility for updates/inserts if method parameter for "update" is included
+			if(YADARequest.METHOD_UPDATE.equals(method))
 			{
-				result = executeUpload();
+				getYADARequest().setResponse(new String[] {"com.novartis.opensource.yada.format.CountResponse"});
 			}
-			else
-			{
-				// automatically set backwards-compatibility for updates/inserts if method parameter for "update" is included
-				if(YADARequest.METHOD_UPDATE.equals(method))
-				{
-					getYADARequest().setResponse(new String[] {"com.novartis.opensource.yada.format.CountResponse"});
-				}
-				this.qMgr = new QueryManager(getYADARequest());
-				//TODO Sequential execution: for drivers like vertica's which won't execute a second request if the resultset of the first is still open
-				result = _execute();
-			}
-		}
-		catch (YADAExecutionException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		}
-		catch (YADAPluginException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		}
-		catch (YADAFinderException e) 
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAQueryConfigurationException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAResourceException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADARequestException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAConnectionException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAUnsupportedAdaptorException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAAdaptorException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		}
-		catch (YADAConverterException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAResponseException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAParserException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAIOException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		} 
-		catch (YADAAdaptorExecutionException e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
-		}
-		catch (Exception e)
-		{
-			l.error(e.getMessage(),e);
-			result = error(e.getMessage(),e);
+			this.qMgr = new QueryManager(getYADARequest());
+			getYADARequest().getRequest().setAttribute("query.manager", qMgr);
+			//TODO Sequential execution: for drivers like vertica's which won't execute a second request if the resultset of the first is still open
+			result = _execute();
 		}
 		return result;
 	}
@@ -761,10 +711,9 @@ public class Service {
 																	YADAResponseException, 
 																	YADARequestException, 
 																	YADAResourceException, 
-																	YADAIOException, YADAQueryConfigurationException
+																	YADAIOException, 
+																	YADAQueryConfigurationException
 	{
-		//TODO How can global plugins be applied to each query?  A new parameter, e.g., APPLY_TO_EACH?
-		//TODO How can other global parameters be applied to each query?
 		String gResult = "";
 		try
 		{
@@ -828,11 +777,7 @@ public class Service {
 			if (m.matches()) {
 					String msg = "User is not authorized";
 					throw new YADASecurityException(msg);
-			}
-			
-			
-			
-			
+			}			
 		}
 		finally
 		{
@@ -966,9 +911,9 @@ public class Service {
 		{
 			try
 			{
-				response = (Response) Class.forName(pkg+format.toUpperCase()+"Response").newInstance();
+				response = (Response) Class.forName(pkg+format.toUpperCase()+"Response").getDeclaredConstructor().newInstance();
 			} 
-			catch (InstantiationException e)
+			catch (InstantiationException|NoSuchMethodException|InvocationTargetException e)
 			{
 				String msg = "Could not instantiate Response.";
 				throw new YADARequestException(msg,e);
@@ -1011,15 +956,15 @@ public class Service {
 		if( responseClass != null && !"".equals(responseClass))
 		{
 			try
-			{
-				response = (Response) Class.forName(responseClass).newInstance();
+			{			  
+				response = (Response) Class.forName(responseClass).getDeclaredConstructor().newInstance();
 			} 
 			catch (Exception e)
 			{
 				l.warn("The specified class ["+responseClass+"], as provided, could not be instantiated.  Trying FQCN."); 
 				try
 				{
-					response = (Response) Class.forName(FORMAT_PKG+responseClass).newInstance();
+					response = (Response) Class.forName(FORMAT_PKG+responseClass).getDeclaredConstructor().newInstance();
 				}
 				catch(Exception e1)
 				{
@@ -1125,7 +1070,7 @@ public class Service {
 									l.info("Found a QUERY_BYPASS plugin with the classname ["+plugin+"]");
 									try
 									{
-										Object plugObj = pluginClass.newInstance();
+										Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
 										if(getYADARequest().getPluginArgs().size() > 0) // api call might not set any args
 										  getYADARequest().setArgs(getYADARequest().getPluginArgs().get(i));
 										yqr = ((Bypass)plugObj).engage(getYADARequest(),yq);
@@ -1135,7 +1080,7 @@ public class Service {
 										yq.setResult(yqr);
 										
 									}
-									catch(InstantiationException e)
+									catch(InstantiationException|NoSuchMethodException|InvocationTargetException e)
 									{
 										String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
 										throw new YADAPluginException(msg,e);
@@ -1217,7 +1162,7 @@ public class Service {
 								l.info("Found a query-level PREPROCESS plugin with the classname ["+plugin+"]");
 								try
 								{
-									Object plugObj = pluginClass.newInstance();
+									Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
 									
 									// meaty bit
 									((Preprocess)plugObj).engage(getYADARequest(),yq);
@@ -1242,7 +1187,7 @@ public class Service {
                     throw new YADAPluginException(msg, e);
                   } 
 								}
-								catch(InstantiationException|IllegalAccessException|ClassCastException e)
+								catch(InstantiationException|IllegalAccessException|ClassCastException|NoSuchMethodException|InvocationTargetException e)
 								{
 									String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
 									throw new YADAPluginException(msg,e);
@@ -1323,13 +1268,13 @@ public class Service {
 								l.info("Found a POSTPROCESS plugin with the classname ["+plugin+"]");
 								try
 								{
-									Object            plugObj     = pluginClass.newInstance();
+									Object            plugObj     = pluginClass.getDeclaredConstructor().newInstance();
 									((Postprocess)plugObj).engage(yq);
 									// remove the param that was created earlier, to avoid potential conflicts later
                   //TODO review security and other implications of removing the arglist parameter from the query object
                   yq.getYADAQueryParams().remove(yp);
 								}
-								catch(InstantiationException e)
+								catch(InstantiationException|NoSuchMethodException|InvocationTargetException e)
 								{
 									String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
 									throw new YADAPluginException(msg,e);
@@ -1393,12 +1338,12 @@ public class Service {
 								l.info("Found an BYPASS plugin with the classname ["+plugin+"]");
 								try
 								{
-									Object plugObj = pluginClass.newInstance();
+									Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
 									if(getYADARequest().getPluginArgs().size() > 0) // api call might not set any args
 									  getYADARequest().setArgs(getYADARequest().getPluginArgs().get(i));
 									result = ((Bypass)plugObj).engage(getYADARequest());
 								}
-								catch(InstantiationException e)
+								catch(InstantiationException|NoSuchMethodException|InvocationTargetException e)
 								{
 									String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
 									throw new YADAPluginException(msg,e);
@@ -1461,7 +1406,7 @@ public class Service {
 							l.info("Found a request-level PREPROCESS plugin with the classname ["+plugin+"]");
 							try
 							{
-								Object plugObj = pluginClass.newInstance();
+								Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
 								if(getYADARequest().getPluginArgs().size() > 0) // api call might not set any args
 								  yReq.setArgs(yReq.getPluginArgs().get(i));
 								setYADARequest(((Preprocess)plugObj).engage(yReq));
@@ -1513,7 +1458,7 @@ public class Service {
 									throw new YADAPluginException(msg, e);
 								}
 							}
-							catch(InstantiationException e)
+							catch(InstantiationException|NoSuchMethodException|InvocationTargetException e)
 							{
 								String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
 								throw new YADAPluginException(msg,e);
@@ -1574,12 +1519,12 @@ public class Service {
 							l.info("Found a POSTPROCESS plugin with the classname ["+plugin+"]");
 							try
 							{
-								Object plugObj = pluginClass.newInstance();
+								Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
 								if(getYADARequest().getPluginArgs().size() > 0) // api call might not set any args
 								  getYADARequest().setArgs(getYADARequest().getPluginArgs().get(i));
 								lResult = ((Postprocess)plugObj).engage(getYADARequest(), lResult);
 							}
-							catch(InstantiationException e)
+							catch(InstantiationException|NoSuchMethodException|InvocationTargetException e)
 							{
 								String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
 								throw new YADAPluginException(msg,e);

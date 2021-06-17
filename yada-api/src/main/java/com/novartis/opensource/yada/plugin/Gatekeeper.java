@@ -68,6 +68,7 @@ import com.novartis.opensource.yada.JSONParamsEntry;
 import com.novartis.opensource.yada.QueryManager;
 import com.novartis.opensource.yada.Service;
 import com.novartis.opensource.yada.YADAConnectionException;
+import com.novartis.opensource.yada.YADAException;
 import com.novartis.opensource.yada.YADAFinderException;
 import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADAQueryConfigurationException;
@@ -797,7 +798,15 @@ public class Gatekeeper extends AbstractPreprocessor {
           }
 
           // 3. execute the security query
-          result = YADAUtils.executeYADAGet(new String[] { a11nQname }, new String[] { polVals.toString() });
+          try
+          {
+            result = YADAUtils.executeYADAGet(new String[] { a11nQname }, new String[] { polVals.toString() });
+          }
+          catch (YADAException e)
+          {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
         }
         else
         {
@@ -851,7 +860,15 @@ public class Gatekeeper extends AbstractPreprocessor {
               polVals.append((String) getToken());
             }
           }
-          result = YADAUtils.executeYADAGet(new String[] { a11nQname }, new String[] { polVals.toString() });
+          try
+          {
+            result = YADAUtils.executeYADAGet(new String[] { a11nQname }, new String[] { polVals.toString() });
+          }
+          catch (YADAException e)
+          {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
         }
       }
 
@@ -919,13 +936,29 @@ public class Gatekeeper extends AbstractPreprocessor {
         // if values were injected, they've overwritten the passed in version
         jpe.addData(dataRow);
         JSONParams jp = new JSONParams(a11nQname, jpe);
-        result = YADAUtils.executeYADAGetWithJSONParamsNoStats(jp);
+        try
+        {
+          result = YADAUtils.executeYADAGetWithJSONParamsNoStats(jp);
+        }
+        catch (YADAException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
       else
       {
 
         // no parameters to pass to execution.policy query
-        result = YADAUtils.executeYADAGet(new String[] { a11nQname }, new String[0]);
+        try
+        {
+          result = YADAUtils.executeYADAGet(new String[] { a11nQname }, new String[0]);
+        }
+        catch (YADAException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
 
       // parse result

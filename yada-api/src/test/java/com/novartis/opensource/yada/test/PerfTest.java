@@ -17,6 +17,7 @@ package com.novartis.opensource.yada.test;
 import org.testng.annotations.Test;
 
 import com.novartis.opensource.yada.Service;
+import com.novartis.opensource.yada.YADAException;
 import com.novartis.opensource.yada.YADARequest;
 
 /**
@@ -36,7 +37,16 @@ public class PerfTest {
 	  	yadaReq.setQname(new String[] {"YADA default"});
 	  	yadaReq.setCount(new String[] {"false"});
 	  	Service    svc    = new Service(yadaReq);
-	    String result = svc.execute();
+	    String result = "";
+      try
+      {
+        result = svc.execute();
+      }
+      catch (YADAException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
 	    assert result.indexOf("Exception") == -1 : "Result is "+result;
   }
 }

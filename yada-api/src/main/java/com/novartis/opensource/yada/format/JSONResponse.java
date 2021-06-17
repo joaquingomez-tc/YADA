@@ -23,7 +23,6 @@ import com.novartis.opensource.yada.YADAQueryConfigurationException;
 import com.novartis.opensource.yada.YADAQueryResult;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
-import com.novartis.opensource.yada.YADAResourceException;
 import com.novartis.opensource.yada.util.YADAUtils;
 
 /**
@@ -163,11 +162,7 @@ public class JSONResponse extends AbstractResponse {
       catch (JSONException e) 
       {
         //TODO exception handling
-      } 
-      catch (YADAResourceException e) 
-      {
-        //TODO exception handling
-      }
+      }      
       this.jsonResponse.put(QNAME, qname);
       Joiner    joiner = new Joiner(getYadaQueryResults());
       JSONArray joins  = (JSONArray) joiner.join();
@@ -198,12 +193,7 @@ public class JSONResponse extends AbstractResponse {
 		{
 		  String msg = "There was problem creating the JSON reponse object with the 'root key'.";
 			throw new YADAResponseException(msg);
-		}
-		catch (YADAResourceException e)
-		{
-		  String msg = "There was a problem obtaining the version information from JNDI.";
-		  throw new YADAResponseException(msg,e);
-		}
+		}	
 		return this;
 	}
 	

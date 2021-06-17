@@ -23,6 +23,7 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.SecuredRedirectHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -89,6 +90,10 @@ public class YADAServer {
    */
   public final static String YADA_SERVER_KEYSTORE_SECRET = "YADA.server.keystore.secret";
   
+  /**
+   * Constant equal to {@value}. Used for setting keystore path
+   */
+  public final static String YADA_REPOSITORY = "YADA.repository";
   
 
   /**
@@ -172,7 +177,7 @@ public class YADAServer {
     String paramLongNames  = String.join("|", new HashSet<String>(YADARequest.fieldAliasMap.values()));
     String dirtyParams     = "(?:" + paramShortNames + "|" + paramLongNames + ")";
     String params          = dirtyParams.replaceAll("\\|q(?:name)?[|)]", "|");
-    String pathRx  = "^(?:\\/)??((?:" + params + "\\/.+)*?[\\/{]?q(?:name)?[:\\/].+)$";
+    String pathRx  = "^(?:\\/)?((?:" + params + "\\/.+)*?[\\/{]?q(?:name)?[:\\/].+)$";
     String pathFmt = ctxPath+"?yp=%s";
     // This rule will change path-syntax into "/context?yp=uri" which is then handled by the Service class
     RewriteRegexRule pathRule = new RewriteRegexRule(pathRx, String.format(pathFmt,"$1"));  
@@ -193,11 +198,10 @@ public class YADAServer {
     YADARequestHandler yadaRequestHandler = new YADARequestHandler();
            
     // Set handlers hierarchy
-    
     rewriteHandler.setHandler(yadaRequestHandler);
     yadaPropContextHandler.setHandler(rewriteHandler);    
-    contextHandlerCollection.addHandler(yadaPropContextHandler);
-    
+    contextHandlerCollection.addHandler(yadaPropContextHandler);    
+
     if(isSecured())
     {
       securedHandler.setHandler(contextHandlerCollection);
@@ -212,24 +216,28 @@ public class YADAServer {
     /* 
      * Handler Hierarchy:
      * 
-     * HandlerList
-     *      |
-     *      +-- SecuredHandler
-     *      |        |
-     *      |        +-- ContextHandlerCollection
-     *      |                 |
-     *      |                 +-- ContextHandler (/context)
-     *      |                          |        
-     *      |                          +-- RewriteHandler (2 Rule)
-     *      |                                   |
-     *      |                                   +-- YADARequestHandler
-     *      |       
-     *      +-- DefaultHandler
+     * Server
+     *   |
+     *   +-- HandlerList
+     *   |       |
+     *   |       +-- SecuredHandler
+     *   |       |        |
+     *   |       |        +-- ContextHandlerCollection
+     *   |       |                 |
+     *   |       |                 +-- ContextHandler (/context)
+     *   |       |                          |        
+     *   |       |                          +-- RewriteHandler (2 Rule)
+     *   |       |                                   |
+     *   |       |                                   +-- YADARequestHandler
+     *   |       +-- DefaultHandler
+     *   |
+     *   +-- YADAErrorHandler
      */
     
     // attach the handler to the server
     server.setHandler(handlerList);
-
+    ErrorHandler errorHandler = new YADAErrorHandler();
+    server.setErrorHandler(errorHandler);
     // Start the YADAServer so it starts accepting connections from clients.
     server.start();
 
@@ -287,6 +295,8 @@ public class YADAServer {
    * @return {@code true} if the {@link #YADA_SERVER_HTTPS_PORT} property is set
    */
   private static boolean isSecured() {
-    return getProperties().get(YADA_SERVER_HTTPS_PORT) != null;
+    return getProperties().get(YADA_SERVER_HTTPS_PORT) != null
+        && getProperties().get(YADA_SERVER_KEYSTORE_PATH) != null
+        && getProperties().get(YADA_SERVER_KEYSTORE_SECRET) != null;
   }
 }

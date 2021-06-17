@@ -76,6 +76,7 @@ import org.xml.sax.SAXException;
 import com.novartis.opensource.yada.JSONParams;
 import com.novartis.opensource.yada.JSONParamsEntry;
 import com.novartis.opensource.yada.Service;
+import com.novartis.opensource.yada.YADAException;
 import com.novartis.opensource.yada.YADAExecutionException;
 import com.novartis.opensource.yada.YADAParam;
 import com.novartis.opensource.yada.YADAQueryConfigurationException;
@@ -586,12 +587,12 @@ public class ServiceTest
 
   /**
    * Authenticates the logged user using the http header
-   * @throws YADAQueryConfigurationException when the credentials cannot be set in order to validate
+   * @throws YADAException if query prep or execution failsif queries are misconfigured or the login query fails
    * @since 9.0.0
    *
    */
   @BeforeMethod(groups = { "sec" })
-  public void login() throws YADAQueryConfigurationException
+  public void login() throws YADAException
   {
     l.debug("Logging in...");
     YADARequest yadaReq = new YADARequest();
@@ -679,25 +680,24 @@ public class ServiceTest
    *
    * @throws URISyntaxException when a handle can't be attached to the test file
    *         path
-   * @throws YADAQueryConfigurationException when request creation fails
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
+   * @throws YADAException if query prep or execution failsif the insert queries fail 
    */
   @BeforeMethod(groups = { "json", "standard", "options", "api", "jsp", "plugins", "sqlite_debug" })
-  public void dbPrep() throws URISyntaxException, YADAQueryConfigurationException, IOException
+  public void dbPrep() throws URISyntaxException, IOException, YADAException
   {
     prepOrClean(new String[] { "/test/inserts_single_json_prep.txt" });
   }
 
   /**
    * @throws URISyntaxException if the test files content can't be loaded
-   * @throws YADAQueryConfigurationException if the queries in the test are
-   *         malformed
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
+   * @throws YADAException if query prep or execution failsif the insert queries fail
    */
   @BeforeMethod(groups = { "filesystem" })
-  public void fsPrep() throws URISyntaxException, YADAQueryConfigurationException, IOException
+  public void fsPrep() throws URISyntaxException, IOException, YADAException
   {
     prepOrClean(new String[] { "/test/filesystem_insert_single_json_prep.txt" });
   }
@@ -708,12 +708,12 @@ public class ServiceTest
    *
    * @throws URISyntaxException when a handle can't be attached to the test file
    *         path
-   * @throws YADAQueryConfigurationException when request creation fails
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
+   * @throws YADAException if query prep or execution failsif the delete queries fail 
    */
   @AfterMethod(groups = { "json", "standard", "options", "api", "jsp", "plugins", "sqlite_debug" })
-  public void dbClean() throws URISyntaxException, YADAQueryConfigurationException, IOException
+  public void dbClean() throws URISyntaxException, IOException, YADAException
   {
     prepOrClean(new String[] { "/test/deletes_single_json.txt" });
   }
@@ -726,12 +726,12 @@ public class ServiceTest
    *
    * @throws URISyntaxException when a handle can't be attached to the test file
    *         path
-   * @throws YADAQueryConfigurationException when request creation fails
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
+   * @throws YADAException if query prep or execution failsif the insert or delete queries fail 
    * @since 5.1.0
    */
-  public void prepOrClean(String[] paths) throws URISyntaxException, IOException, YADAQueryConfigurationException
+  public void prepOrClean(String[] paths) throws URISyntaxException, IOException, YADAException
   {
     String[] params = mergeArrays(paths);
     JSONArray jarray = new JSONArray(params[0].substring(params[0].indexOf(LEFT_SQUARE)));
@@ -867,12 +867,11 @@ public class ServiceTest
    * Executes json-based requests
    *
    * @param query query to test
-   * @throws YADAResponseException when the test result is invalid
-   * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "json", "api" })
   @QueryFile(list = {})
-  public void testWithJSONParams(String query) throws YADAResponseException, YADAQueryConfigurationException
+  public void testWithJSONParams(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     Assert.assertTrue(validate(svc.getYADARequest(), svc.execute()) ,  "Data invalid for query: "+query);
@@ -882,12 +881,11 @@ public class ServiceTest
    * Execute standard parameter tests
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution failsif query prep or execution fails 
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "standard", "api" })
   @QueryFile(list = {})
-  public void testWithStandardParams(String query) throws YADAResponseException, YADAQueryConfigurationException
+  public void testWithStandardParams(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     Assert.assertTrue(validate(svc.getYADARequest(), svc.execute()) ,  "Data invalid for query: "+query);
@@ -1107,12 +1105,11 @@ public class ServiceTest
    * Tests CSV response format with json params
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "json", "options", "api", "sqlite_debug" })
   @QueryFile(list = {})
-  public void testForCSV(String query) throws YADAResponseException, YADAQueryConfigurationException
+  public void testForCSV(String query) throws YADAException
   {
     Assert.assertTrue(validateCSVResult(prepareTest(query).execute()) ,  "Data invalid for query: "+query);
   }
@@ -1121,12 +1118,11 @@ public class ServiceTest
    * Tests tab-delimited response with json params
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "json", "options", "api" })
   @QueryFile(list = {})
-  public void testForTSV(String query) throws YADAResponseException, YADAQueryConfigurationException
+  public void testForTSV(String query) throws YADAException
   {
     Assert.assertTrue(validateTSVResult(prepareTest(query).execute()) ,  "Data invalid for query: "+query);
   }
@@ -1135,12 +1131,11 @@ public class ServiceTest
    * Tests pipe-delimited response with json params
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution failsif query prep or execution fails 
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "json", "options", "api" })
   @QueryFile(list = {})
-  public void testForPSV(String query) throws YADAResponseException, YADAQueryConfigurationException
+  public void testForPSV(String query) throws YADAException
   {
     Assert.assertTrue(validatePSVResult(prepareTest(query).execute()) ,  "Data invalid for query: "+query);
   }
@@ -1149,12 +1144,11 @@ public class ServiceTest
    * Tests XML response with json params
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "json", "options", "api" })
   @QueryFile(list = {})
-  public void testForXML(String query) throws YADAResponseException, YADAQueryConfigurationException
+  public void testForXML(String query) throws YADAException
   {
     Assert.assertTrue(validateXMLResult(prepareTest(query).execute()) ,  "Data invalid for query: "+query);
   }
@@ -1163,12 +1157,11 @@ public class ServiceTest
    * Tests HTML response format with json params
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "json", "options", "api" })
   @QueryFile(list = {})
-  public void testForHTML(String query) throws YADAResponseException, YADAQueryConfigurationException
+  public void testForHTML(String query) throws YADAException
   {
     Assert.assertTrue(validateHTMLResult(prepareTest(query).execute()) ,  "Data invalid for query: "+query);
   }
@@ -1177,12 +1170,11 @@ public class ServiceTest
    * Tests Preprocessor plugin API
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api", "plugins" })
   @QueryFile(list = {})
-  public void testPreprocessor(String query) throws YADAResponseException, YADAQueryConfigurationException
+  public void testPreprocessor(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     Assert.assertTrue(validate(svc.getYADARequest(), svc.execute()) ,  "Data invalid for query: "+query);
@@ -1193,14 +1185,12 @@ public class ServiceTest
    * standard YADA JSON.
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    * @throws JSONException when the result does not conform
-   * @throws YADAResponseException when the test result is invalid
-   * @throws YADAExecutionException when the test execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api","noproxy" })
   @QueryFile(list = {})
-  public void testRESTExternal(String query) throws YADAResponseException, YADAQueryConfigurationException, YADAExecutionException
+  public void testRESTExternal(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     Assert.assertTrue(validateThirdPartyJSONResult(svc.execute()) ,  "Data invalid for query: "+query);
@@ -1214,10 +1204,11 @@ public class ServiceTest
    * @throws JSONException when the result does not conform
    * @throws YADAResponseException when the test result is invalid
    * @throws YADAExecutionException when the test execution fails
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api","noproxy" })
   @QueryFile(list = {})
-  public void testRESTExternalPOST(String query) throws YADAResponseException, YADAQueryConfigurationException, YADAExecutionException
+  public void testRESTExternalPOST(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     YADARequest yadaReq = svc.getYADARequest();
@@ -1230,14 +1221,12 @@ public class ServiceTest
    * Tests execution of a REST query using YADA as a proxy, and using HTTP PUT
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution fails
    * @throws JSONException when the result does not conform
-   * @throws YADAResponseException when the test result is invalid
-   * @throws YADAExecutionException when the test execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api","noproxy" })
   @QueryFile(list = {})
-  public void testRESTExternalPUT(String query) throws YADAResponseException, YADAQueryConfigurationException, YADAExecutionException
+  public void testRESTExternalPUT(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     YADARequest yadaReq = svc.getYADARequest();
@@ -1250,14 +1239,12 @@ public class ServiceTest
    * Tests execution of a REST query using YADA as a proxy, and using HTTP PATCH
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution fails
    * @throws JSONException when the result does not conform
-   * @throws YADAResponseException when the test result is invalid
-   * @throws YADAExecutionException when the test execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api","noproxy" })
   @QueryFile(list = {})
-  public void testRESTExternalPATCH(String query) throws YADAResponseException, YADAQueryConfigurationException, YADAExecutionException
+  public void testRESTExternalPATCH(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     YADARequest yadaReq = svc.getYADARequest();
@@ -1270,14 +1257,12 @@ public class ServiceTest
    * Tests execution of a REST query using YADA as a proxy, and using HTTP DELETE
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution fails
    * @throws JSONException when the result does not conform
-   * @throws YADAResponseException when the test result is invalid
-   * @throws YADAExecutionException when the test execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api","noproxy" })
   @QueryFile(list = {})
-  public void testRESTExternalDELETE(String query) throws YADAResponseException, YADAQueryConfigurationException, YADAExecutionException
+  public void testRESTExternalDELETE(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     YADARequest yadaReq = svc.getYADARequest();
@@ -1291,14 +1276,12 @@ public class ServiceTest
    * standard YADA JSON.
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution fails
    * @throws JSONException when the result does not conform
-   * @throws YADAResponseException when the test result is invalid
-   * @throws YADAExecutionException when the test execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "proxy" })
   @QueryFile(list = {})
-  public void testRESTExternalWithProxy(String query) throws YADAResponseException, YADAQueryConfigurationException, YADAExecutionException
+  public void testRESTExternalWithProxy(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     YADARequest yadaReq = svc.getYADARequest();
@@ -1311,13 +1294,12 @@ public class ServiceTest
    * query result unchanged
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
    * @throws JSONException when the result does not conform
-   * @throws YADAExecutionException when the test fails
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api","noproxy" })
   @QueryFile(list = {})
-  public void testRESTExternalPassThru(String query) throws YADAQueryConfigurationException, JSONException, YADAExecutionException
+  public void testRESTExternalPassThru(String query) throws JSONException, YADAException
   {
     Service svc = prepareTest(query);
     YADARequest yadaReq = svc.getYADARequest();
@@ -1330,13 +1312,12 @@ public class ServiceTest
    * query result unchanged
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
    * @throws JSONException when the result does not conform
-   * @throws YADAExecutionException when the test fails
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api" })
   @QueryFile(list = {})
-  public void testRESTExternalPassThruFiltered(String query) throws YADAQueryConfigurationException, JSONException, YADAExecutionException
+  public void testRESTExternalPassThruFiltered(String query) throws JSONException, YADAException
   {
     Service svc = prepareTest(query);
     YADARequest yadaReq = svc.getYADARequest();
@@ -1349,13 +1330,12 @@ public class ServiceTest
    * query result unchanged
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
    * @throws JSONException when the result does not conform
-   * @throws YADAExecutionException when the test fails
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "proxy" })
   @QueryFile(list = {})
-  public void testRESTExternalPassThruWithProxy(String query) throws YADAQueryConfigurationException, JSONException, YADAExecutionException
+  public void testRESTExternalPassThruWithProxy(String query) throws JSONException, YADAException
   {
     Service svc = prepareTest(query);
     YADARequest yadaReq = svc.getYADARequest();
@@ -1368,11 +1348,11 @@ public class ServiceTest
    * Tests Postprocessor plugin api
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api", "plugins" })
   @QueryFile(list = {})
-  public void testPostprocessor(String query) throws YADAQueryConfigurationException
+  public void testPostprocessor(String query) throws YADAException
   {
     YADARequest yadaReq = getYADAReq(query);
     Service svc = new Service(yadaReq);
@@ -1384,11 +1364,11 @@ public class ServiceTest
    * Executes a Bypass plugin test
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api", "plugins" })
   @QueryFile(list = { "" })
-  public void testBypass(String query) throws YADAQueryConfigurationException
+  public void testBypass(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     Assert.assertTrue(svc.execute().equals("Bypass worked."));
@@ -1399,11 +1379,12 @@ public class ServiceTest
    *
    * @param query the query to execute
    * @throws YADAQueryConfigurationException when request creation fails
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api", "plugins" })
   @Assumption(methods = "isNotWindows")
   @QueryFile(list = {})
-  public void testScriptPostprocessor(String query) throws YADAQueryConfigurationException
+  public void testScriptPostprocessor(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     JSONObject j = new JSONObject(svc.execute());
@@ -1415,12 +1396,13 @@ public class ServiceTest
    * Test the ScriptBypass API
    *
    * @param query the query to execute
+   * @throws YADAException if query prep or execution fails
    * @throws YADAQueryConfigurationException when request creation fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api", "plugins" })
   @Assumption(methods = "isNotWindows")
   @QueryFile(list = {})
-  public void testScriptBypass(String query) throws YADAQueryConfigurationException
+  public void testScriptBypass(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     String result = svc.execute();
@@ -1432,12 +1414,13 @@ public class ServiceTest
    * Tests Script Preprocessor API
    *
    * @param query the query to execute
+   * @throws YADAException if query prep or execution fails
    * @throws YADAQueryConfigurationException when request creation fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api", "plugins" })
   @Assumption(methods = "isNotWindows")
   @QueryFile(list = {})
-  public void testScriptPreprocessor(String query) throws YADAQueryConfigurationException
+  public void testScriptPreprocessor(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     String result = svc.execute();
@@ -1450,12 +1433,13 @@ public class ServiceTest
    * Tests Security API by causing failures (negative tests)
    *
    * @param query the query to execute
+   * @throws YADAException if query prep or execution fails
    * @throws YADAQueryConfigurationException when request creation fails
    */
   @Test(enabled = false, dataProvider = "QueryTests", groups = { "api", "plugins" })
   @Assumption(methods = "isNotWindows")
   @QueryFile(list = {})
-  public void testSecurityExceptions(String query) throws YADAQueryConfigurationException
+  public void testSecurityExceptions(String query) throws YADAException
   {
     if(query.equals("q=YADATEST test sec app property"))
       YADAUtils.executeYADAGet(new String[] {"YADA insert prop"}, new String[] {"YADATEST,protected,true"});
@@ -1480,13 +1464,12 @@ public class ServiceTest
    * Tests Security API using default parameters
    *
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = false, dataProvider = "QueryTests", groups = { "api", "plugins" })
   @Assumption(methods = "isNotWindows")
   @QueryFile(list = {})
-  public void testSecurityPlugins(String query) throws YADAQueryConfigurationException, YADAResponseException
+  public void testSecurityPlugins(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     Assert.assertTrue(validate(svc.getYADARequest(), svc.execute()) ,  "Data invalid for query: "+query);
@@ -1496,13 +1479,13 @@ public class ServiceTest
    * Tests listing the files in the yada io/in mapped directory.
    *
    * @param query the parameter string issue by the data provider
-   * @throws YADAQueryConfigurationException when there is a malformed query
    * @throws UnsupportedEncodingException when the query is not decodable as
    *         UTF-8
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "filesystem" })
   @QueryFile(list = {})
-  public void testFileSystemDirectory(String query) throws YADAQueryConfigurationException, UnsupportedEncodingException
+  public void testFileSystemDirectory(String query) throws UnsupportedEncodingException, YADAException
   {
     Service svc = prepareTest(query);
     String result = svc.execute();
@@ -1516,13 +1499,13 @@ public class ServiceTest
    * Tests reading text files in the yada io/in mapped directory.
    *
    * @param query the parameter string issue by the data provider
-   * @throws YADAQueryConfigurationException when there is a malformed query
    * @throws UnsupportedEncodingException when the query is not decodable as
    *         UTF-8
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "filesystem" })
   @QueryFile(list = {})
-  public void testFileSystemContentRead(String query) throws YADAQueryConfigurationException, UnsupportedEncodingException
+  public void testFileSystemContentRead(String query) throws UnsupportedEncodingException, YADAException
   {
     l.debug(query);
     Service svc = prepareTest(query);
@@ -1537,13 +1520,13 @@ public class ServiceTest
    * Tests appending text to files in the yada io/in mapped directory.
    *
    * @param query the parameter string issue by the data provider
-   * @throws YADAQueryConfigurationException when there is a malformed query
    * @throws UnsupportedEncodingException when the query is not decodable as
    *         UTF-8
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "filesystem" })
   @QueryFile(list = {})
-  public void testFileSystemUpdate(String query) throws YADAQueryConfigurationException, UnsupportedEncodingException
+  public void testFileSystemUpdate(String query) throws UnsupportedEncodingException, YADAException
   {
     Service svc = prepareTest(query);
     String result = svc.execute();
@@ -1562,13 +1545,13 @@ public class ServiceTest
    * Tests deleting text files in the yada io/in mapped directory.
    *
    * @param query the parameter string issue by the data provider
-   * @throws YADAQueryConfigurationException when there is a malformed query
    * @throws UnsupportedEncodingException when the query is not decodable as
    *         UTF-8
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "filesystem" })
   @QueryFile(list = {})
-  public void testFileSystemRm(String query) throws YADAQueryConfigurationException, UnsupportedEncodingException
+  public void testFileSystemRm(String query) throws UnsupportedEncodingException, YADAException
   {
     l.debug(query);
     Service svc = prepareTest(query);
@@ -1583,13 +1566,13 @@ public class ServiceTest
    * Tests deleting text files in the yada io/in mapped directory.
    *
    * @param query the parameter string issue by the data provider
-   * @throws YADAQueryConfigurationException when there is a malformed query
    * @throws UnsupportedEncodingException when the query is not decodable as
    *         UTF-8
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "filesystem" })
   @QueryFile(list = {})
-  public void testFileSystemMkdir(String query) throws YADAQueryConfigurationException, UnsupportedEncodingException
+  public void testFileSystemMkdir(String query) throws UnsupportedEncodingException, YADAException
   {
     l.debug(query);
     Service svc = prepareTest(query);
@@ -1603,12 +1586,11 @@ public class ServiceTest
   /**
    * Tests {@code harmonyMap} specs on REST queries using literal results for validation
    * @param query the parameter string issue by the data provider
-   * @throws YADAQueryConfigurationException when there is a malformed query
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "proxy" })
   @QueryFile(list = {})
-  public void testHarmonizerWithREST(String query) throws YADAQueryConfigurationException, YADAResponseException
+  public void testHarmonizerWithREST(String query) throws YADAException
   {
     String[] qv = query.split("VSTR");
     String q = qv[0];
@@ -1629,12 +1611,11 @@ public class ServiceTest
   /**
    * Tests a miscellaneous string literal, e.g., question mark (?)
    * @param query the parameter string issue by the data provider
-   * @throws YADAQueryConfigurationException when there is a malformed query
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "standard", "api" })
   @QueryFile(list = {})
-  public void testMiscellaneousStringLiteralStandard(String query) throws YADAQueryConfigurationException, YADAResponseException
+  public void testMiscellaneousStringLiteralStandard(String query) throws YADAException
   {
     String[] qv = query.split("VSTR");
     String q = qv[0];
@@ -1657,12 +1638,11 @@ public class ServiceTest
    * for CSV: column counts, header values, row counts, row/column content; and for JSON:
    * singular result set, correct mapped/unmapped keys and values, record count.
    * @param query the query to execute
-   * @throws YADAQueryConfigurationException when request creation fails
-   * @throws YADAResponseException when the test result is invalid
+   * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "options" })
   @QueryFile(list = {})
-  public void testHarmonizer(String query) throws YADAQueryConfigurationException, YADAResponseException
+  public void testHarmonizer(String query) throws YADAException
   {
     String[] allKeys   = {COL_INTEGER, COL_INTEGER_LC, COL_HM_INT, COL_NUMBER, COL_NUMBER_LC, COL_HM_FLOAT, COL_DATE, COL_DATE_LC, COL_HM_DATE, COL_TIME, COL_TIME_LC, COL_HM_TIME};
     String[] intKeys   = {COL_INTEGER, COL_INTEGER_LC, COL_HM_INT};
@@ -1912,6 +1892,7 @@ public class ServiceTest
 
   /**
    * @param query the path to the query config string passed by the {@link QueryFileTransformer}
+   * @throws YADAException if query prep or execution fails
    * @throws YADAQueryConfigurationException when the auth headers cannot be set, either because the values are malformed, or non-existent
    * @throws YADAResponseException when the assertion fails due to an error in request processig
    * @throws YADASecurityException when the assertion fails due to a issue with authorization
@@ -1919,7 +1900,7 @@ public class ServiceTest
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "sec" })
   @QueryFile(list = {})
-  public void testYADASec(String query) throws YADAQueryConfigurationException, YADAResponseException, YADASecurityException
+  public void testYADASec(String query) throws YADAException
   {
     Service svc = prepareTest(query);
     YADARequest req = svc.getYADARequest();

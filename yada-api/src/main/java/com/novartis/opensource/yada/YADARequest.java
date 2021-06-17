@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -930,6 +931,11 @@ public class YADARequest {
    */
   public static final Map<String, String> fieldAliasMap;
   /**
+   * The set of parameter keys
+   * @since 10.0.0
+   */
+  public static final HashSet<String>     fieldAliasSet = new HashSet<>();
+  /**
    * The plugin class for handling JMESPath parameters
    * 
    * @since 9.0.0
@@ -1028,6 +1034,8 @@ public class YADARequest {
     map.put(PL_USER, PL_USER);
     map.put(PL_VIEWLIMIT, PL_VIEWLIMIT);
     fieldAliasMap = Collections.unmodifiableMap(map);
+    fieldAliasSet.addAll(map.keySet());
+    fieldAliasSet.addAll(map.values());
   }
 
   // URL Parameters
@@ -2210,7 +2218,6 @@ public class YADARequest {
     // api circumvents http request so check for null
     if (null != getRequest())
     {
-      @SuppressWarnings("unchecked")
       Enumeration<String> hdrNames = getRequest().getHeaderNames();
       while (hdrNames.hasMoreElements())
       {
