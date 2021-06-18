@@ -175,8 +175,8 @@ public class YADAServer {
     // into ?yp=param/value/param/value
     String paramShortNames = String.join("|", YADARequest.fieldAliasMap.keySet());
     String paramLongNames  = String.join("|", new HashSet<String>(YADARequest.fieldAliasMap.values()));
-    String dirtyParams     = "(?:" + paramShortNames + "|" + paramLongNames + ")";
-    String params          = dirtyParams.replaceAll("\\|q(?:name)?[|)]", "|");
+    String allParams       = "(?:" + paramShortNames + "|" + paramLongNames + ")";
+    String params          = allParams.replaceAll("\\|q(?:name)?[|)]", "|");
     String pathRx  = "^(?:\\/)?((?:" + params + "\\/.+)*?[\\/{]?q(?:name)?[:\\/].+)$";
     String pathFmt = ctxPath+"?yp=%s";
     // This rule will change path-syntax into "/context?yp=uri" which is then handled by the Service class
