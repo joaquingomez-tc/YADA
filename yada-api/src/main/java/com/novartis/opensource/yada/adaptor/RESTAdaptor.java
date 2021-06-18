@@ -1083,20 +1083,17 @@ public class RESTAdaptor extends Adaptor implements Authorization {
 
   @Override
   public void authorize(String payload) throws YADASecurityException {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void authorize() throws YADASecurityException {
-    // TODO Auto-generated method stub
-
+  
   }
 
   @Override
   public void authorizeYADARequest(YADARequest yadaReq, String result) throws YADASecurityException {
-    // TODO Auto-generated method stub
-
+  
   }
 
   /**
