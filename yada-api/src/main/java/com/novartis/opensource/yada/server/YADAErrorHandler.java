@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -293,25 +295,52 @@ public class YADAErrorHandler extends ErrorHandler {
         st.put(i,trace);
       }
       // params processing
-//      
-//      for(int i=1;i<pathElements.length;i=i+2)
-//      {
-//        if(Finder.hasYADALib() 
-//            && (pathElements[i-1].contentEquals(YADARequest.PS_QNAME)
-//                ||pathElements[i-1].contentEquals(YADARequest.PL_QNAME)))
-//        {
-//          map.put(pathElements[i-1], new String[] {pathElements[i]+"/"+pathElements[++i]});
-//        }
-//        else
-//        {
-//          String key = pathElements[i-1];
-//          String[] value = {pathElements[i]};
-//          if(YADARequest.fieldAliasSet.contains(key))
-//            map.put(key, value);
-//          else
-//            throw new YADARequestException(String.format("Unknown parameter: %s",key));
-//        }
-//      }
+      JSONObject params = new JSONObject();
+      if(request.getParameter("yp") != null
+          || request.getParameterMap().size() == 0)
+      {
+        String[] pathElements;
+        if(request.getParameter("yp") != null)
+        {
+          pathElements = request.getParameter("yp").split("/");
+        }
+        else
+        {
+          String[] orig = uri.split("/");
+          int start = ((String)YADAServer
+              .getProperties()
+              .get(YADAServer.YADA_SERVER_CONTEXT))
+              .contentEquals("/") 
+              ? 1 : 2;
+          pathElements = Arrays.copyOfRange(orig,start,orig.length);
+        }
+        for(int i=1;i<pathElements.length;i++)
+        {
+          if(pathElements[i-1].contentEquals(YADARequest.PS_QNAME)
+            ||pathElements[i-1].contentEquals(YADARequest.PL_QNAME))
+          {
+            params.put(pathElements[i-1], pathElements[i]+"/"+pathElements[++i]);
+          }
+          else
+          {
+            params.put(pathElements[i-1], pathElements[i]);
+          }          
+        }
+      }
+      else
+      {
+        Map<String,String[]> pmap = request.getParameterMap();
+        for(String key : pmap.keySet())
+        {
+          String[] valArr = pmap.get(key);
+          if(valArr.length == 1)
+            params.put(key, pmap.get(key)[0]);
+          else
+          {
+            params.put(key, String.join(",",Arrays.asList(pmap.get(key))));
+          }
+        }
+      }
       
       error.put(KEY_URI, uri);
       error.put(KEY_HELP, VAL_HELP);
@@ -320,7 +349,7 @@ public class YADAErrorHandler extends ErrorHandler {
       error.put(KEY_STATUS, code);
       error.put(KEY_MESSAGE, message);
       error.put(KEY_EXCEPTION, excp);
-      error.put(KEY_PARAMS, value);
+      error.put(KEY_PARAMS, params);
       error.put(KEY_STACKTRACE, st);
       error.put(KEY_LINKS, links);
       writer.write(error.toString());
