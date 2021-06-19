@@ -797,8 +797,9 @@ public class ServiceTest
       }
     }
 
-
-    String target = "http://" + this.host + encQuery;
+    String protocol = "http";
+    protocol += this.host.endsWith("443") ? "s" : "";    
+    String target = protocol + "://" + this.host + encQuery;
     URL url = null;
     try
     {
@@ -905,7 +906,9 @@ public class ServiceTest
     logQuery(query);
     String method = null;
     HttpURLConnection connection = null;
-    String target = "http://" + this.host + this.uri;
+    String protocol = "http";
+    protocol += this.host.endsWith("443") ? "s" : "";
+    String target = protocol + "://" + this.host + this.uri;
     try
     {
       URL url = new URL(target);
@@ -1004,7 +1007,9 @@ public class ServiceTest
     String method = null;
     HttpURLConnection connection = null;
     boolean pathStyle = query.startsWith("/");
-    String target = "http://" + this.host + this.uri;
+    String protocol = "http";
+    protocol += this.host.endsWith("443") ? "s" : "";
+    String target = protocol + "://" + this.host + this.uri;
     try
     {
       if (pathStyle)
@@ -1019,11 +1024,11 @@ public class ServiceTest
         }
         if (Boolean.parseBoolean(this.auth))
         {
-          target = "http://" + this.host + this.uri.substring(0, this.uri.lastIndexOf('/')) + encQuery;
+          target = protocol + "://" + this.host + this.uri.substring(0, this.uri.lastIndexOf('/')) + encQuery;
         }
         else
         {
-          target = "http://" + this.host + encQuery;
+          target = protocol + "://" + this.host + this.uri + encQuery;
         }
       }
       else
