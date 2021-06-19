@@ -682,7 +682,6 @@ public class Service {
 				getYADARequest().setResponse(new String[] {"com.novartis.opensource.yada.format.CountResponse"});
 			}
 			this.qMgr = new QueryManager(getYADARequest());
-			getYADARequest().getRequest().setAttribute("query.manager", qMgr);
 			//TODO Sequential execution: for drivers like vertica's which won't execute a second request if the resultset of the first is still open
 			result = _execute();
 		}
