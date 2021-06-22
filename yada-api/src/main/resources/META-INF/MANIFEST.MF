@@ -1,1 +1,0 @@
-yada-api-version: ${project.parent.version}

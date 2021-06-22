@@ -16,7 +16,6 @@ package com.novartis.opensource.yada;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -49,6 +48,8 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+
+import com.novartis.opensource.yada.server.YADAServer;
 
 /**
  * Provides for retrieval YADA query code and metadata from the YADA Index as
@@ -325,14 +326,6 @@ public class Finder {
    *
    * @since 9.0.0
    */
-  private final static String YADA_PROPERTIES_PATH = "YADA.properties.path";
-
-  /**
-   * Constant equal to {@value}. Used for retrieving config for specific YADA
-   * index.
-   *
-   * @since 9.0.0
-   */
   private final static String YADA_BRANCH = "YADA.branch";
 
   /**
@@ -352,22 +345,6 @@ public class Finder {
   public final static String GIT_DIR = ".git";
 
   /**
-   * Constant equal to {@value}. Used for retrieving config for specific YADA
-   * index.
-   *
-   * @since 9.0.0
-   */
-  private final static String YADA_PULL_ON_LAUNCH = "YADA.pull.on.launch";
-
-  /**
-   * Constant equal to {@value}. Default location for {@code YADA.properties}
-   * file, in {@code WEB-INF/classes}
-   *
-   * @since 9.0.0
-   */
-  public final static String YADA_DEFAULT_PROPERTIES_PATH = "/YADA.properties";
-
-  /**
    * Constant equal to {@value}. The YADA app name.
    *
    * @since 9.0.0
@@ -379,11 +356,11 @@ public class Finder {
    *
    * @since 9.0.0
    */
-  public static Properties YADA_PROPERTIES = getYADAProperties();
+  private static Properties YADA_PROPERTIES = YADAServer.getProperties();
 
   static
   {
-    YADA_PROPERTIES = getYADAProperties();
+    YADA_PROPERTIES = YADAServer.getProperties();
     if (hasYADALib())
     {
       RepositoryBuilder builder = new RepositoryBuilder();
@@ -463,33 +440,8 @@ public class Finder {
    * @since 9.0.0
    */
   public final static String getYADALib() {
-    return YADA_PROPERTIES.getProperty(YADA_LIB);
-  }
-
-  /**
-   * Sets {@code static} {@link #YADA_PROPERTIES} object
-   *
-   * @return {@link java.util.Properties}
-   */
-  private final static Properties getYADAProperties() {
-    Properties props = new Properties();
-    String     path  = System.getProperty(YADA_PROPERTIES_PATH);
-    if (path == null || "".equals(path))
-      path = YADA_DEFAULT_PROPERTIES_PATH;
-    InputStream is = Finder.class.getResourceAsStream(path);
-    try
-    {
-      props.load(is);
-      l.info(String.format("Loaded %s", path));
-    }
-    catch (IOException e)
-    {
-      String msg = String.format("Cannot find or load YADA properties file %s", path);
-      l.fatal(msg);
-      System.exit(1);
-    }
-    return props;
-  }
+    return YADAServer.getProperties().getProperty(YADA_LIB);
+  }  
 
   /**
    * Retrieves the system property loaded at startup. This method was refactored

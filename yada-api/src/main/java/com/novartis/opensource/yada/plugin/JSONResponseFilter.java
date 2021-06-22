@@ -26,11 +26,12 @@ public class JSONResponseFilter extends AbstractPostprocessor {
    * local logger
    */
   private final static Logger l = Logger.getLogger(JSONResponseFilter.class);
+
   /**
-   * 
+   * Null constructor 
    */
   public JSONResponseFilter() {
-    // TODO Auto-generated constructor stub
+
   }
   
   @Override

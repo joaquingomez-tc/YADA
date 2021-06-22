@@ -310,7 +310,6 @@ public abstract class AbstractPostprocessor implements Postprocess, Authorizatio
     }
     else  
     {
-      @SuppressWarnings("unchecked")
       Enumeration<String> hdrNames = getRequest().getHeaderNames();
       while (hdrNames.hasMoreElements())
       {

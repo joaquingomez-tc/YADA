@@ -34,7 +34,6 @@ import com.novartis.opensource.yada.YADAQueryConfigurationException;
 import com.novartis.opensource.yada.YADAQueryResult;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
-import com.novartis.opensource.yada.YADAResourceException;
 import com.novartis.opensource.yada.util.YADAUtils;
 
 
@@ -117,11 +116,6 @@ public class XMLResponse extends AbstractResponse {
 		  String msg = "There was an issue appending the version attribute to the DOM.";
 		  throw new YADAResponseException(msg,e);
 		} 
-		catch (YADAResourceException e) 
-		{
-		  String msg = "There was an issue obtaining the version info from the JNDI context.";
-      throw new YADAResponseException(msg,e);
-    }
 		this.doc.appendChild(element);
 		return this;
 	}

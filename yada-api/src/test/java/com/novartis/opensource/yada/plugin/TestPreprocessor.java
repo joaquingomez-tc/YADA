@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.novartis.opensource.yada.Service;
+import com.novartis.opensource.yada.YADAException;
 import com.novartis.opensource.yada.YADARequest;
 
 /**
@@ -55,7 +56,16 @@ public class TestPreprocessor extends AbstractPreprocessor
 		// execute the new request with the original qname
 		Service     svc       = new Service(lyadaReq);
 		// store the result
-		String      result    = svc.execute();
+		String result = "";
+    try
+    {
+      result = svc.execute();
+    }
+    catch (YADAException e1)
+    {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
 		
 		l.debug(result);
 		
