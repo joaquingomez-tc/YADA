@@ -1,0 +1,2 @@
+q=YADATEST/test SELECT&pl=TestPreprocessor
+qname=YADATEST/test SELECT&plugin=TestPreprocessor

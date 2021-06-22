@@ -502,8 +502,8 @@ public class QueryUtils
 	{
 		try
 		{
-			return adaptorClass.newInstance();
-		} catch (InstantiationException e)
+			return adaptorClass.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException|NoSuchMethodException|InvocationTargetException e)
 		{
 			String msg = "Error instantiating adaptor for class" + adaptorClass.getName();
 			throw new YADAUnsupportedAdaptorException(msg, e);

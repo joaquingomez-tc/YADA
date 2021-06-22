@@ -1,0 +1,2 @@
+q=YADATEST/test SELECT&pl=TestBypass
+qname=YADATEST/test SELECT&plugin=TestBypass

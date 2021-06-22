@@ -649,9 +649,9 @@ public abstract class AbstractPreprocessor
 
       try
       {
-        setTokenValidator((TokenValidator) clazz.newInstance());
+        setTokenValidator((TokenValidator) clazz.getDeclaredConstructor().newInstance());
       }
-      catch (InstantiationException | IllegalAccessException e)
+      catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
       {
         String msg = "Could not instantiate the specified TokenValidator class: " + name;
         throw new YADASecurityException(msg, e);
@@ -841,9 +841,9 @@ public abstract class AbstractPreprocessor
 
       try
       {
-        setSecurityPolicy((SecurityPolicy) clazz.newInstance());
+        setSecurityPolicy((SecurityPolicy) clazz.getDeclaredConstructor().newInstance());
       }
-      catch (InstantiationException | IllegalAccessException e)
+      catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
       {
         String msg = "Could not instantiate the specified SecurityPolicy class: " + name;
         throw new YADASecurityException(msg, e);
@@ -941,7 +941,6 @@ public abstract class AbstractPreprocessor
    * @throws YADARequestException when the header string is malformed
    * @since 8.7.6
    */
-  @SuppressWarnings("unchecked")
   public void setHTTPHeaders(String[] httpHeaders) throws YADARequestException {
     Matcher             m1         = Pattern.compile(RX_NOTJSON).matcher(Arrays.toString(httpHeaders));
     Map<String, String> reqHeaders = new HashMap<String, String>();

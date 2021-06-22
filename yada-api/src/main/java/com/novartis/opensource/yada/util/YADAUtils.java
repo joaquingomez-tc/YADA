@@ -34,6 +34,7 @@ import com.novartis.opensource.yada.JSONParams;
 import com.novartis.opensource.yada.QueryManager;
 import com.novartis.opensource.yada.Service;
 import com.novartis.opensource.yada.YADAConnectionException;
+import com.novartis.opensource.yada.YADAException;
 import com.novartis.opensource.yada.YADAExecutionException;
 import com.novartis.opensource.yada.YADAFinderException;
 import com.novartis.opensource.yada.YADAParserException;
@@ -212,10 +213,9 @@ public class YADAUtils {
 	 * Returns the in-use version of the YADA framework.
 	 * 
 	 * @return this YADA framework version derived from JNDI {@code yada.version} variable 
-	 * @throws YADAResourceException when the JNDI path cannot be found or read
 	 * @since 5.1.0
 	 */
-	public static String getVersion() throws YADAResourceException 
+	public static String getVersion()  
 	{		
 		String   version     = "-1";
 		Class<?> clazz       = YADAUtils.class; 
@@ -233,8 +233,7 @@ public class YADAUtils {
 			} 
 			catch (IOException e1) 
 			{
-				String msg = "Unable to retrieve manifest from jar or path";
-				throw new YADAResourceException(msg, e1);
+			  return version;
 			} 
 		}
 		Attributes attr = mf.getMainAttributes();
@@ -246,9 +245,9 @@ public class YADAUtils {
 	 * A wrapper function which calls the {@link #Q_NEXTVAL} query, which executes an Oracle {@code nextval} function on {@code seq}.
 	 * @param seq the oracle sequence name from which to obtain the value
 	 * @return {@code int} containing the result of {@code nextval}
-	 * @throws YADAExecutionException when the function call fails
+	 * @throws YADAException if query execution fails
 	 */
-	public static int getNextVal(String seq) throws YADAExecutionException  
+	public static int getNextVal(String seq) throws YADAException  
 	{
 		int       retval = -1;
 			YADARequest yadaReq = new YADARequest();
@@ -381,8 +380,9 @@ public class YADAUtils {
 	 * @param qname the name of the query to execute
 	 * @param params the params to map to the query columns
 	 * @return the result of the query
+	 * @throws YADAException if query execution fails
 	 */
-	public static String executeYADAGet(String[] qname, String[] params) 
+	public static String executeYADAGet(String[] qname, String[] params) throws YADAException 
 	{
 		YADARequest yadaReq = new YADARequest();
 		yadaReq.setCount(NOCOUNT);
@@ -459,9 +459,10 @@ public class YADAUtils {
 	 * Executes the queries defined in {@code jp} and returns the result.
 	 * @param jp the configuration object
 	 * @return String result of statement execution
+	 * @throws YADAException if query execution fails
 	 *
 	 */
-	public static String executeYADAGetWithJSONParams(com.novartis.opensource.yada.JSONParams jp) 
+	public static String executeYADAGetWithJSONParams(com.novartis.opensource.yada.JSONParams jp) throws YADAException 
 	{
 		YADARequest yadaReq = new YADARequest();
 		yadaReq.setCount(NOCOUNT);
@@ -475,9 +476,10 @@ public class YADAUtils {
    * Executes the queries defined in {@code jp} and returns the result.
    * @param jp the configuration object
    * @return String result of statement execution
+	 * @throws YADAException if query execution fails
    *
    */
-  public static String executeYADAGetWithJSONParamsNoStats(com.novartis.opensource.yada.JSONParams jp) 
+  public static String executeYADAGetWithJSONParamsNoStats(com.novartis.opensource.yada.JSONParams jp) throws YADAException 
   {
     YADARequest yadaReq = new YADARequest();
     yadaReq.setCount(NOCOUNT);
@@ -496,8 +498,9 @@ public class YADAUtils {
 	 * returning only the {@code int} result, as a {@link String}, of caurse.
 	 * @param jp the configuration object
 	 * @return the result of the query
+	 * @throws YADAException if query execution fails
 	 */
-	public static String executeYADAUpdateWithJSONParams(com.novartis.opensource.yada.JSONParams jp)
+	public static String executeYADAUpdateWithJSONParams(com.novartis.opensource.yada.JSONParams jp) throws YADAException
 	{
 		YADARequest yadaReq = new YADARequest();
 		yadaReq.setJsonParams(jp);

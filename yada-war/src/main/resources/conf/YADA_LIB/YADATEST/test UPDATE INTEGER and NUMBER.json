@@ -1,3 +1,0 @@
-{
-  "query": "update yada_test set col2=?i, col3=?n where col1=?v"
-}

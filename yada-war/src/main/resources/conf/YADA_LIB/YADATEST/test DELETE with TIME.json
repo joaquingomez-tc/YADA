@@ -1,3 +1,0 @@
-{
-  "query": "delete from YADA_TEST where COL5=?t"
-}
