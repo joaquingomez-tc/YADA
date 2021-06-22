@@ -11,7 +11,16 @@
   <packaging>pom</packaging>
   <profiles>
     <profile>
+      <id>production</id>
+      <properties>
+        <assembly.format>zip</assembly.format>
+      </properties>
+    </profile>
+    <profile>
       <id>jettyDebug</id>
+      <properties>
+        <assembly.format>dir</assembly.format>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -60,6 +69,7 @@
       <id>test</id>
       <properties>        
         <test.properties>/conf/TestNG_YADA_HTTP.properties</test.properties>
+        <assembly.format>dir</assembly.format>
       </properties>
       <build>
         <plugins>

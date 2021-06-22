@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
   <id>bin</id>
   <formats>
-    <format>dir</format>
+    <format>${assembly.format}</format>
   </formats>
   <!-- <includeBaseDirectory>true</includeBaseDirectory> -->
   <baseDirectory>YADA-${version}</baseDirectory>
@@ -26,17 +26,4 @@
       </excludes>
     </dependencySet>
   </dependencySets>  
-  <!-- <fileSets>
-    <fileSet>
-      <outputDirectory>test-classes</outputDirectory>
-      <directory>src/test/resources</directory>
-      <filtered>true</filtered>
-      <includes>
-        <include>bin/**</include>
-        <include>conf/**</include>
-        <include>files/**</include>
-        <include>test/**</include>
-      </includes>
-    </fileSet>
-  </fileSets> -->
 </assembly>
