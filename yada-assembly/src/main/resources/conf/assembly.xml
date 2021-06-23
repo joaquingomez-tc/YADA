@@ -7,7 +7,7 @@
     <format>${assembly.format}</format>
   </formats>
   <!-- <includeBaseDirectory>true</includeBaseDirectory> -->
-  <baseDirectory>YADA-${version}</baseDirectory>
+  <baseDirectory>${project.parent.name}-${project.version}</baseDirectory>
   <dependencySets>
     <dependencySet>
       <outputDirectory>.</outputDirectory>

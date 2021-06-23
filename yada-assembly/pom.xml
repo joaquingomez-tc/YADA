@@ -13,7 +13,7 @@
     <profile>
       <id>production</id>
       <properties>
-        <assembly.format>zip</assembly.format>
+        <assembly.format>tar.gz</assembly.format>
       </properties>
     </profile>
     <profile>
@@ -182,8 +182,10 @@
             <phase>package</phase> <!-- bind to the packaging phase -->
             <goals>
               <goal>single</goal>
-            </goals>
+            </goals>            
             <configuration>
+              <finalName>YADA-${project.version}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>              
               <descriptors>
                 <descriptor>src/main/resources/conf/assembly.xml</descriptor>
               </descriptors>
@@ -207,7 +209,7 @@
             </goals>
             <configuration>
               <name>launch-jetty</name>
-              <workingDir>${project.artifactId}-${project.version}-bin/${project.parent.name}-${project.version}/</workingDir>
+              <workingDir>${project.parent.name}-${project.version}/${project.parent.name}-${project.version}/</workingDir>
               <waitForInterrupt>false</waitForInterrupt>
               <!-- <healthcheckUrl></healthcheckUrl> -->
               <waitAfterLaunch>5</waitAfterLaunch>
