@@ -52,43 +52,6 @@
       </properties>
       <build>
         <plugins>
-          <!-- <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.3.2</version>
-            <executions>
-              <execution>
-                <id>db-load</id>
-                <phase>test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <skip>${skip.db.load}</skip>
-                  <executable>/bin/bash</executable>
-                  <arguments>
-                    <argument>${project.build.testOutputDirectory}/conf/dbLoad.sh</argument>
-                    <argument>PostgreSQL</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>test-webapp</id>
-                <phase>integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <skip>${skip.jetty.launch}</skip>
-                  <executable>java</executable>
-                  <arguments>
-                    <argument>-jar</argument>
-                    <argument>${project.basedir}/yada-assembly/target/${project.build.finalName}-bin/${project.build.finalName}/${project.build.finalName}.jar</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin> -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
