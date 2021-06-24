@@ -9,6 +9,9 @@
   </parent>
   <artifactId>yada-assembly</artifactId>
   <packaging>pom</packaging>
+  <properties>
+    <assembly.format>tar.gz</assembly.format>
+  </properties>
   <profiles>
     <profile>
       <id>production</id>
