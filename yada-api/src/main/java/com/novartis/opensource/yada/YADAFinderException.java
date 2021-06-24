@@ -51,12 +51,12 @@ public class YADAFinderException extends YADAException {
 	}
 
 	/**
-	 * Constructs a new exception with a speificed cause and message
+	 * Constructs a new exception with a specified cause and message
 	 * @param message message the message to report using {@link #getMessage()}
 	 * @param cause the {@link Throwable} that led to this exception 
 	 */
 	public YADAFinderException(String message, Throwable cause) {
-		super(message, cause);
-		this.cause = cause;
+	  super(message, cause);
+	  this.cause = cause;
 	}
 }
