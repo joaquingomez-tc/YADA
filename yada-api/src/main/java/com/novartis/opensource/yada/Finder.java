@@ -609,12 +609,12 @@ public class Finder {
     catch (IOException e)
     {
       String msg = String.format("Failed to load query `%s`. Check spelling and case in request.", q);
-      throw new YADAFinderException(msg, e);
+      throw new YADAFinderException(msg);
     }
     catch (YADAQueryConfigurationException e)
     {
       String msg = String.format("Failed to instantiate query `%s`", q);
-      throw new YADAFinderException(msg, e);
+      throw new YADAFinderException(msg);
     }
     return yq;
   }
