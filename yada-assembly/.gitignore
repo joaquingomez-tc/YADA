@@ -1,5 +1,4 @@
 *.*
 !pom.xml
 !assembly.xml
-!build.properties
 !.gitignore
