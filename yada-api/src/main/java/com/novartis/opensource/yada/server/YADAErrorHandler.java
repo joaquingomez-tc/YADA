@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -188,6 +189,10 @@ public class YADAErrorHandler extends ErrorHandler {
   /**
    * Constant equal to {@value}
    */
+  final static String KEY_ELAPSED = "elapsed";
+  /**
+   * Constant equal to {@value}
+   */
   final static String KEY_URI = "URI";
   /**
    * Constant equal to {@value}
@@ -206,6 +211,10 @@ public class YADAErrorHandler extends ErrorHandler {
    */
   final static String VAL_REPO_URI = YADA_REPOSITORY+"/blob/master/yada-api/src/main/java/com/novartis/opensource/yada/";
 
+  /**
+   * Variable for time reporting
+   */
+  private long started = 0;
   
   static {
     statusText.put(HttpServletResponse.SC_NOT_FOUND,HTTP_SC_NOT_FOUND);
@@ -247,6 +256,7 @@ public class YADAErrorHandler extends ErrorHandler {
           throws IOException
   {      
     baseRequest.setHandled(true);
+    started = baseRequest.getTimeStamp();
     Writer writer = getAcceptableWriter(baseRequest, request, response);
     if (null != writer) {
         response.setContentType(MimeTypes.Type.APPLICATION_JSON.asString());
@@ -342,6 +352,8 @@ public class YADAErrorHandler extends ErrorHandler {
         }
       }
       
+      long elapsed = (new Date().getTime() - started) + 1;            
+      
       error.put(KEY_URI, uri);
       error.put(KEY_HELP, VAL_HELP);
       error.put(KEY_SOURCE, VAL_SOURCE);
@@ -352,6 +364,7 @@ public class YADAErrorHandler extends ErrorHandler {
       error.put(KEY_PARAMS, params);
       error.put(KEY_STACKTRACE, st);
       error.put(KEY_LINKS, links);
+      error.put(KEY_ELAPSED, elapsed);
       writer.write(error.toString());
     }
     catch (Exception e) 
