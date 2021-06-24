@@ -106,6 +106,11 @@ public class YADARequestHandler extends AbstractHandler {
           response.setContentType("text/plain");
           fmt = YADARequest.FORMAT_PLAINTEXT;
         }
+        else if(service.getYADARequest().getMethod().contentEquals(YADARequest.METHOD_UPDATE))
+        {
+          response.setContentType("text/plain");
+          fmt = YADARequest.FORMAT_PLAINTEXT;
+        }
         
         if (YADARequest.FORMAT_JSON.equals(fmt))
         {
