@@ -20,6 +20,66 @@
       </properties>
     </profile>
     <profile>
+      <id>release</id>
+      <properties>
+        <assembly.format>tar.gz</assembly.format>
+      </properties>
+      <build>
+        <filters>
+          <filter>${basedir}/src/main/resources/conf/build-release.properties</filter>
+        </filters>
+        <resources>
+          <resource>
+            <directory>${basedir}/src/main/resources/conf</directory>
+            <filtering>true</filtering>
+            <includes>
+              <include>ehcache.xml</include>
+              <include>log4j.properties</include>
+              <include>YADA.properties</include>
+            </includes>
+          </resource>
+          <resource>
+            <directory>${basedir}/src/main/resources</directory>
+            <includes>
+              <include>utils/**</include>
+            </includes>
+          </resource>
+          <resource>
+            <directory>${basedir}/src/main/resources/META-INF</directory>
+            <filtering>true</filtering>
+            <includes>
+              <include>MANIFEST.MF</include>
+            </includes>
+            <targetPath>META-INF</targetPath>
+          </resource>
+        </resources>
+        <plugins>
+          <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>make-release</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>            
+              <configuration>
+                <finalName>YADA-${project.version}</finalName>
+                <appendAssemblyId>false</appendAssemblyId>              
+                <descriptors>
+                  <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
+                </descriptors>
+                <filters>
+                  <filter>src/main/resources/conf/build-release.properties</filter>
+                </filters>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>jettyDebug</id>
       <properties>
         <assembly.format>dir</assembly.format>
@@ -200,6 +260,7 @@
           </execution>
         </executions>
       </plugin>
+      
       <plugin>
         <groupId>com.bazaarvoice.maven.plugins</groupId>
         <artifactId>process-exec-maven-plugin</artifactId>
@@ -220,6 +281,7 @@
               <arguments>
                 <argument>java</argument>                
                 <argument>-jar</argument>
+                <argument>${env.YADA_PROPS}</argument>
                 <argument>yada-api-${project.version}.jar</argument>
               </arguments>
             </configuration>
@@ -285,22 +347,7 @@
             </goals>           
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.6</version>
-        <executions>
-          <execution>
-            <id>stub-assembly</id>
-            <phase />
-          </execution>
-          <execution>
-            <id>html-it</id>
-            <phase />
-          </execution>
-        </executions>
-      </plugin>
+      </plugin>     
     </plugins>
   </build>
   <dependencies>

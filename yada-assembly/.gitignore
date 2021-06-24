@@ -1,4 +1,4 @@
 *.*
 !pom.xml
-!assembly.xml
+!assembly*.xml
 !.gitignore
