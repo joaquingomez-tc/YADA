@@ -171,6 +171,10 @@
               <yada-api-version>${project.parent.version}</yada-api-version>
             </manifestEntries>
           </archive>
+          <excludes>
+            <exclude>**/YADA.properties</exclude>
+            <exclude>**/log4j.properties</exclude>
+          </excludes>
         </configuration>
         <executions>
           <execution>
