@@ -26,4 +26,14 @@
       </excludes>
     </dependencySet>
   </dependencySets>  
+  <fileSets>
+    <fileSet>
+      <outputDirectory>.</outputDirectory>
+      <directory>src/main/resources/conf</directory>
+      <includes>
+        <include>YADA.properties</include>
+        <include>log4j.properties</include>
+      </includes>
+    </fileSet>
+  </fileSets>
 </assembly>

@@ -3,6 +3,8 @@
  */
 package com.novartis.opensource.yada.server;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -48,14 +50,6 @@ public class YADAServer {
    * Container of configuration data which shouldn't be hardcoded. 
    */
   private static Properties YADA_PROPERTIES = loadYADAProperties();
-  
-  /**
-   * Constant equal to {@value}. Default location for {@code YADA.properties}
-   * file, in {@code WEB-INF/classes}
-   *
-   * (moved from {@link Finder})
-   */
-  public final static String YADA_DEFAULT_PROPERTIES_PATH = "/YADA.properties";
   
   /**
    * Constant equal to {@value}. Used for retrieving config for specific YADA
@@ -271,10 +265,7 @@ public class YADAServer {
   private final static Properties loadYADAProperties() {
     Properties props = new Properties();
     String     path  = System.getProperty(YADA_PROPERTIES_PATH);
-    if (path == null || "".equals(path))
-      path = YADAServer.YADA_DEFAULT_PROPERTIES_PATH;
-    InputStream is = Finder.class.getResourceAsStream(path);
-    try
+    try(InputStream is = new FileInputStream(new File(path)))
     {
       props.load(is);
       l.info(String.format("Loaded %s", path));
