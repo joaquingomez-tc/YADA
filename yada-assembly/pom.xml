@@ -36,7 +36,7 @@
                 </goals>
                 <configuration>
                   <name>launch-jetty</name>
-                  <workingDir>${project.artifactId}-${project.version}-bin/${project.parent.name}-${project.version}/</workingDir>
+                  <workingDir>${project.parent.name}-${project.version}/${project.parent.name}-${project.version}/</workingDir>
                   <waitForInterrupt>false</waitForInterrupt>
                   <!-- <healthcheckUrl></healthcheckUrl> -->
                   <waitAfterLaunch>5</waitAfterLaunch>
@@ -47,6 +47,7 @@
                     <argument>-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006</argument>
                     <argument>-Xnoagent</argument>
                     <argument>-Djava.compiler=NONE</argument>
+                    <argument>${env.YADA_PROPS}</argument>
                     <argument>-jar</argument>
                     <argument>yada-api-${project.version}.jar</argument>
                   </arguments>
