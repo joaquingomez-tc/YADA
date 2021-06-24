@@ -17,3 +17,6 @@ YADA.db
 *.crt
 *.ca-bundle
 **/config/*.env.js
+*.xml.next
+*.xml.releaseBackup
+*.xml.tag
