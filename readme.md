@@ -1,16 +1,28 @@
 Skip to the [Quickstart/Deployment Guide]
 
-# Why YADA? 
+
+> :warning: **NOTE** This documentation is old and under revision for version 10.x
+
+
+# What is YADA?
 
 <div style="float:right;margin-top:-43px;">
     <img src="src/site/resources/images/blox250.png"/>
 </div>  
 
-**YADA** is like a [_Universal Remote Control_](https://en.wikipedia.org/wiki/Universal_remote) for data.
+**YADA** is:
+*  like a [_Universal Remote Control_](https://en.wikipedia.org/wiki/Universal_remote) for data.  
+* a secure, instant REST API for JDBC datasources.  
+* a secure proxy for 3rd party REST services.  
+* a query repository.  
+* a data transformation engine.
+* a credential store
+* an alternative to configuration-heavy middleware
 
-For example, what if you could access 
+What if you could _securely_ access
 
 * *any* data set
+* using *row-level security*
 * at *any* data source
 * in *any* format
 * from *any* environment
@@ -21,7 +33,8 @@ You can with **YADA**.
 
 Or, what if you could get data
 
-* from *multiple* sources
+* from *multiple* sources,
+* using *row-level security*,
 * in *different* formats,
 * *merging* the results
 * into a *single* set
@@ -31,39 +44,23 @@ Or, what if you could get data
 
 You can with **YADA**.
 
-# What is YADA?
-
-**YADA** exists to simplify data access and eliminate work.
-
-**YADA** is secure.
-
-**YADA** is a lightweight framework for data retrieval, searching, storage, and manipulation.
-
-**YADA** is an instant web service for your data.
+**YADA** exists to simplify secure data access and eliminate work.
 
 **YADA** is a tool to enable efficient development of interfaces and data-processing pipelines.
 
-**YADA** is as an implementation of [Thin Server Architecture].  
 
-**YADA** is anti-middleware.
-
-**YADA** is an acronym for "Yet Another Data Abstraction."
-
-**YADA** is an open source software framework distributed by [Novartis Institutes for BioMedical Research](http://opensource.nibr.com) under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
-
-
-Its [raisons d'être] are to enable efficient, non-redundent development of data-dependent applications and utilities, data source querying, data analysis, processing pipelines, extract, transform, and load (ETL) processes, etc.  **YADA** does all this while preserving total decoupling between data access and other aspects of application architecture such as user interface.
+In other words, its [raisons d'être] are to enable non-redundent development of data-dependent applications and utilities, data source querying, data analysis, processing pipelines, extract, transform, and load (ETL) processes, etc.  **YADA** does all this while preserving total decoupling between data access and other aspects of application architecture such as user interface or visualization code.
 
 # Still like "Huh?"
 **YADA** is a software framework, which means it is a collection of software tools forming a basic structure underlying a system, for developers and data analysts to use to create new tools and solutions in a new way.
 
-The novelty and utility of YADA lies in its centralization of management of data source access configuration. It simplifies these aspects of software development by eliminating many steps, thereby enabling rapid development, standardization of access methods, and the code in which these methods are implemented. Further it strongly encourages reuse of existing configurations (once configured.) 
+The novelty and utility of YADA lies in its centralization of management of data source access configuration. It simplifies these aspects of software development by eliminating many steps, thereby enabling rapid development, standardization of access methods, and the code in which these methods are implemented. Further, it strongly encourages reuse of existing configurations (once configured.)
 
-As a result of these configuration facilities, YADA enables the aggregation or integration of data from multiple data sources using a standard method, agnostic with regard to any vendor or technology-specific details of disparate data source implementations. 
+As a result of these configuration facilities, YADA enables the aggregation or integration of data from multiple data sources using a standard method, agnostic with regard to any vendor or technology-specific details of disparate data source implementations.
 
-For example, the conventional method to access, or furthermore, combine data from say, an Oracle® database, and a web service, is to write code which connects to each database or service independently using different methods and libraries, write code to execute embedded queries independently, also using different methods and libraries, and write code to parse and aggregate the separately acquired data sets.  Then the data is typically fed to an analysis tool.
+For example, the conventional method to access, or better, _combine_ data from say, an Oracle® database, and a web service, is to write code which connects to each database or service independently using different methods and libraries, write code to execute embedded queries independently, also using different methods and libraries, and write code to parse and aggregate the separately acquired data sets.  Then the data is typically fed to an analysis tool.
 
-With YADA, the data source connections and application-specific queries are stored securely and centrally, the queries are executed using identical methods (despite the different sources,) and the data can be integrated or aggregated on-the-fly.  
+With **YADA**, the data source connections and application-specific queries are stored securely and centrally, the queries are executed using identical methods (despite the different sources,) and the data can be integrated or aggregated on-the-fly.  
 
 For software developers and data analysts alike, these features offer potentially tremendous time savings, faster time-to-delivery, and a larger percentage of time focused not on the tedium of configuration, but on the specific context of a software solution or data analysis.
 
@@ -130,20 +127,20 @@ So you configure your datasource in the **YADA** server, store a query, and send
 
 You hate middleware. Every time you want to extend the data model, you have to change your Resource layer, your DAO layer, your DAOImpls, your DTOs, your Model classes, your UI code, etc. You might have to touch 20 files to add one field.
 
-Not so with **YADA**. 
+Not so with **YADA**.
 
 With **YADA**, you change your stored query, and you change the code that executes the stored query, whether it's a javascript-based ajax call, or a perl LWP request, or a curl call from a shell script. As long as your client speaks HTTP, **YADA** will deliver your data.
 
 ## Software Middleware Developer...
 
-Even you, middleware guy, can benefit from **YADA**. 
+Even you, middleware guy, can benefit from **YADA**.
 
-Maybe you have to provide a RESTful interface to an existing application, and need to deliver in such a short window, or have only a handful of users, so a fully-specified REST service is not practical. Maybe you need to access an existing REST interface and can't use your own proxy script; or, you have to grant access to a unix filesystem without mapping it in Apache or changing privileges. Perhaps the business wants to integrate some existing perl-based pipeline processes into a user interface or your Javascript UI team is already using **YADA**, and needs a Java® plugin to post-process data it's retrieving from a third party. 
+Maybe you have to provide a RESTful interface to an existing application, and need to deliver in such a short window, or have only a handful of users, so a fully-specified REST service is not practical. Maybe you need to access an existing REST interface and can't use your own proxy script; or, you have to grant access to a unix filesystem without mapping it in Apache or changing privileges. Perhaps the business wants to integrate some existing perl-based pipeline processes into a user interface or your Javascript UI team is already using **YADA**, and needs a Java® plugin to post-process data it's retrieving from a third party.
 
 # Features
 
 * Data vendor- and technology-agnostic
-* Accesses any JDBC, SOAP, or REST, and some Filesystem datasources 
+* Accesses any JDBC, SOAP, or REST, and some Filesystem datasources
 * Delivers data as JSON (default), XML, or CSV, TSV, Pipe, or custom-delimited, natively, and in any other format via custom Response and Converter classes, or Plugins
 * 4-layer security model including url and token validation, query-execution authorization, and dynamic-predicate-based, pre-execution, row-level filtering
 * Dynamic datasource configuration
@@ -189,13 +186,13 @@ About as basic as it can be...
 <a name="history"></a>
 # History
 
-YADA grew organically from a reverse-engineering effort. 
+YADA grew organically from a reverse-engineering effort.
 
-Over the course of a few years, a scientist had developed an array of Perl CGI applications with thousands of lines of embedded SQL and Javascript. 
+Over the course of a few years, a scientist had developed an array of Perl CGI applications with thousands of lines of embedded SQL and Javascript.
 
-Then he abruptly left the company. 
+Then he abruptly left the company.
 
-He was not a trained, nor experienced software developer, he made little use of third party libraries, and violated a lot of conventions. 
+He was not a trained, nor experienced software developer, he made little use of third party libraries, and violated a lot of conventions.
 
 To gain an understanding of his code in order to maintain, extend, or replace it, SQL queries were extracted from the code, stored in a database, and given unique names.  
 
@@ -208,7 +205,7 @@ Soon thereafter, this perl utility was ported to Java®. The burgeoning framewor
 <a name="apps"></a>
 # YADA "Apps" and uses
 
-Most YADA "Apps" are [single-page Javascript applications](http://en.wikipedia.org/wiki/Single-page_application) running in web browsers. YADA is also heavily utilized by data analysts and bioinformaticians who need parameterized, delimited data subsets imported into their analysis tools such as R and Spotfire, or to be used by Perl or Python-based data processing pipelines. 
+Most YADA "Apps" are [single-page Javascript applications](http://en.wikipedia.org/wiki/Single-page_application) running in web browsers. YADA is also heavily utilized by data analysts and bioinformaticians who need parameterized, delimited data subsets imported into their analysis tools such as R and Spotfire, or to be used by Perl or Python-based data processing pipelines.
 
 <a name="sources"></a>
 # Data Sources
@@ -216,14 +213,14 @@ Most YADA "Apps" are [single-page Javascript applications](http://en.wikipedia.o
 YADA ships with scripts for using, as the YADA Index:
 
 * MySQL®
-* PostgreSQL® 
+* PostgreSQL®
 * HyperSQL®
 * SQLite®
 * Oracle®
 
-Soon the index will be stored in ElasticSearch®, but ultimately, it is vendor-agnostic. Other supported data sources currently include 
+Soon the index will be stored in ElasticSearch®, but ultimately, it is vendor-agnostic. Other supported data sources currently include
 
-* Vertica® 
+* Vertica®
 * SOAP
 * REST
 
@@ -265,12 +262,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 * Date and time value syntax, just like in the real world, are database-vendor specific. Use vendor-specific literals and functions.  Check the test queries for guidance.
 * Speaking of dates and times, right now the TestNG tests which validate date and time values pass only on machines in the "America/NewYork" timezone. This is likely because the insert statements used to put the test data into the test table is not specific.   
 * There are two drivers for SQL Server®.  The one I picked has problems, and I haven't made time to work with the other.
- 
+
 [Other Documentation]: #other
 [Getting into the YADA Mindset]: #mindset
 [Features]: #features
 [Architecture]: #arch
-[History]: #history 
+[History]: #history
 [YADA Apps and Uses]: #apps
 [Data Sources]: #sources
 [Plugins]: #plugins
