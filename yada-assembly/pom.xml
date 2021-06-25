@@ -16,6 +16,39 @@
       <properties>
         <assembly.format>tar.gz</assembly.format>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+              <execution>
+                <id>copy-bulid-resources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${basedir}/src/main/resources</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${basedir}/../yada-api/src/main/resources</directory>
+                      <filtering>true</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+               <execution>
+                <id>process-resources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>resources</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>release</id>
