@@ -17,12 +17,8 @@ package com.novartis.opensource.yada;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +48,6 @@ import com.novartis.opensource.yada.plugin.Preprocess;
 import com.novartis.opensource.yada.plugin.YADAPluginException;
 import com.novartis.opensource.yada.util.FileUtils;
 import com.novartis.opensource.yada.util.QueryUtils;
-import com.novartis.opensource.yada.util.YADAUtils;
 
 /**
  * Utility class handling process of execution of stored queries, and formatting of results via http requests.
@@ -95,8 +90,10 @@ public class Service {
 	 */
 	private QueryUtils qutils = new QueryUtils();
 	/**
-	 * Ivar to store ref query currently executing query.  Used primarily to pass info to {@link #error(String, Exception)}
+	 * Ivar to store ref query currently executing query.  Not in use since 10.0.0.
+	 * @deprecated since 10.1.0
 	 */
+	@Deprecated
 	private YADAQuery currentQuery = null;
 	/**
 	 * Default constructor.  Usually unused.
@@ -573,81 +570,6 @@ public class Service {
 	  {
 	    throw new YADARequestException(String.format("Unknown parameter"));
 	  }
-//	  catch(YADARequestException e)
-//	  {
-//	    error(e.getMessage(),e);
-//	  }
-	}
-	
-	/**
-	 * Wraps exceptions and request metadata in json in order to provide useful information to requesting clients in the event 
-	 * and uncaught exception bubbles up to {@link #execute()} 
-	 * @param msg the message to report to the client
-	 * @param e the exception to report to the client
-	 * @return a json string with error and request information
-	 */
-	private String error(String msg, Exception e)
-	{
-		JSONObject j = new JSONObject();
-		String     result = "";
-		try
-		{
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			YADAQuery yq = getCurrentQuery();
-			j.put("Help", "https://github.com/Novartis/YADA#other");
-			j.put("Source", "https://github.com/Novartis/YADA");
-			j.put("Version", YADAUtils.getVersion());
-			j.put("Exception", e.getClass().getName());
-      j.put("Message",msg);
-      j.put("Qname",yq != null ? yq.getQname() : "UNKNOWN");
-      j.put("App", yq != null ? yq.getApp() : "UNKNOWN");
-      j.put("Query",yq != null ? yq.getYADACode() : "");
-      j.put("Params",new JSONArray());
-      JSONArray ja = j.getJSONArray("Params");
-      if(yq != null)
-      {
-  			for(int i=0;i<yq.getData().size();i++) // list of LinkedHashMaps
-  			{
-  			  Iterator<?> iter = yq.getDataRow(i).keySet().iterator();
-  			  JSONObject jo = new JSONObject();
-  			  while(iter.hasNext())
-  			  {			    
-  			    String key = (String) iter.next();
-  			    jo.put(key, Arrays.toString(yq.getDataRow(i).get(key)));
-  			  }
-  			  ja.put(jo);
-  			}
-      }
-			if(getYADARequest().getRequest() != null && getYADARequest().getRequest().getMethod() != null)
-			{
-				String type = getYADARequest().getRequest().getMethod(); 
-				j.put("Type",type);
-			}
-			
-			String[] strace = sw.toString().replace("\t","").split("\n");
-			j.put("StackTrace",new JSONArray());
-			j.put("Links", new JSONArray());
-			JSONArray st = j.getJSONArray("StackTrace");
-			JSONArray links = j.getJSONArray("Links");
-			Pattern rx_src = Pattern.compile("at com\\.novartis\\.opensource\\.yada\\.(.+)\\..+\\(.+\\.java:(\\d+)\\)");
-			for(int i=0;i<strace.length;i++)
-			{
-			  Matcher m = rx_src.matcher(strace[i]);
-			  if(m.matches())
-			  {
-			    links.put(links.length(),"https://github.com/Novartis/YADA/blob/master/yada-api/src/main/java/com/novartis/opensource/yada/"+m.group(1).replace('.','/')+".java#L"+m.group(2));
-			  }
-		    st.put(i,strace[i]);
-			}
-			result = j.toString(2);
-		} 
-		catch (JSONException e1)
-		{
-			e1.printStackTrace();
-		} 
-		return result;
 	}
 	
 	/** 
@@ -1008,7 +930,9 @@ public class Service {
 	/**
 	 * Standard accessor for variable
 	 * @return the currently executing query object
+	 * @deprecated since 10.1.0
 	 */
+	@Deprecated
 	public YADAQuery getCurrentQuery()
   {
     return this.currentQuery;
@@ -1017,7 +941,9 @@ public class Service {
   /**
    * Standard mutator for variable
    * @param currentQuery the {@link YADAQuery} under execution
+   * @deprecated since 10.1.0
    */
+	@Deprecated
   public void setCurrentQuery(YADAQuery currentQuery)
   {
     this.currentQuery = currentQuery;

@@ -26,9 +26,7 @@ import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.novartis.opensource.yada.Finder;
 import com.novartis.opensource.yada.YADARequest;
-import com.novartis.opensource.yada.YADARequestException;
 import com.novartis.opensource.yada.util.YADAUtils;
 
 /**
@@ -279,8 +277,6 @@ public class YADAErrorHandler extends ErrorHandler {
   {      
     try 
     {
-      // placeholder
-      String value = "";
       // request
       String uri = request.getRequestURI();
       // exception 
