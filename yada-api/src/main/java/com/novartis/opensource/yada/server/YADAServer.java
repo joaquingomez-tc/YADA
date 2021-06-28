@@ -88,7 +88,6 @@ public class YADAServer {
    * Constant equal to {@value}. Used for setting keystore path
    */
   public final static String YADA_REPOSITORY = "YADA.repository";
-  
 
   /**
    * 
@@ -188,11 +187,16 @@ public class YADAServer {
     rewriteHandler.addRule(pathRule);
     rewriteHandler.addRule(jspRule);
     
-    // Set the YADA Handler
+    // Set the YADARequest and Cors Handlers
     YADARequestHandler yadaRequestHandler = new YADARequestHandler();
+    YADACorsHandler    yadaCorsHandler    = new YADACorsHandler();
            
     // Set handlers hierarchy
-    rewriteHandler.setHandler(yadaRequestHandler);
+    
+    HandlerList yadaHandlerList = new HandlerList();
+    yadaHandlerList.addHandler(yadaCorsHandler);
+    yadaHandlerList.addHandler(yadaRequestHandler);
+    rewriteHandler.setHandler(yadaHandlerList);    
     yadaPropContextHandler.setHandler(rewriteHandler);    
     contextHandlerCollection.addHandler(yadaPropContextHandler);    
 
@@ -222,7 +226,11 @@ public class YADAServer {
      *   |       |                          |        
      *   |       |                          +-- RewriteHandler (2 Rule)
      *   |       |                                   |
-     *   |       |                                   +-- YADARequestHandler
+     *   |       |                                   +-- HandlerList (yadaHandlerList)
+     *   |       |                                           |
+     *   |       |                                           +-- YADACorsHandler
+     *   |       |                                           |
+     *   |       |                                           +-- YADARequestHandler
      *   |       +-- DefaultHandler
      *   |
      *   +-- YADAErrorHandler
