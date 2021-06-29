@@ -307,35 +307,39 @@ public class YADACorsHandler extends AbstractHandler {
   public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     
-    handleOrigins(baseRequest,request,response);
-    if(isSimpleRequest(request))
+    String origin = request.getHeader("Origin");
+    if(origin != null)
     {
-      handleCredentials(baseRequest, request, response);
-      handleExposeHeaders(baseRequest, request, response);
-    }
-    else if(isPreflightRequest(request))
-    {
-      if(!(isMethodAllowed(request) && isHeadersAllowed(request)))
+      handleOrigins(baseRequest,request,response);
+      if(isSimpleRequest(request))
       {
-        fail(baseRequest);
+        handleCredentials(baseRequest, request, response);
+        handleExposeHeaders(baseRequest, request, response);
+      }
+      else if(isPreflightRequest(request))
+      {
+        if(!(isMethodAllowed(request) && isHeadersAllowed(request)))
+        {
+          fail(baseRequest);
+        }
+        else
+        {
+          handleAllowMethods(baseRequest,request,response);
+          handleAllowHeaders(baseRequest,request,response);
+          handleCredentials(baseRequest,request,response);
+          handleMaxAge(baseRequest,request,response);
+          handleExposeHeaders(baseRequest, request, response);
+          if(!Boolean.parseBoolean(props.getProperty(CORS_CHAIN_PREFLIGHT)))
+          {
+            baseRequest.getResponse().setStatus(HttpServletResponse.SC_NO_CONTENT);
+            baseRequest.setHandled(true);
+          }
+        }                 
       }
       else
       {
-        handleAllowMethods(baseRequest,request,response);
-        handleAllowHeaders(baseRequest,request,response);
-        handleCredentials(baseRequest,request,response);
-        handleMaxAge(baseRequest,request,response);
-        handleExposeHeaders(baseRequest, request, response);
-        if(!Boolean.parseBoolean(props.getProperty(CORS_CHAIN_PREFLIGHT)))
-        {
-          baseRequest.getResponse().setStatus(HttpServletResponse.SC_NO_CONTENT);
-          baseRequest.setHandled(true);
-        }
-      }                 
-    }
-    else
-    {
-      fail(baseRequest);
+        fail(baseRequest);
+      }
     }
     return;
   }
