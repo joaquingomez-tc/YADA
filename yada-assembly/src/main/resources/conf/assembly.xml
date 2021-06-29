@@ -28,6 +28,7 @@
   </dependencySets>  
   <fileSets>
     <fileSet>
+      <filtered>true</filtered>
       <outputDirectory>.</outputDirectory>
       <directory>src/main/resources/conf</directory>
       <includes>
