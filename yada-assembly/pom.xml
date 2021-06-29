@@ -75,15 +75,7 @@
             <includes>
               <include>utils/**</include>
             </includes>
-          </resource>
-          <resource>
-            <directory>${basedir}/src/main/resources/META-INF</directory>
-            <filtering>true</filtering>
-            <includes>
-              <include>MANIFEST.MF</include>
-            </includes>
-            <targetPath>META-INF</targetPath>
-          </resource>
+          </resource>          
         </resources>
         <plugins>
           <plugin>
@@ -331,6 +323,10 @@
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.2.0</version>
+        <configuration>
+          <includeEmptyDirs>true</includeEmptyDirs>
+          <propertiesEncoding>ISO-8859-1</propertiesEncoding>
+        </configuration>
         <executions>
           <execution>
             <id>copy-test-resources</id>
