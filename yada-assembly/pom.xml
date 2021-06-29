@@ -10,97 +10,87 @@
   <packaging>pom</packaging>  
   <properties>
     <assembly.format>tar.gz</assembly.format>
+    <filtering>false</filtering>
+    <skip.test.resources>true</skip.test.resources>
   </properties>
   <profiles>
     <profile>
-      <id>production</id>
-      <properties>
-        <assembly.format>tar.gz</assembly.format>
+      <id>test</id>
+      <properties>        
+        <skip.test.resources>false</skip.test.resources>
+        <filtering>true</filtering>
+        <test.properties>/conf/TestNG_YADA_HTTP.properties</test.properties>
+        <assembly.format>dir</assembly.format>
       </properties>
       <build>
+        <testResources>
+          <testResource>
+            <directory>${basedir}/src/test/resources/conf</directory>        
+            <targetPath>conf</targetPath>
+            <excludes>
+              <exclude>log4j.properties</exclude>
+              <exclude>YADA*.properties</exclude>
+            </excludes>
+          </testResource>
+          <testResource>
+            <directory>${basedir}/src/test/resources/conf</directory>
+            <filtering>true</filtering>
+            <includes>
+              <include>log4j.properties</include>
+              <include>YADA*.properties</include>
+            </includes>
+          </testResource>
+          <testResource>
+            <directory>${basedir}/src/test/resources/test</directory>
+            <targetPath>test</targetPath>
+          </testResource>      
+          <testResource>
+            <directory>${basedir}/src/test/resources/bin</directory>
+            <filtering>true</filtering>
+            <targetPath>bin</targetPath>
+          </testResource>
+          <testResource>
+            <directory>${basedir}/src/test/resources</directory>
+            <filtering>false</filtering>
+            <includes>
+              <include>files/**</include>
+            </includes>
+          </testResource>
+        </testResources>
         <plugins>
           <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>3.2.0</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.18</version>
+            <configuration>
+              <useSystemClassLoader>true</useSystemClassLoader>
+              <additionalClasspathElements>
+                <additionalClasspathElement>${test.properties}</additionalClasspathElement>
+              </additionalClasspathElements>
+              <suiteXmlFiles>
+                <suiteXmlFile>${basedir}/target/test-classes/conf/TestNG_YADA_HTTP.xml</suiteXmlFile>
+              </suiteXmlFiles>
+              <properties>
+                <property>
+                  <name>listener</name>
+                  <value>com.novartis.opensource.yada.test.QueryFileTransformer</value>
+                </property>
+              </properties>
+            </configuration>
             <executions>
               <execution>
-                <id>copy-bulid-resources</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
+                <id>default-test</id>
+                <phase>integration-test</phase>
                 <configuration>
-                  <outputDirectory>${basedir}/src/main/resources</outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>${basedir}/../yada-api/src/main/resources</directory>
-                      <filtering>true</filtering>
-                    </resource>
-                  </resources>
+                  <skipTests>${skip.tests}</skipTests>
                 </configuration>
-              </execution>
-               <execution>
-                <id>process-resources</id>
-                <phase>package</phase>
                 <goals>
-                  <goal>resources</goal>
+                  <goal>integration-test</goal>
                 </goals>
-              </execution>
+              </execution>             
             </executions>
           </plugin>
         </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>release</id>
-      <properties>
-        <assembly.format>tar.gz</assembly.format>
-      </properties>
-      <build>
-        <filters>
-          <filter>${basedir}/src/main/resources/conf/build-release.properties</filter>
-        </filters>
-        <resources>
-          <resource>
-            <directory>${basedir}/src/main/resources/conf</directory>
-            <filtering>true</filtering>
-            <includes>
-              <include>ehcache.xml</include>
-              <include>log4j.properties</include>
-              <include>YADA.properties</include>
-            </includes>
-          </resource>
-          <resource>
-            <directory>${basedir}/src/main/resources</directory>
-            <includes>
-              <include>utils/**</include>
-            </includes>
-          </resource>          
-        </resources>
-        <plugins>
-          <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>make-release</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>            
-              <configuration>
-                <finalName>YADA-${project.version}</finalName>
-                <appendAssemblyId>false</appendAssemblyId>              
-                <descriptors>
-                  <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
-                </descriptors>
-                <filters>
-                  <filter>src/main/resources/conf/build-release.properties</filter>
-                </filters>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
       </build>
     </profile>
     <profile>
@@ -154,57 +144,108 @@
       </build>
     </profile>
     <profile>
-      <id>test</id>
-      <properties>        
-        <test.properties>/conf/TestNG_YADA_HTTP.properties</test.properties>
-        <assembly.format>dir</assembly.format>
+      <id>production</id>
+      <properties>
+        <assembly.format>tar.gz</assembly.format>
+        <filtering>true</filtering>
       </properties>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.18</version>
-            <configuration>
-              <useSystemClassLoader>true</useSystemClassLoader>
-              <additionalClasspathElements>
-                <additionalClasspathElement>${test.properties}</additionalClasspathElement>
-              </additionalClasspathElements>
-              <suiteXmlFiles>
-                <suiteXmlFile>${basedir}/target/test-classes/conf/TestNG_YADA_HTTP.xml</suiteXmlFile>
-              </suiteXmlFiles>
-              <properties>
-                <property>
-                  <name>listener</name>
-                  <value>com.novartis.opensource.yada.test.QueryFileTransformer</value>
-                </property>
-              </properties>
-            </configuration>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.2.0</version>
             <executions>
               <execution>
-                <id>default-test</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <skipTests>${skip.tests}</skipTests>
-                </configuration>
+                <id>copy-bulid-resources</id>
+                <phase>package</phase>
                 <goals>
-                  <goal>integration-test</goal>
+                  <goal>copy-resources</goal>
                 </goals>
-              </execution>             
+                <configuration>
+                  <outputDirectory>${basedir}/src/main/resources</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${basedir}/../yada-api/src/main/resources</directory>
+                      <filtering>true</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+               <execution>
+                <id>process-resources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>resources</goal>
+                </goals>
+              </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>release</id>
+      <properties>
+        <assembly.format>tar.gz</assembly.format>
+      </properties>
+      <build>
+        <filters>
+          <filter>${basedir}/../yada-api/src/main/resources/conf/build-release.properties</filter>
+        </filters>
+        <resources>
+          <resource>
+            <directory>${basedir}/src/main/resources/conf</directory>
+            <filtering>${filtering}</filtering>
+            <includes>
+              <include>ehcache.xml</include>
+              <include>log4j.properties</include>
+              <include>YADA.properties</include>
+            </includes>
+          </resource>
+          <resource>
+            <directory>${basedir}/src/main/resources</directory>
+            <includes>
+              <include>utils/**</include>
+            </includes>
+          </resource>          
+        </resources>
+        <plugins>
+          <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>make-release</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>            
+              <configuration>
+                <finalName>YADA-${project.version}</finalName>
+                <appendAssemblyId>false</appendAssemblyId>              
+                <descriptors>
+                  <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
+                </descriptors>
+                <filters>
+                  <filter>src/main/resources/conf/build-release.properties</filter>
+                </filters>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+      </build>
+    </profile>
+    
+    
   </profiles>
   <build>
     <filters>
-      <filter>${basedir}/src/main/resources/conf/build.properties</filter>
+      <filter>${basedir}/../yada-api/src/main/resources/conf/build.properties</filter>
     </filters>
     <resources>
       <resource>
         <directory>${basedir}/src/main/resources/conf</directory>
-        <filtering>true</filtering>
+        <filtering>${filtering}</filtering>
         <includes>
           <include>ehcache.xml</include>
           <include>log4j.properties</include>
@@ -216,51 +257,8 @@
         <includes>
           <include>utils/**</include>
         </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/main/resources/META-INF</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>MANIFEST.MF</include>
-        </includes>
-        <targetPath>META-INF</targetPath>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>${basedir}/src/test/resources/conf</directory>
-        <filtering>true</filtering>
-        <targetPath>conf</targetPath>
-        <excludes>
-          <exclude>log4j.properties</exclude>
-          <exclude>YADA*.properties</exclude>
-        </excludes>
-      </testResource>
-      <testResource>
-        <directory>${basedir}/src/test/resources/conf</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>log4j.properties</include>
-          <include>YADA*.properties</include>
-        </includes>
-      </testResource>
-      <testResource>
-        <directory>${basedir}/src/test/resources/test</directory>
-        <targetPath>test</targetPath>
-      </testResource>      
-      <testResource>
-        <directory>${basedir}/src/test/resources/bin</directory>
-        <filtering>true</filtering>
-        <targetPath>bin</targetPath>
-      </testResource>
-      <testResource>
-        <directory>${basedir}/src/test/resources</directory>
-        <filtering>false</filtering>
-        <includes>
-          <include>files/**</include>
-        </includes>
-      </testResource>
-    </testResources>
+      </resource>      
+    </resources>    
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -322,7 +320,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
         <configuration>
           <includeEmptyDirs>true</includeEmptyDirs>
           <propertiesEncoding>ISO-8859-1</propertiesEncoding>
@@ -335,6 +332,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <skip>${skip.test.resources}</skip>
               <outputDirectory>${basedir}/src/test/resources</outputDirectory>
               <resources>
                 <resource>
@@ -345,7 +343,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>copy-bulid-resources</id>
+            <id>copy-build-resources</id>
             <phase>validate</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -373,6 +371,9 @@
             <goals>
               <goal>testResources</goal>              
             </goals>           
+            <configuration>
+              <skip>${skip.test.resources}</skip>
+            </configuration>
           </execution>
         </executions>
       </plugin>     
