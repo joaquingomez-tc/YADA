@@ -126,6 +126,9 @@ SKIP_LICENSE=-Dlicense.skip=true
 SKIP_DB_LOAD=-Dskip.db.load=true
 SKIP_JAVADOC=-Dmaven.javadoc.skip=true
 SKIP_SOURCE=-Dmaven.source.skip=true
+# following prop required to enable HttpURLConnection to include Origin header
+# it is ignored by default
+CORS_HEADERS=-Dsun.net.http.allowRestrictedHeaders=true
 #TOGGLE_TESTS=-Dtest.toggle=/conf/tmp_TestNG_toggle.properties
 
 COMMON_VARS="\
@@ -141,6 +144,7 @@ $SKIP_SOURCE \
 $TOGGLE_TESTS \
 $LOG_LEVEL \
 $MVN_REPO \
+$CORS_HEADERS \
 $YADA_PROPS"
 
 if [ -f "$LOG" ]

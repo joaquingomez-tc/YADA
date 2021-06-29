@@ -928,6 +928,7 @@ public class ServiceTest
       // }
       connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("POST");
+      connection.setRequestProperty("Origin","http://localhost.fog-inter.com");
       connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
       connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
       connection.setRequestProperty("Content-Language", "en-US");
@@ -1006,6 +1007,7 @@ public class ServiceTest
     logQuery(query);
     String method = null;
     HttpURLConnection connection = null;
+    
     boolean pathStyle = query.startsWith("/");
     String protocol = "http";
     protocol += this.host.endsWith("443") ? "s" : "";
@@ -1045,12 +1047,12 @@ public class ServiceTest
           if (param[0].equals(YADARequest.PL_METHOD) || param[0].equals(YADARequest.PS_METHOD))
             method = param[1];
         }
-        // }
       }
       l.debug(target);
       URL url = new URL(target);
       connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("GET");
+      connection.setRequestProperty("Origin","http://localhost.fog-inter.com");
 
       // auth
       if (Boolean.parseBoolean(this.auth))
