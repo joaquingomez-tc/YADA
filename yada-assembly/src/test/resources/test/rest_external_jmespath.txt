@@ -1,1 +1,0 @@
-q=RESTTEST/GET all&jf=[?userId<`2`]

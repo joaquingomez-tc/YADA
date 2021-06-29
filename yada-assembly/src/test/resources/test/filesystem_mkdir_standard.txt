@@ -1,3 +1,0 @@
-q=YADAFSIN/test mkdir&p=testdir2
-qname=YADAFSIN/test mkdir&params=testdir3
-q=YADAFSIN/test mkdir parent&p=testdir4

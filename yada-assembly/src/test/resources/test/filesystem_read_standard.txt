@@ -1,3 +1,0 @@
-q=YADAFSIN/test read content&p=test.txt
-qname=YADAFSIN/test read content&params=test.txt
-q=YADAFSANNO/test read dir&p=.

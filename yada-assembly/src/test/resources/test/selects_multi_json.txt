@@ -1,3 +1,0 @@
-# disabled due to sqlite bug, moved to oracle specific file {"qname":"YADATEST/test SELECT VARCHAR with INS","DATA":[{"COL1":["A","B","Z"]},{"COL1":["A","B","Z,Z"]},{"COL1":["X","Y","Z","M","N"]}]}
-j=[{"qname":"YADATEST/test SELECT VARCHAR with INS","DATA":[{"COL1":"A,B,Z"},{"COL1":"X,Y,Z,M,N"}]}]
-JSONParams=[{"qname":"YADATEST/test SELECT VARCHAR with INS","DATA":[{"COL1":"A,B,Z"},{"COL1":"X,Y,Z,M,N"}]}]
