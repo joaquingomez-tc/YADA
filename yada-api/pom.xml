@@ -434,9 +434,9 @@
       <version>1.1.1</version>
     </dependency>
     <dependency>
-      <groupId>net.sf.ehcache</groupId>
+      <groupId>org.ehcache</groupId>
       <artifactId>ehcache</artifactId>
-      <version>2.9.0</version>
+      <version>3.9.4</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -512,12 +512,7 @@
       <groupId>nl.javadude.assumeng</groupId>
       <artifactId>assumeng</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.tuckey</groupId>
-      <artifactId>urlrewritefilter</artifactId>
-      <version>4.0.4</version>
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>org.mozilla</groupId>
       <artifactId>rhino</artifactId>

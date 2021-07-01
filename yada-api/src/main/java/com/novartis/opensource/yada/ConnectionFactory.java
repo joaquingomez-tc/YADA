@@ -16,6 +16,7 @@ package com.novartis.opensource.yada;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,6 +28,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 import javax.xml.soap.SOAPConnection;
@@ -36,10 +38,6 @@ import javax.xml.soap.SOAPException;
 import com.novartis.opensource.yada.util.QueryUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
@@ -236,7 +234,13 @@ public class ConnectionFactory {
    * @since 8.0.0
    */
   private static ConnectionFactory factory = null;
-
+  
+  /**
+   * In memory query store
+   * @since 10.1.1
+   */
+  private Map<String,YADAQuery> YADAIndex = new ConcurrentHashMap<>();
+  
   static
   {
     try
@@ -722,13 +726,22 @@ public class ConnectionFactory {
    * @return {@link Cache} object
    * @since 4.1.0
    */
-  public Cache getCacheConnection(String cacheManager, String cache) {
-    CacheManager manager = CacheManager.getCacheManager(cacheManager);
-    if (manager == null)
-      return null;
-    return manager.getCache(cache);
-  }
+//  public Cache getCacheConnection(String cacheManager, String cache) {    
+//    CacheManager manager = CacheManager.getCacheManager(cacheManager);
+//    if (manager == null)
+//      return null;
+//    return manager.getCache(cache);
+//  }
 
+  /**
+   * Standard accessor for variable
+   * @return the in-memory {@link ConcurrentHashMap} storing previously loaded yada queries
+   * @since 10.1.1
+   */
+  public Map<String,YADAQuery> getCache() {
+    return this.YADAIndex;
+  }
+  
   /**
    * @return the dataSourceMap
    * @since 8.0.0
