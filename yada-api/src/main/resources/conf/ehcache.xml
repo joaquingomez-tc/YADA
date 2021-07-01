@@ -17,8 +17,12 @@
                 timeToLiveSeconds="1200"/>
          
   <!-- YADA Index cache -->
-  <cache name="YADAIndex"
+  <cache alias="YADAIndex"
          maxEntriesLocalHeap="0"
-         eternal="true"/>
+         eternal="true"
+         >
+     <key-type>java.lang.String</key-type>
+     <value-type>com.novartis.opensource.yada.YADAQuery</value-type>
+  </cache>         
          
 </ehcache>
