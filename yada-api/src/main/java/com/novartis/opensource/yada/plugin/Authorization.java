@@ -7,10 +7,6 @@ import com.novartis.opensource.yada.Finder;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADASecurityException;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 /**
  * @author Justin Finn
  * @since 8.7.6

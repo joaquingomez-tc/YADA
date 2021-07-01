@@ -17,8 +17,7 @@
  */
 package com.novartis.opensource.yada.plugin;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -66,30 +65,19 @@ public class CachedQueryUpdater extends AbstractPostprocessor
 	public void engage(YADAQuery yq) throws YADAPluginException
 	{
 	  JSONObject data = new JSONObject(yq.getData().get(0));
-	  String column = data.has(TARGET) || data.has(TARGET.toLowerCase()) ? TARGET : QNAME;
-		String q = yq.getData().get(0).get(column)[0];
-		Cache yadaIndex = ConnectionFactory.getConnectionFactory().getCacheConnection(	Finder.YADA_CACHE_MGR,
-																														Finder.YADA_CACHE);
+	  String column   = data.has(TARGET) || data.has(TARGET.toLowerCase()) ? TARGET : QNAME;
+		String q        = yq.getData().get(0).get(column)[0];
+		Map<String,YADAQuery> yadaIndex = ConnectionFactory.getConnectionFactory().getCache();
 		try
 		{
-			l.debug("Refreshing verson of [" + q + "] in cache.");
-			Element element = new Element(q, new Finder().getQueryFromIndex(q));
-			yadaIndex.put(element); // automatically overwrites, or writes anew
+			l.debug("Refreshing verson of [" + q + "] in cache.");			
+			yadaIndex.put(q, new Finder().getQueryFromLib(q)); // automatically overwrites, or writes anew
 			yq.getResult().getResults().add(0, "{\"cache_status\":\"UPDATED\",\"timestamp\":\""+new java.util.Date().toString()+"\"}");
-		} 
-		catch (YADAConnectionException e)
-		{
-			throw new YADAPluginException(e.getMessage(), e);
-		} 
+		} 		
 		catch (YADAFinderException e)
 		{
-		  String msg = "An attempt was made to update the query ["+q+"] in the cache. This query daes not exist in the index. This is not uncommon updating default-parameter-related properties";
+		  String msg = "An attempt was made to update the query ["+q+"] in the cache. This query does not exist in the index. This is not uncommon updating default-parameter-related properties";
 		  l.debug(msg);
-			//throw new YADAPluginException(e.getMessage(), e);
-		} 
-		catch (YADAQueryConfigurationException e) 
-		{
-		  throw new YADAPluginException(e.getMessage(), e);
-    }
+		} 		
 	}
 }
