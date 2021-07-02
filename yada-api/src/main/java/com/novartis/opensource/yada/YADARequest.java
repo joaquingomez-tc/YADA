@@ -1335,7 +1335,7 @@ public class YADARequest {
    * Generates a {@link java.util.List} of {@link YADAParam} objects from request
    * parameter values. All objects are qualified as
    * {@link YADAParam#QUERY}-targeted (as opposed to
-   * {@link YADAParam#APP}-targeted), and {@link YADAParam#OVERRIDEABLE}
+   * {@link YADAParam#APP}-targeted), and {@link YADAParam#MUTABLE}
    * 
    * @return a list of parameter objects, all overrideable, and query-level,
    *         derived from request parameter values
@@ -1348,7 +1348,7 @@ public class YADARequest {
     {
       String    key   = iterator.next();
       String    val   = (String) invokeGetter(key);
-      YADAParam param = new YADAParam(key, val, YADAParam.QUERY, YADAParam.OVERRIDEABLE);
+      YADAParam param = new YADAParam(key, val, YADAParam.QUERY, YADAParam.MUTABLE);
       lParams.add(param);
     }
     return lParams;
@@ -1417,7 +1417,7 @@ public class YADARequest {
       {
         if (key != null && String.valueOf(jobj.get(key)) != null)
         {
-          YADAParam param = new YADAParam(key, String.valueOf(jobj.get(key)), YADAParam.QUERY, YADAParam.OVERRIDEABLE);
+          YADAParam param = new YADAParam(key, String.valueOf(jobj.get(key)), YADAParam.QUERY, YADAParam.MUTABLE);
           lParams.add(param);
         }
       }

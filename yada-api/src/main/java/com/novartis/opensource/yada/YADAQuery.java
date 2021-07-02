@@ -47,6 +47,7 @@ import org.json.JSONObject;
 import com.novartis.opensource.yada.adaptor.Adaptor;
 import com.novartis.opensource.yada.adaptor.FileSystemAdaptor;
 import com.novartis.opensource.yada.adaptor.JDBCAdaptor;
+import com.novartis.opensource.yada.security.YADASecuritySpec;
 import com.novartis.opensource.yada.util.QueryUtils;
 
 /**
@@ -72,7 +73,7 @@ import com.novartis.opensource.yada.util.QueryUtils;
  * @since 4.0.0
  */
 public class YADAQuery {
-	
+
   /**
 	 * Local logger handle
 	 */
@@ -126,7 +127,7 @@ public class YADAQuery {
 	 */
 	private String     app;
 	/**
-	 * The query name 
+	 * The query name
 	 */
 	private String     qname;
 	/**
@@ -201,13 +202,13 @@ public class YADAQuery {
 	private List<Column> inList;
 	/**
 	 * A list of all columns referenced by the query
-	 * @deprecated as of 7.1.0 
+	 * @deprecated as of 7.1.0
 	 */
 	@Deprecated
 	private String[]   columns;
 	/**
    * A list of all columns referenced by the query
-   * @since 7.1.0 
+   * @since 7.1.0
    */
 	private List<Column> columnList;
 	/**
@@ -223,7 +224,7 @@ public class YADAQuery {
 	 */
 	private Savepoint  savepoint;
 	/**
-	 * The YADA jDBCAdaptor class to instantiate for query construction and execution 
+	 * The YADA jDBCAdaptor class to instantiate for query construction and execution
 	 */
 	private Class<Adaptor>  adaptorClass;
 	/**
@@ -231,14 +232,14 @@ public class YADAQuery {
 	 */
 	private Adaptor         adaptor;
 	/**
-	 * The nature of the query, either {@link Parser#SOAP}, 
-	 * {@link QueryUtils#READ}, 
-	 * {@link QueryUtils#WRITE}, 
-	 * {@link QueryUtils#APPEND}, 
-	 * {@link Parser#REST}, 
-	 * {@link Parser#SELECT}, 
-	 * {@link Parser#INSERT}, 
-	 * {@link Parser#UPDATE}, 
+	 * The nature of the query, either {@link Parser#SOAP},
+	 * {@link QueryUtils#READ},
+	 * {@link QueryUtils#WRITE},
+	 * {@link QueryUtils#APPEND},
+	 * {@link Parser#REST},
+	 * {@link Parser#SELECT},
+	 * {@link Parser#INSERT},
+	 * {@link Parser#UPDATE},
 	 * or {@link Parser#DELETE}
 	 * @see FileSystemAdaptor
 	 * @see Parser
@@ -331,29 +332,29 @@ public class YADAQuery {
 	public YADAQuery(String app, String qname, String qjson) throws YADAQueryConfigurationException
 	{
 	  JSONObject yq = new JSONObject(qjson);
-	  //TODO pull git commit into constructor args and set in 
-//	  String version = "";	  
+	  //TODO pull git commit into constructor args and set in
+//	  String version = "";
 //	  this.setVersion(version);
-    this.setYADACode(new String(yq.getString(PROP_QUERY)));    
+    this.setYADACode(new String(yq.getString(PROP_QUERY)));
     this.setQname(qname);
     this.setApp(app);
-    
+
     //TODO set all properties and default params stored with source
     @SuppressWarnings("unchecked")
-    
-    // The following sets all properties and default params stored with the source 
+
+    // The following sets all properties and default params stored with the source
     Map<String, Object> conf = (Map<String, Object>) ConnectionFactory.getConnectionFactory().getDsConf().get(this.getApp());
     Properties props = new Properties();
-    
+
     // if there is a "props" key, extract the properties into a local "props" object
     if(conf.containsKey(ConnectionFactory.YADA_CONF_PROPS))
     {
       for(String key : JSONObject.getNames((JSONObject)conf.get(ConnectionFactory.YADA_CONF_PROPS)))
-      {           
-        props.put(key, ((JSONObject)conf.get(ConnectionFactory.YADA_CONF_PROPS)).getString(key));            
+      {
+        props.put(key, ((JSONObject)conf.get(ConnectionFactory.YADA_CONF_PROPS)).getString(key));
       }
       String          paramStr = props.getProperty(PROP_PARAMS);
-      
+
       // if there is a "params" property, we need to set request params in the request
       if (paramStr != null)
       {
@@ -363,8 +364,8 @@ public class YADAQuery {
           // get param values
           JSONObject jo = yqp.getJSONObject(i);
           YADAParam  yp = new YADAParam();
-    
-          
+
+
           // store the values, rules, etc
           yp.setName(jo.getString(PROP_NAME));
           yp.setValue(jo.getString(PROP_VALUE));
@@ -386,12 +387,12 @@ public class YADAQuery {
             throw e;
           }
           // add the parameter
-          this.addParam(yp);                  
+          this.addParam(yp);
         }
       }
     }
-    
-    // following try sets all properties and default params stored with query.   
+
+    // following try sets all properties and default params stored with query.
     try
     {
       for(int i=0; i< yq.getJSONArray(PROP_PARAMS).length(); i++)
@@ -419,19 +420,19 @@ public class YADAQuery {
           throw e;
         }
         // will replace mutable keys only
-        this.addParam(yp);      
+        this.addParam(yp);
       }
     }
     catch(JSONException e1)
     {
       l.debug("No params array expressed in query.");
     }
-    
-    
+
+
     try
     {
       for(int i=0; i< yq.getJSONArray(PROP_PROPS).length(); i++)
-      {      
+      {
         JSONObject prop = yq.getJSONArray(PROP_PROPS).getJSONObject(i);
         YADAProperty yp = new YADAProperty(qname,prop.getString(PROP_NAME),prop.getString(PROP_VALUE));
         this.addProperty(yp);
@@ -442,7 +443,7 @@ public class YADAQuery {
       l.debug("No props object expressed in param.");
     }
 	}
-	
+
 	/**
 	 * Cloning constructor
 	 * @param yq the cached {@link YADAQuery} to clone
@@ -471,7 +472,7 @@ public class YADAQuery {
 		}
 		this.setProperties(yq.getProperties());
 	}
-	
+
 	/**
 	 * Standard mutator for variable
 	 * @param qname the name of the query encapsulated by this object
@@ -479,7 +480,7 @@ public class YADAQuery {
 	public void setQname(String qname) { this.qname = qname; }
 	/**
 	 * Standard mutator for variable
-	 * @param source the jndi string or url for the source connection associated to this query's YADA app  
+	 * @param source the jndi string or url for the source connection associated to this query's YADA app
 	 */
 	public void setSource(String source) { this.source = source; }
 	/**
@@ -496,18 +497,18 @@ public class YADAQuery {
 	 * Standard mutator for variable
 	 * @param yqr the result object stored in the query
 	 */
-	public void setResult(YADAQueryResult yqr) 
-	{ 
+	public void setResult(YADAQueryResult yqr)
+	{
 	  this.yadaQueryResult = yqr;
 	  if(yqr.getGlobalHarmonyMap() == null && getGlobalHarmonyMap() != null)
 	    yqr.setGlobalHarmonyMap(getGlobalHarmonyMap());
 	}
-	
+
 	/**
-	 * Checks if instance variable {@link #yadaQueryResult} is {@code null}, and if so, creates a 
+	 * Checks if instance variable {@link #yadaQueryResult} is {@code null}, and if so, creates a
 	 * new {@link YADAQueryResult} with parameters
 	 */
-	public void setResult() 
+	public void setResult()
 	{
 		if(getResult() == null)
 		{
@@ -516,7 +517,7 @@ public class YADAQuery {
 			setResult(yqr);
 		}
 	}
-	
+
 	/**
 	 * Standard mutator for variable.  The value should equal one of the following:
 	 * <ul>
@@ -527,7 +528,7 @@ public class YADAQuery {
 	 * @param protocol the protocol for query execution
 	 */
 	public void setProtocol(String protocol) { this.protocol = protocol; }
-	
+
 	/**
 	 * Standard mutator for variable
 	 * @param pstmt the list of jdbc api objects for sql query execution
@@ -540,7 +541,7 @@ public class YADAQuery {
 	public void addPstmt(PreparedStatement pstmtToAdd) { this.pstmt.add(pstmtToAdd); }
 	/**
 	 * Replaces an existing {@link PreparedStatement} with {@code pstmtToAdd} or appends
-	 * if {@code row} is out of range; also removes 
+	 * if {@code row} is out of range; also removes
 	 * the {@link PreparedStatement} entry from {@link #pstmtForCount} if it exists.
 	 * @param pstmtToAdd the {@link PreparedStatement} to add to the list
 	 * @param row the position in {@link #pstmt} to store {@code pstmtToAdd}
@@ -550,7 +551,7 @@ public class YADAQuery {
 	  // remove count query
 	  if(this.getPstmt().size() > row && this.getPstmtForCount().containsKey(this.getPstmt().get(row)))
 	    this.getPstmtForCount().remove(getPstmt().get(row));
-	  
+
 	  // append or replace
 	  if(this.getPstmt().size() > row)
 	    this.getPstmt().set(row,pstmtToAdd);
@@ -567,7 +568,7 @@ public class YADAQuery {
 	 * @param cstmtToAdd the statement to add to the internal list
 	 */
 	public void addCstmt(CallableStatement cstmtToAdd) { this.cstmt.add(cstmtToAdd); }
-	
+
 	/**
 	 * Standard mutator for variable
 	 * @param url the list of url objects as strings for REST query execution
@@ -578,7 +579,7 @@ public class YADAQuery {
 	 * @param urlToAdd the url to add to the internal list
 	 */
 	public void addUrl(String urlToAdd) { this.url.add(urlToAdd); }
-	
+
 	/**
 	 * Standard mutator for variable
 	 * @param soap the list of SOAP objects as strings for SOAP query execution
@@ -589,7 +590,7 @@ public class YADAQuery {
 	 * @param soapToAdd the soap query ot add to the internal list
 	 */
 	public void addSoap(String soapToAdd) { this.soap.add(soapToAdd); }
-	
+
 	/**
 	 * Standard mutator for variable
 	 * @param pstmtForCount the HashMap of count statements mapped to their data query counterparts
@@ -602,128 +603,128 @@ public class YADAQuery {
 	 * @param value count sql
 	 */
 	public void addPstmtForCount(PreparedStatement key, PreparedStatement value) { this.pstmtForCount.put(key, value); }
-	
+
 	/**
 	 * Standard mutator for variable
 	 * @param paramCount list of number of parameters for each data row
 	 */
 	public void setParamCount(List<Integer> paramCount) { this.paramCount = paramCount; }
-	
+
 	/**
-	 * Stores the number of yada parameters contained in the query string.  The param count can vary 
+	 * Stores the number of yada parameters contained in the query string.  The param count can vary
 	 * if a query contains a function with a dynamic argument list, such as an SQL {@code IN} clause.
 	 * Consequently, param counts are indexed to the data-map list.
-	 *  
+	 *
 	 * @param row the index of the data map in the list
 	 * @param paramCountToAdd number of params for row
 	 */
-	public void addParamCount(int row, int paramCountToAdd) { 
+	public void addParamCount(int row, int paramCountToAdd) {
 		if(this.paramCount.isEmpty() || row >= this.paramCount.size())
 			this.paramCount.add(row, Integer.valueOf(paramCountToAdd));
 		else
 			this.paramCount.set(row, Integer.valueOf(paramCountToAdd));
 	}
-	
+
 	/**
 	 * Standard mutator for variable
 	 * @param dataTypes list of arrays of data types
 	 */
-	public void setDataTypes(List<char[]> dataTypes) { this.dataTypes = dataTypes; } 
-	
+	public void setDataTypes(List<char[]> dataTypes) { this.dataTypes = dataTypes; }
+
 	/**
-	 * Stores the number of yada parameter data types referenced in the query string.  The data type list can vary 
+	 * Stores the number of yada parameter data types referenced in the query string.  The data type list can vary
 	 * if a query contains a function with a dynamic argument list, such as an SQL {@code IN} clause.
 	 * Consequently, data types are stored in arrays, and indexed to the data-map list.
-	 * 
+	 *
 	 * @param row the index of the data map in the list
 	 * @param dataTypesToAdd array of data types
 	 */
-	public void addDataTypes(int row, char[] dataTypesToAdd) { 
+	public void addDataTypes(int row, char[] dataTypesToAdd) {
 		if(this.dataTypes.isEmpty() || row >= this.dataTypes.size())
 			this.dataTypes.add(row,dataTypesToAdd);
 		else
 			this.dataTypes.set(row,dataTypesToAdd);
 	}
-	
+
 	/**
    * Standard mutator for variable
 	 * @param coreCode the list of query strings
    * @since 9.3.6
    */
-  public void setCoreCode(List<String> coreCode) { this.coreCode = coreCode; } 
-  
+  public void setCoreCode(List<String> coreCode) { this.coreCode = coreCode; }
+
   /**
-   * Stores the transformed version of the core query code with yada parameters after 
-   * data-row-dependent transformation of IN and VALUES clauses.  In other words, he list can vary 
-   * if a query contains a function with a dynamic argument list, such as an SQL {@code IN} 
+   * Stores the transformed version of the core query code with yada parameters after
+   * data-row-dependent transformation of IN and VALUES clauses.  In other words, he list can vary
+   * if a query contains a function with a dynamic argument list, such as an SQL {@code IN}
    * or {@code VALUES} clause.
-   * 
+   *
    * Consequently, query variants are stored in a list indexed to the data-map list.
-   * 
+   *
    * @param row the index of the data map in the list
    * @param code the transformed YADA code
    * @since 9.3.6
    */
-  public void addCoreCode(int row, String code) { 
+  public void addCoreCode(int row, String code) {
     if(this.coreCode.isEmpty() || row >= this.coreCode.size())
       this.coreCode.add(row, code);
     else
       this.coreCode.set(row, code);
   }
-  
-  
-	
+
+
+
 	/**
 	 * Standard mutator for variable
 	 * @param vals list of lists of values
 	 */
 	public void setVals(List<List<String>> vals) { this.vals = vals; }
-	
+
 	/**
-	 * Stores the values to be applied to the query parameters. The value count can vary 
+	 * Stores the values to be applied to the query parameters. The value count can vary
 	 * if a query contains a function with a dynamic argument list, such as an SQL {@code IN} clause.
 	 * Consequently, values are stored in lists, and indexed to the data-map list.
-	 * 
+	 *
 	 * @param row the index of the data map in the list
 	 * @param valsToAdd list of values
 	 */
-	public void addVals(int row, List<String> valsToAdd) { 
+	public void addVals(int row, List<String> valsToAdd) {
 		if(this.vals.isEmpty() || row >= this.vals.size())
 			this.vals.add(row,valsToAdd);
 		else
 			this.vals.set(row,valsToAdd);
 	}
-		
+
 	/**
 	 * Standard mutator for variable
 	 * @param yqParams parameter objects list
 	 */
-	public void setYADAQueryParams(List<YADAParam> yqParams) 
+	public void setYADAQueryParams(List<YADAParam> yqParams)
 	{
 		this.yqParams = yqParams;
-		if(this.yqParams.size() > 0) 
+		if(this.yqParams.size() > 0)
 		{
 			setKeys();
 		}
 	}
-	
+
 	/**
 	 * Parses the {@code yadaReq} object to internalize and index the current request parameters
 	 * @param yadaReq YADA request configuration
 	 * @throws YADARequestException if the request is malformed
 	 */
-	public void setYADAQueryParams(YADARequest yadaReq) throws YADARequestException 
+	public void setYADAQueryParams(YADARequest yadaReq) throws YADARequestException
 	{
 		this.yqParams = yadaReq.getAllParams();
-		if(this.yqParams.size() > 0) 
+		if(this.yqParams.size() > 0)
 		{
 			setKeys();
 		}
 	}
-	
+
 	/**
 	 * a {@link List} of {@link YADAParam} objects with {@link YADAParam#getName()} = {@code key}.
-	 * 
+	 *
 	 * @param key the param name
 	 * @return a {@link List} of {@link YADAParam} objects with {@link YADAParam#getName()} = {@code key}
 	 * @since 7.1.4
@@ -737,13 +738,13 @@ public class YADAQuery {
 	  }
 	  return paramList;
 	}
-	
+
 	/**
 	 * Returns an array containing the value associated to param with name {@code key}
 	 * @param key name of parameter whose value is sought
-	 * @return an array containing the value associated to param with name {@code key} 
+	 * @return an array containing the value associated to param with name {@code key}
 	 */
-	public String[] getYADAQueryParamValue(String key) {	
+	public String[] getYADAQueryParamValue(String key) {
 		boolean hasVal = false;
 		if(getParam(key) != null)
 		{
@@ -754,16 +755,16 @@ public class YADAQuery {
 	      hasVal = true;
 	    }
 	    if(hasVal)
-	      return Arrays.stream(values).filter(Objects::nonNull).toArray(String[]::new);	    
+	      return Arrays.stream(values).filter(Objects::nonNull).toArray(String[]::new);
 		}
-		return null;		
+		return null;
 	}
-	
+
 	/**
    * Returns an array containing the value associated to param with name {@code key}
-   * where target {@link YADAQuery#getQname} of {@code this} 
+   * where target {@link YADAQuery#getQname} of {@code this}
    * @param key name of parameter whose value is sought
-   * @return an array containing the value associated to param with name {@code key} 
+   * @return an array containing the value associated to param with name {@code key}
    */
   public String[] getYADAQueryParamValuesForTarget(String key) {
   	boolean hasVal = false;
@@ -779,14 +780,14 @@ public class YADAQuery {
         }
       }
       if(hasVal)
-	      return Arrays.stream(values).filter(Objects::nonNull).toArray(String[]::new);	    
+	      return Arrays.stream(values).filter(Objects::nonNull).toArray(String[]::new);
     }
-    return null;    
+    return null;
   }
-  
+
   /**
    * Returns an array containing the value associated to param with name {@code key}
-   * where target is arbitrary, usually a qname or plugin name 
+   * where target is arbitrary, usually a qname or plugin name
    * @param key name of parameter whose value is sought
    * @param target name of target for param value, usually a qname or plugin name
    * @return an array containing the value associated to param with name {@code key} and target {@code target}
@@ -804,14 +805,14 @@ public class YADAQuery {
         	values[param.getId()] = param.getValue();
         	hasVal = true;
         }
-          
+
       }
       if(hasVal)
-	      return Arrays.stream(values).filter(Objects::nonNull).toArray(String[]::new);	    
+	      return Arrays.stream(values).filter(Objects::nonNull).toArray(String[]::new);
     }
-    return null;    
+    return null;
   }
-	
+
 	/**
 	 * Tests value of parameter name
 	 * @param key the name of the param
@@ -823,7 +824,7 @@ public class YADAQuery {
 	    return true;
 	  return false;
 	}
-	
+
 	/**
 	 * Tests value of parameter name
 	 * @param key the name of the param
@@ -835,7 +836,7 @@ public class YADAQuery {
 	    return true;
 	  return false;
 	}
-	
+
 	/**
 	 * Returns the {@link YADAParam} with name = {@code key}
 	 * @param key the name of the desired param
@@ -845,30 +846,30 @@ public class YADAQuery {
 	{
 		return this.keys.get(key);
 	}
-	
+
 	/**
 	 * Retrievs a list of columns stored in the first indexed data object.  The
-	 * list will either contain the column names passed in 
-	 * {@link YADARequest#PS_JSONPARAMS} or those created on the fly in standard 
+	 * list will either contain the column names passed in
+	 * {@link YADARequest#PS_JSONPARAMS} or those created on the fly in standard
 	 * params scenarios, i.e., {@link QueryUtils#YADA_COLUMN} + {@code int}
 	 * @return list of columns stored in the first indexed data object
 	 */
-	public String[] getColumnNameArray() 
+	public String[] getColumnNameArray()
 	{
 		Set<String> keySet = getData().get(0).keySet();
 		return keySet.toArray(new String[keySet.size()]);
 	}
-	
+
 	/**
-	 * Iterates over {@link #yqParams} list to populate indices of {@link #keys} 
+	 * Iterates over {@link #yqParams} list to populate indices of {@link #keys}
 	 * and {@link #immutableKeys}, for faster access to parameter values
 	 */
-	private void setKeys() 
+	private void setKeys()
 	{
 		for(YADAParam param : this.yqParams)
 		{
 		  String key = param.getName();
-		  if(hasOverridableParam(key))
+		  if(hasMutableParam(key))
 		  {
 		    this.keys.get(key).add(param);
 	      if(param.getRule() != 0)
@@ -895,9 +896,9 @@ public class YADAQuery {
 		  }
 		}
 	}
-	
+
 	/**
-	 * Adds a single {@link YADAParam} to the {@link #keys} and {@link #immutableKeys} indices. 
+	 * Adds a single {@link YADAParam} to the {@link #keys} and {@link #immutableKeys} indices.
 	 * @param param the parameter to add to each index, as needed
 	 */
 	private void setKey(YADAParam param)
@@ -909,7 +910,7 @@ public class YADAQuery {
 		  list = new ArrayList<>();
 		  list.add(param);
       this.keys.put(key,list);
-      if(param.getRule() != YADAParam.OVERRIDEABLE)
+      if(param.getRule() != YADAParam.MUTABLE)
       {
         if(!hasImmutableParam(key))
         {
@@ -922,49 +923,49 @@ public class YADAQuery {
 		else if(isPluginParam(key)) // if it's a plugin, just add it straight away
 		{
 		  this.keys.get(key).add(param);
-      if(param.getRule() != YADAParam.OVERRIDEABLE)
+      if(param.getRule() != YADAParam.MUTABLE)
         this.immutableKeys.get(key).add(param);
     }
 		else if(isArgumentParam(key))
 		{
 			this.keys.get(key).add(param);
-			if(param.getRule() != YADAParam.OVERRIDEABLE)
+			if(param.getRule() != YADAParam.MUTABLE)
 				this.immutableKeys.get(key).add(param);
 		}
 		else
 		{
-		  // if the param is not a plugin param, and it's 
+		  // if the param is not a plugin param, and it's
 		  // overrideable, add it. If it is, itself, nonoverridable,
 		  // make a note of that too.
 	    if(!hasImmutableParam(key)) // this confirms no immutables (non-overrides)
 	    {
 		    this.keys.get(key).add(param);
-	      if(param.getRule() != YADAParam.OVERRIDEABLE)
+	      if(param.getRule() != YADAParam.MUTABLE)
 	        this.immutableKeys.get(key).add(param);
 	    }
 		}
 	}
-	
+
 	/**
-	 * Removes values from {@link #immutableKeys} and {@link #keys}. 
+	 * Removes values from {@link #immutableKeys} and {@link #keys}.
 	 * @since 4.1.0
 	 */
-	public void clearKeys() 
+	public void clearKeys()
 	{
 		this.keys.clear();
 		this.immutableKeys.clear();
 	}
-	
+
 	/**
 	 * Creates a new query-level, overrideable {@link YADAParam} with a name of {@code key} and a value of {@code val} and adds it to the list.
 	 * @param key name of parameter
 	 * @param val value of parameter
 	 */
 	public void addParam(String key,String val) {
-		YADAParam param = new YADAParam(key,val,this.getQname(), YADAParam.OVERRIDEABLE);
+		YADAParam param = new YADAParam(key,val,this.getQname(), YADAParam.MUTABLE);
 		addParam(param);
 	}
-	
+
 	/**
 	 * Adds {@code param} to the internal list.  Allows multiple plugins.
 	 * @param param parameter object
@@ -975,7 +976,7 @@ public class YADAQuery {
 		String value = param.getValue();
 		if(isPluginParam(key) || isArgumentParam(key))
 		{
-		  List<YADAParam> lp = getYADAQueryParams();      
+		  List<YADAParam> lp = getYADAQueryParams();
       String  target = param.getTarget();
       int     rule   = param.getRule();
       boolean add    = true;
@@ -996,7 +997,7 @@ public class YADAQuery {
 		}
 		else
     {
-	    if(hasImmutableParam(key)) 
+	    if(hasImmutableParam(key))
       {
 	      String msg = String.format("An attempt was made to override an immutable default parameter."
 	          +" The original contract was honored. [%s = %s]", key, value);
@@ -1005,7 +1006,7 @@ public class YADAQuery {
       else if(hasParam(key))
       {
         replaceParam(param);
-        setKey(param);  
+        setKey(param);
       }
       else
       {
@@ -1014,9 +1015,9 @@ public class YADAQuery {
       }
     }
 	}
-	
+
 	/**
-	 * Adds the property to the {@link Set} of {@link #properties} 
+	 * Adds the property to the {@link Set} of {@link #properties}
 	 * @param prop the {@link YADAProperty} object to add to this {@link YADAQuery} object
 	 * @since 7.1.0
 	 */
@@ -1024,7 +1025,7 @@ public class YADAQuery {
 	{
 	  this.getProperties().add(prop);
 	}
-	
+
 	/**
 	 * Adds the cookie with {@code name} to the {@link #cookies} List
 	 * @param name the name of the cookie.
@@ -1035,7 +1036,7 @@ public class YADAQuery {
     HttpCookie cookie = new HttpCookie(name,val);
     addCookie(cookie);
   }
-  
+
 	/**
    * Adds the cookie with {@code name} to the {@link #cookies} List
    * @param cookie the cookie to store
@@ -1044,19 +1045,19 @@ public class YADAQuery {
   public void addCookie(HttpCookie cookie) {
     this.cookies.add(cookie);
   }
-  
+
   /**
-   * Adds the HTTP header name and value to the {@link #httpHeaders} {@link JSONObject} 
+   * Adds the HTTP header name and value to the {@link #httpHeaders} {@link JSONObject}
    * @param name the header name
    * @param value the header value
    * @since 8.5.0
    */
-  public void addHttpHeader(String name, String value) {  	
+  public void addHttpHeader(String name, String value) {
   	this.httpHeaders.put(name, value);
   }
-  
+
 	/**
-	 * Stores the request-level (global) parameters in the {@link YADAQuery} object for easier downstream utilization. 
+	 * Stores the request-level (global) parameters in the {@link YADAQuery} object for easier downstream utilization.
 	 * This method is distinct from {@link #addYADAQueryParams(List)} in that it will not replace a parameter value
 	 * already associated to the query even if it's overrideable
 	 * @param params list of parameter objects
@@ -1073,13 +1074,13 @@ public class YADAQuery {
 			  int idx = hMap.length() > 1 ? index : 0;
 			  param.setValue(hMap.getJSONObject(idx).toString());
 			}
-			if(!hasParam(key) || hasOverridableParam(key)) //TODO do we need this check, maybe this is bad?  Maybe we always want to replace?
+			if(!hasParam(key) || hasMutableParam(key)) //TODO do we need this check, maybe this is bad?  Maybe we always want to replace?
 			{
 				addParam(param);
 			}
 		}
 	}
-	
+
 	/**
 	 * The zero-index-only implementation of this method, for requests with "standard params" (i.e., not {@link JSONParams}
 	 * @param params list of parameter objects
@@ -1087,11 +1088,11 @@ public class YADAQuery {
 	public void addRequestParams(List<YADAParam> params) {
     addRequestParams(params,0);
   }
-	
+
 
 	/**
-	 * Stores the query-level parameters in the {@link YADAQuery} object for easier downstream utilization.  Care is taken 
-	 * to ensure non-overrideable default parameters are not mutated, nor duplicate parameters are added. 
+	 * Stores the query-level parameters in the {@link YADAQuery} object for easier downstream utilization.  Care is taken
+	 * to ensure non-overrideable default parameters are not mutated, nor duplicate parameters are added.
 	 * @param params list of parameter objects
 	 */
 	public void addYADAQueryParams(List<YADAParam> params)
@@ -1101,7 +1102,7 @@ public class YADAQuery {
 			addParam(param);
 		}
 	}
-	
+
 	/**
 	 * Replaces the value of {@link YADAParam} with name {@code key} with {@code value}, but only if the existing
 	 * {@link YADAParam} is overridable.  If the param doesn't exist, it is added. If the param is not
@@ -1110,26 +1111,26 @@ public class YADAQuery {
 	 * @param value new value for parameter
 	 * @see #replaceParam(YADAParam)
 	 */
-	public void replaceParam(String key, String value) 
+	public void replaceParam(String key, String value)
 	{
-		YADAParam param = new YADAParam(key, value, YADAParam.QUERY, YADAParam.OVERRIDEABLE);
-		if(hasParam(key))
+		YADAParam param = new YADAParam(key, value, YADAParam.QUERY, YADAParam.MUTABLE);
+		if(!hasParam(key))
 			replaceParam(param);
 		else
 			addParam(param);
 	}
-	
+
 	/**
 	 * Replaces the value of {@link YADAParam} with values encapsulated by {@code param}, but only if the existing
-	 * {@link YADAParam} is overridable. If the param doesn't exist, it is added.  If the param is not overrideable, 
+	 * {@link YADAParam} is overridable. If the param doesn't exist, it is added.  If the param is not overrideable,
 	 * this method exits silently.
 	 * @param param parameter object containing replacement values
 	 */
 	public void replaceParam(YADAParam param) {
-		if(hasOverridableParam(param.getName()))
+		if(hasMutableParam(param.getName()))
 		{
 			Iterator<YADAParam> iter = getYADAQueryParams().iterator();
-			while(iter.hasNext()) 
+			while(iter.hasNext())
 			{
 				YADAParam storedParam = iter.next();
 				if(storedParam.getName().equals(param.getName()))
@@ -1145,7 +1146,7 @@ public class YADAQuery {
 			addParam(param);
 		}
 	}
-	
+
 	/**
 	 * @param key parameter name to check
 	 * @return {@code true} if the query contains the param with name equal to {@code key}, otherwise false
@@ -1153,18 +1154,18 @@ public class YADAQuery {
 	public boolean hasParam(String key) {
 		return this.keys.containsKey(key);
 	}
-	
+
 	/**
 	 * @param key parameter name to check
 	 * @return {@code true} if the parameter has at least one value
 	 */
 	public boolean hasParamValue(String key) {
-		if(getYADAQueryParamValue(key) != null 
+		if(getYADAQueryParamValue(key) != null
 				&& getYADAQueryParamValue(key).length > 0)
 			return true;
 		return false;
 	}
-	
+
 	/**
    * Returns {@code true} if {@link #cookies} contains a cookie name, otherwise {@code false}
    * @return {@code true} if {@link #cookies} contains a cookie name, otherwise {@code false}
@@ -1177,16 +1178,25 @@ public class YADAQuery {
     }
     return true;
   }
-	
+
 	/**
-	 * @since 4.0.0
+	 * @since 10.2.0
 	 * @param key parameter name to check
 	 * @return boolean true if stored parameter is overridable by url params (rule=0), otherwise false
 	 */
-	public boolean hasOverridableParam(String key) {
+	public boolean hasMutableParam(String key) {
 		return !hasImmutableParam(key) && this.keys.containsKey(key);
 	}
-	
+
+	/**
+   * @since 4.0.0
+   * @param key parameter name to check
+   * @return boolean true if stored parameter is overridable by url params (rule=0), otherwise false
+   */
+  public boolean hasOverridableParam(String key) {
+    return !hasImmutableParam(key) && this.keys.containsKey(key);
+  }
+
 	/**
 	 * @since 9.3.6
 	 * @param key parameter name to check
@@ -1195,7 +1205,7 @@ public class YADAQuery {
 	public boolean hasImmutableParam(String key) {
 		return this.immutableKeys.containsKey(key);
 	}
-	
+
 	 /**
    * @since 4.0.0
    * @param key parameter name to check
@@ -1204,16 +1214,16 @@ public class YADAQuery {
   public boolean hasNonOverridableParam(String key) {
     return this.immutableKeys.containsKey(key);
   }
-		
+
 	/**
 	 * Standard mutator for variable
 	 * @param data the list of data maps
 	 */
-	public void setData(List<LinkedHashMap<String,String[]>> data) 
+	public void setData(List<LinkedHashMap<String,String[]>> data)
 	{
 		this.data = data;
 	}
-	
+
 	/**
 	 * Calls {@link #setData(List)}, replacing any existing data in the query object.
 	 * @param allData the data to add to the query
@@ -1222,16 +1232,16 @@ public class YADAQuery {
 	{
 		setData(allData);
 	}
-	
+
 	/**
 	 * Adds a single row of data to the existing list.
 	 * @param dataToAdd the map of data to add to the list
 	 */
-	public void addData(LinkedHashMap<String,String[]> dataToAdd) 
+	public void addData(LinkedHashMap<String,String[]> dataToAdd)
 	{
 		getData().add(dataToAdd);
 	}
-	
+
 	/**
 	 * Standard mutator for variable
 	 * @param conn the JDBC connection to use to execute the query
@@ -1262,24 +1272,24 @@ public class YADAQuery {
 	 * @see FileSystemAdaptor
 	 */
 	public void setType(String type) { this.type = type; }
-	
+
 	/**
 	 * @throws YADAConnectionException when the connection can't be opened
 	 * @since 4.0.0
 	 */
-	public void setConnection() throws YADAConnectionException 
+	public void setConnection() throws YADAConnectionException
 	{
 		this.setConnection(this.getApp());
 	}
-	
+
 	/**
 	 * Set a transactional connection for the source
-	 * 
+	 *
 	 * @since 4.0.0
 	 * @param app the app name stored in the query
 	 * @throws YADAConnectionException when the connection can't be opened
 	 */
-	public void setConnection(String app) throws YADAConnectionException 
+	public void setConnection(String app) throws YADAConnectionException
 	{
 		if(this.getProtocol().equals(Parser.SOAP))
 		{
@@ -1302,7 +1312,7 @@ public class YADAQuery {
 						String msg = "This JDBC driver does not support savepoints.";
 						l.warn(msg);
 					}
-				} 
+				}
 			}
 			catch (SQLException e)
 			{
@@ -1311,7 +1321,7 @@ public class YADAQuery {
 			}
 		}
 	}
-	
+
 	/**
 	 * Set a transactional or non-transactional connection for the source
 	 * @since 4.0.0
@@ -1321,7 +1331,7 @@ public class YADAQuery {
 	 * @throws YADAConnectionException when the connection can't be opened
 	 */
 	@Deprecated
-	public void setConnection(String app, boolean transactions) throws YADAConnectionException 
+	public void setConnection(String app, boolean transactions) throws YADAConnectionException
 	{
 		if(this.getProtocol().equals(Parser.SOAP))
 		{
@@ -1345,7 +1355,7 @@ public class YADAQuery {
 						String msg = "This JDBC driver does not support savepoints.";
 						l.warn(msg);
 					}
-				} 
+				}
 				catch (SQLException e)
 				{
 					String msg = "Unable to configure connection for transaction.";
@@ -1354,7 +1364,7 @@ public class YADAQuery {
 			}
 		}
 	}
-	
+
 	/**
 	 * Closes {@link CallableStatement}s {@link PreparedStatement}s and Connections
 	 * in order to avoid connection and memory leaks in {@link com.novartis.opensource.yada.plugin.Preprocess} scenarios
@@ -1367,14 +1377,14 @@ public class YADAQuery {
 		this.clearPsmts();
 		this.clearConnection();
 	}
-	
+
 	/**
-	 * Checks for the any {@link CallableStatement}s used by the queries and renders it null.  This is 
+	 * Checks for the any {@link CallableStatement}s used by the queries and renders it null.  This is
 	 * to facilitate long term storage of the query in the cache
 	 * @throws YADAConnectionException when a resource can't be closed
 	 * @since 8.6.1
 	 */
-	public void clearCsmts() throws YADAConnectionException 
+	public void clearCsmts() throws YADAConnectionException
 	{
 		if(this.getCstmt().size() > 0)
 		{
@@ -1385,14 +1395,14 @@ public class YADAQuery {
 			this.setCstmt(new ArrayList<CallableStatement>());
 		}
 	}
-	
+
 	/**
-	 * Checks for the any {@link PreparedStatement}s used by the queries and renders it null.  This is 
+	 * Checks for the any {@link PreparedStatement}s used by the queries and renders it null.  This is
 	 * to facilitate long term storage of the query in the cache
 	 * @throws YADAConnectionException when a resource can't be closed
 	 * @since 8.6.1
 	 */
-	public void clearPsmts() throws YADAConnectionException 
+	public void clearPsmts() throws YADAConnectionException
 	{
 		if(this.getPstmtForCount().size() > 0)
 		{
@@ -1402,7 +1412,7 @@ public class YADAQuery {
 			}
 			this.setPstmtForCount(new HashMap<PreparedStatement,PreparedStatement>());
 		}
-		
+
 		if(this.getPstmt().size() > 0)
 		{
 			for(int i = 0; i < this.getPstmt().size(); i++)
@@ -1410,18 +1420,18 @@ public class YADAQuery {
 				ConnectionFactory.releaseResources(this.getPstmt(i));
 			}
 			this.setPstmt(new ArrayList<PreparedStatement>());
-			
+
 		}
 	}
-	
+
 	/**
-	 * Checks for the type of Connection used by the queries, closes and nullifies them.  This is 
-	 * to avoid connection leaks in {@link com.novartis.opensource.yada.plugin.Preprocess} plugin scenarios, as well as 
+	 * Checks for the type of Connection used by the queries, closes and nullifies them.  This is
+	 * to avoid connection leaks in {@link com.novartis.opensource.yada.plugin.Preprocess} plugin scenarios, as well as
 	 * facilitate long term storage of the query in the cache.
 	 * @throws YADAConnectionException when a resource can't be closed
 	 * @since 4.1.0
 	 */
-	public void clearConnection() throws YADAConnectionException 
+	public void clearConnection() throws YADAConnectionException
 	{
 		if(this.connection != null)
 		{
@@ -1433,7 +1443,7 @@ public class YADAQuery {
 		else
 			this.url.clear();
 	}
-	
+
 	/**
 	 * Sets {@code this.savepoint} to {@code null}.
 	 * @since 4.1.0
@@ -1442,7 +1452,7 @@ public class YADAQuery {
 	{
 		this.savepoint = null;
 	}
-	
+
 	/**
 	 * Standard mutator for variable.  Called when transactional processing is required.
 	 * @param savepoint the transactional rollback point.
@@ -1474,12 +1484,12 @@ public class YADAQuery {
 	public String   getVersion() { return this.version; }
 	/**
 	 * Standard accessor for variable.
-	 * @return a {@link String} containing the query code with YADA markup: {@code v}, {@code d}, {@code i}, and {@code n} 
+	 * @return a {@link String} containing the query code with YADA markup: {@code v}, {@code d}, {@code i}, and {@code n}
 	 */
 	public String   getYADACode() { return this.yadaCode; }
 	/**
 	 * Standard accessor for variable
-	 * @return the 
+	 * @return the
 	 */
 	public String   getType() { return this.type; }
 	/**
@@ -1503,36 +1513,36 @@ public class YADAQuery {
 	 * @since 8.5.0
 	 */
 	public JSONObject getHttpHeaders() { return this.httpHeaders; }
-	
+
 	/**
 	 * @return the appropriate connection object, based on {@link #getProtocol()}
 	 */
-	public Object         getConnection() { 
+	public Object         getConnection() {
 		if(this.getProtocol().equals(Parser.SOAP))
 			return this.soapConnection;
-		return this.connection; 
+		return this.connection;
 	}
-	
+
 	/**
 	 * Standard accessor for variable
 	 * @return the {@link java.lang.Class} of the jDBCAdaptor
 	 */
 	public Class<Adaptor>          getAdaptorClass() { return this.adaptorClass; }
-	
+
 	/**
 	 * @param row the list index
 	 * @return the count of parameters corresponding to index {@code row} in the internal list
 	 */
-	public int                     getParamCount(int row) 
-	{ 
-		return getParamCount().size() == 0 ? 0 : getParamCount().get(row).intValue(); 
+	public int                     getParamCount(int row)
+	{
+		return getParamCount().size() == 0 ? 0 : getParamCount().get(row).intValue();
 	}
 	/**
 	 * Standard accessor for variable
 	 * @return the jdbc parameter count
 	 */
 	public List<Integer>           getParamCount() { return this.paramCount; }
-	
+
 	/**
 	 * @param row the list index
 	 * @return the list of data values at index {@code row} in the internal list
@@ -1543,7 +1553,7 @@ public class YADAQuery {
 	 * @return the list of {@link String} objects for values
 	 */
 	public List<List<String>>      getVals() { return this.vals; }
-	
+
 	/**
 	 * @param row the list index
 	 * @return the {@link java.sql.PreparedStatement} at index {@code row} in the internal list
@@ -1554,7 +1564,7 @@ public class YADAQuery {
 	 * @return the list of {@link java.sql.PreparedStatement} objects
 	 */
 	public List<PreparedStatement> getPstmt() { return this.pstmt; }
-	
+
 	/**
 	 * @param row the list index
 	 * @return the {@link java.sql.CallableStatement} at index {@code row} in the internal list
@@ -1565,19 +1575,19 @@ public class YADAQuery {
 	 * @return the list of {@link java.sql.CallableStatement} objects
 	 */
 	public List<CallableStatement> getCstmt() { return this.cstmt; }
-	
+
 	/**
 	 * @param row the list index
 	 * @return the url, as a {@link String}, from index {@code row} in the internal list
 	 */
 	public String                  getUrl(int row) { return getUrl().get(row); }
-	
+
 	/**
 	 * Standard accessor for variable
 	 * @return the list of {@link java.net.URL} objects
 	 */
 	public List<String>            getUrl() { return this.url; }
-	
+
 	/**
 	 * @param row the list index
 	 * @return the soap query, as a {@link String}, from index {@code row} in the internal list
@@ -1588,7 +1598,7 @@ public class YADAQuery {
 	 * @return the list of soap queries
 	 */
 	public List<String>            getSoap() { return this.soap; }
-	
+
 	/**
 	 * Standard accessor for variable
 	 * @return the list of {@link java.sql.PreparedStatement}s for count queries
@@ -1599,7 +1609,7 @@ public class YADAQuery {
 	 * @return the {@link java.sql.PreparedStatement} associated to {@code pstmtKey} in the hash
 	 */
 	public PreparedStatement                        getPstmtForCount(PreparedStatement pstmtKey) { return getPstmtForCount().get(pstmtKey); }
-	
+
 	/**
 	 * @param row the list index
 	 * @return the array of data types at index {@code row} in the internal list
@@ -1610,7 +1620,7 @@ public class YADAQuery {
 	 * @return the list of data types
 	 */
 	public List<char[]>            getDataTypes() { return this.dataTypes; }
-		
+
 	/**
 	 * Standard accessor for variable
 	 * @return the list of parameter objects
@@ -1621,7 +1631,7 @@ public class YADAQuery {
 	 * @return the list of data objects
 	 */
 	public List<LinkedHashMap<String,String[]>> getData() { return this.data; }
-	
+
 	/**
 	 * @param row the list index
 	 * @return the map of data at index {@code row}
@@ -1629,7 +1639,7 @@ public class YADAQuery {
 	public LinkedHashMap<String,String[]> getDataRow(int row) {
 		return this.getData().get(row);
 	}
-	
+
 	/**
 	 * Deletes the data map at index {@code row} from the internal list
 	 * @param row the list index
@@ -1654,7 +1664,7 @@ public class YADAQuery {
 	public void setAdaptor(Adaptor adaptor) {
 		this.adaptor = adaptor;
 	}
-	
+
 	/**
 	 * Standard accessar for variable
 	 * @return the source jDBCAdaptor object
@@ -1662,7 +1672,7 @@ public class YADAQuery {
 	public Adaptor getAdaptor() {
 		return this.adaptor;
 	}
-	
+
 	/**
 	 * Standard accessor for variable
 	 * @return the inExpressionMap
@@ -1687,7 +1697,7 @@ public class YADAQuery {
   public void setGlobalHarmonyMap(JSONObject globalHarmonyMap) {
     this.globalHarmonyMap = globalHarmonyMap;
   }
-  
+
   /**
    * Adds an entry with a unique key to the {@link #globalHarmonyMap}
    * @param key the original column name
@@ -1718,7 +1728,7 @@ public class YADAQuery {
 	}
 
 	/**
-	 * Standard mutator for variable. Store the stripped code in its object. 
+	 * Standard mutator for variable. Store the stripped code in its object.
 	 * @param conformedCode the conformedCode to set
 	 */
 	public void setConformedCode(String conformedCode)
@@ -1735,7 +1745,7 @@ public class YADAQuery {
 	{
 		return this.isCached;
 	}
-	
+
 	/**
 	 * Interrogates the {@link #properties} {@link Set} to look for security properties
 	 * @return {@code true} if there is a {@link YADAProperty} with a {@code name = "protected"}
@@ -1781,7 +1791,7 @@ public class YADAQuery {
   public void setStatement(Statement statement) {
     this.statement = statement;
   }
-  
+
   /**
    * Standard accessor for variable
    * @return the list of columns linked to JDBC parameters
@@ -1816,7 +1826,7 @@ public class YADAQuery {
    */
   @Deprecated
   public void setColumns(String[] columns) { this.columns = columns; }
-  
+
   /**
    * Standard accessor for variable
    * @return the list of columns linked to JDBC parameters
@@ -1840,7 +1850,7 @@ public class YADAQuery {
   public void setColumnList(List<Column> columnList) {
     this.columnList = columnList;
   }
-  
+
   /**
    * Standard mutator for variable
    * @param inList list of columns in {@code IN} clauses
@@ -1848,7 +1858,7 @@ public class YADAQuery {
   public void setInList(List<Column> inList) {
     this.inList = inList;
   }
-  
+
   /**
    * Standard mutator for variable
    * @param parameterizedColumnList list of columns with JDBC parameters
@@ -1891,7 +1901,7 @@ public class YADAQuery {
   public Set<YADAProperty> getProperties() {
     return this.properties;
   }
-  
+
   /**
    * Retrieve a single stored property value
    * @param name the property name
@@ -1904,11 +1914,11 @@ public class YADAQuery {
     for(YADAProperty prop : getProperties())
     {
       if(prop.getName().contentEquals(name) && prop.getTarget().contentEquals(target))
-        return prop.getValue();      
+        return prop.getValue();
     }
     return null;
   }
-  
+
   /**
    * @param row the list index
    * @return the code variant at index {@code row} in the internal list
@@ -1919,7 +1929,7 @@ public class YADAQuery {
    * @return the list of data types
    */
   public List<String>            getCoreCode() { return this.coreCode; }
-  
+
   /**
    * Standard mutator for variable
    * @param properties the properties to set
@@ -1946,7 +1956,7 @@ public class YADAQuery {
   public void setAccessCount(int accessCount) {
     this.accessCount = accessCount;
   }
-  
+
   /**
    * @since 9.0.0
    */
@@ -1978,7 +1988,7 @@ public class YADAQuery {
   public void setValuesList(ValuesList valuesList) {
     this.valueList = valuesList;
   }
- 
+
   /**
    * Standard accessor
    * @return the valuesList
@@ -1994,9 +2004,9 @@ public class YADAQuery {
    * @since 9.3.6
    */
   public void setValuesColumns(List<String> valuesColumns) {
-    this.valuesColumns = valuesColumns;    
+    this.valuesColumns = valuesColumns;
   }
-  
+
   /**
    * Standard accessor
    * @return the list of columns in the VALUES clause

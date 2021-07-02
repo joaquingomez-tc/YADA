@@ -43,8 +43,15 @@ import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
 import com.novartis.opensource.yada.YADASQLException;
-import com.novartis.opensource.yada.YADASecurityException;
-import com.novartis.opensource.yada.YADASecuritySpec;
+import com.novartis.opensource.yada.security.YADASecuritySpec;
+import com.novartis.opensource.yada.security.Authorization;
+import com.novartis.opensource.yada.security.ContentPolicy;
+import com.novartis.opensource.yada.security.ExecutionPolicy;
+import com.novartis.opensource.yada.security.SecurityPolicy;
+import com.novartis.opensource.yada.security.SecurityPolicyRecord;
+import com.novartis.opensource.yada.security.TokenValidator;
+import com.novartis.opensource.yada.security.Validation;
+import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.util.YADAUtils;
 
 /**

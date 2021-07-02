@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.novartis.opensource.yada;
+package com.novartis.opensource.yada.security;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.novartis.opensource.yada.YADAQueryConfigurationException;
 
 /**
  * @author dvaron
@@ -95,7 +97,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
   /**
    * Constant equal to {@value}
    * 
-   * @since 9.0.0 (moved from {@link com.novartis.opensource.yada.plugin.Gatekeeper}
+   * @since 9.0.0 (moved from {@link com.novartis.opensource.yada.security.Gatekeeperer}
    */
   public static final String RX_COL_INJECTION = "(?:([a-zA-Z0-9_]+):)?(get[A-Z][a-zA-Z0-9_]+\\(([A-Za-z0-9_]*)\\))";
 
@@ -103,7 +105,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
   /**
    * Constant equal to {@value}
    * 
-   * @since 9.0.0 (moved from {@link com.novartis.opensource.yada.plugin.Gatekeeper}
+   * @since 9.0.0 (moved from {@lincom.novartis.opensource.yada.security.Gatekeepereper}
    */
   public static final String RX_IDX_INJECTION = "(?:([0-9]+):)?(get[A-Z][a-zA-Z0-9_]+\\(([A-Za-z0-9_]*)\\))";
   
@@ -193,7 +195,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
   }
   
   /**
-   * @param value the classname of the {@link com.novartis.opensource.yada.plugin.TokenValidator}
+   * @param value the classname of the {@lcom.novartis.opensource.yada.security.TokenValidatoridator}
    * @throws YADAQueryConfigurationException when {@code value} is {@code null}
    */
   public void setTokenValidator(String value) throws YADAQueryConfigurationException 

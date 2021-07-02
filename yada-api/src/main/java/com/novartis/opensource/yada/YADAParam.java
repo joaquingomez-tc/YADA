@@ -14,6 +14,8 @@
  */
 package com.novartis.opensource.yada;
 
+import com.novartis.opensource.yada.security.YADASecuritySpec;
+
 /**
  * @author David Varon
  *
@@ -21,15 +23,27 @@ package com.novartis.opensource.yada;
 public class YADAParam
 {
 
+  /**
+   * Constant with value equal to: {@value}
+   */
+  public final static int    OVERRIDEABLE = 0;
+  
+  /**
+   * Constant with value equal to: {@value}
+   */
+  public final static int    NONOVERRIDABLE = 1;
+  
 	/**
 	 * Constant with value equal to: {@value}
+	 * @since 10.2.0
 	 */
-	public final static int    OVERRIDEABLE = 0;
+	public final static int    MUTABLE = 0;
 	
 	/**
 	 * Constant with value equal to: {@value}
+	 * @since 10.2.0
 	 */
-	public final static int    NONOVERRIDEABLE = 1;
+	public final static int    IMMUTABLE = 1;
 	
 	/**
 	 * Constant with value equal to: {@value}
@@ -58,7 +72,7 @@ public class YADAParam
 	private String  value;
 	
 	/**
-	 * The parameter mutation rule, either {@link #OVERRIDEABLE} or {@link #NONOVERRIDEABLE}
+	 * The parameter mutation rule, either {@link #MUTABLE} or {@link #IMMUTABLE}
 	 */
 	private int     rule; 
 	
@@ -101,7 +115,7 @@ public class YADAParam
 	 * @param target the parameter target, an app or query
 	 * @param name the parameter name
 	 * @param value the parameter value
-	 * @param rule the parameter mutability rule, {@link #OVERRIDEABLE} or {@link #NONOVERRIDEABLE}
+	 * @param rule the parameter mutability rule, {@link #MUTABLE} or {@link #IMMUTABLE}
 	 */
 	public YADAParam(String name, String value, String target, int rule)
 	{
@@ -116,7 +130,7 @@ public class YADAParam
    * @param target the parameter target, an app or query
    * @param name the parameter name
    * @param value the parameter value
-   * @param rule the parameter mutability rule, {@link #OVERRIDEABLE} or {@link #NONOVERRIDEABLE}  * @param isDefault
+   * @param rule the parameter mutability rule, {@link #MUTABLE} or {@link #IMMUTABLE}  * @param isDefault
    * @param isDefault set to {@code true} when the parameter is retrieved from the YADA index, defaults to {@code false}
    */
   public YADAParam(String name, String value, String target, int rule, boolean isDefault)
@@ -134,7 +148,7 @@ public class YADAParam
    * @param target the parameter target, an app or query
    * @param name the parameter name
    * @param value the parameter value
-   * @param rule the parameter mutability rule, {@link #OVERRIDEABLE} or {@link #NONOVERRIDEABLE}
+   * @param rule the parameter mutability rule, {@link #MUTABLE} or {@link #IMMUTABLE}
    */
   public YADAParam(int id,String name, String value, String target, int rule)
   {
@@ -151,7 +165,7 @@ public class YADAParam
    * @param target the parameter target, an app or query
    * @param name the parameter name
    * @param value the parameter value
-   * @param rule the parameter mutability rule, {@link #OVERRIDEABLE} or {@link #NONOVERRIDEABLE}  * @param isDefault
+   * @param rule the parameter mutability rule, {@link #MUTABLE} or {@link #IMMUTABLE}  * @param isDefault
    * @param isDefault set to {@code true} when the parameter is retrieved from the YADA index, defaults to {@code false}
    */
   public YADAParam(int id, String name, String value, String target, int rule, boolean isDefault)
@@ -214,7 +228,7 @@ public class YADAParam
 	}
 	/**
 	 * Standard accessor for variable.
-	 * @return the rule, either {@link #OVERRIDEABLE} or {@link #NONOVERRIDEABLE}
+	 * @return the rule, either {@link #MUTABLE} or {@link #IMMUTABLE}
 	 */
 	public int getRule()
 	{
