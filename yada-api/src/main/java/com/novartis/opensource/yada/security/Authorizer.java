@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +37,8 @@ import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
 import com.novartis.opensource.yada.YADAResourceException;
 import com.novartis.opensource.yada.YADASQLException;
-import com.novartis.opensource.yada.YADASecurityException;
+import com.novartis.opensource.yada.plugin.AbstractPostprocessor;
+import com.novartis.opensource.yada.plugin.YADAPluginException;
 import com.novartis.opensource.yada.util.YADAUtils;
 
 /**

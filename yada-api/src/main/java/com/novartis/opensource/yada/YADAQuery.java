@@ -47,6 +47,7 @@ import org.json.JSONObject;
 import com.novartis.opensource.yada.adaptor.Adaptor;
 import com.novartis.opensource.yada.adaptor.FileSystemAdaptor;
 import com.novartis.opensource.yada.adaptor.JDBCAdaptor;
+import com.novartis.opensource.yada.security.YADASecuritySpec;
 import com.novartis.opensource.yada.util.QueryUtils;
 
 /**
@@ -868,7 +869,7 @@ public class YADAQuery {
 		for(YADAParam param : this.yqParams)
 		{
 		  String key = param.getName();
-		  if(hasOverridableParam(key))
+		  if(hasMutableParam(key))
 		  {
 		    this.keys.get(key).add(param);
 	      if(param.getRule() != 0)
@@ -909,7 +910,7 @@ public class YADAQuery {
 		  list = new ArrayList<>();
 		  list.add(param);
       this.keys.put(key,list);
-      if(param.getRule() != YADAParam.OVERRIDEABLE)
+      if(param.getRule() != YADAParam.MUTABLE)
       {
         if(!hasImmutableParam(key))
         {
@@ -922,13 +923,13 @@ public class YADAQuery {
 		else if(isPluginParam(key)) // if it's a plugin, just add it straight away
 		{
 		  this.keys.get(key).add(param);
-      if(param.getRule() != YADAParam.OVERRIDEABLE)
+      if(param.getRule() != YADAParam.MUTABLE)
         this.immutableKeys.get(key).add(param);
     }
 		else if(isArgumentParam(key))
 		{
 			this.keys.get(key).add(param);
-			if(param.getRule() != YADAParam.OVERRIDEABLE)
+			if(param.getRule() != YADAParam.MUTABLE)
 				this.immutableKeys.get(key).add(param);
 		}
 		else
@@ -939,7 +940,7 @@ public class YADAQuery {
 	    if(!hasImmutableParam(key)) // this confirms no immutables (non-overrides)
 	    {
 		    this.keys.get(key).add(param);
-	      if(param.getRule() != YADAParam.OVERRIDEABLE)
+	      if(param.getRule() != YADAParam.MUTABLE)
 	        this.immutableKeys.get(key).add(param);
 	    }
 		}
@@ -961,7 +962,7 @@ public class YADAQuery {
 	 * @param val value of parameter
 	 */
 	public void addParam(String key,String val) {
-		YADAParam param = new YADAParam(key,val,this.getQname(), YADAParam.OVERRIDEABLE);
+		YADAParam param = new YADAParam(key,val,this.getQname(), YADAParam.MUTABLE);
 		addParam(param);
 	}
 	
@@ -1073,7 +1074,7 @@ public class YADAQuery {
 			  int idx = hMap.length() > 1 ? index : 0;
 			  param.setValue(hMap.getJSONObject(idx).toString());
 			}
-			if(!hasParam(key) || hasOverridableParam(key)) //TODO do we need this check, maybe this is bad?  Maybe we always want to replace?
+			if(!hasParam(key) || hasMutableParam(key)) //TODO do we need this check, maybe this is bad?  Maybe we always want to replace?
 			{
 				addParam(param);
 			}
@@ -1112,7 +1113,7 @@ public class YADAQuery {
 	 */
 	public void replaceParam(String key, String value) 
 	{
-		YADAParam param = new YADAParam(key, value, YADAParam.QUERY, YADAParam.OVERRIDEABLE);
+		YADAParam param = new YADAParam(key, value, YADAParam.QUERY, YADAParam.MUTABLE);
 		if(!hasParam(key))
 			replaceParam(param);
 		else
@@ -1126,7 +1127,7 @@ public class YADAQuery {
 	 * @param param parameter object containing replacement values
 	 */
 	public void replaceParam(YADAParam param) {
-		if(hasOverridableParam(param.getName()))
+		if(hasMutableParam(param.getName()))
 		{
 			Iterator<YADAParam> iter = getYADAQueryParams().iterator();
 			while(iter.hasNext()) 
@@ -1179,13 +1180,22 @@ public class YADAQuery {
   }
 	
 	/**
-	 * @since 4.0.0
+	 * @since 10.2.0
 	 * @param key parameter name to check
 	 * @return boolean true if stored parameter is overridable by url params (rule=0), otherwise false
 	 */
-	public boolean hasOverridableParam(String key) {
+	public boolean hasMutableParam(String key) {
 		return !hasImmutableParam(key) && this.keys.containsKey(key);
 	}
+	
+	/**
+   * @since 4.0.0
+   * @param key parameter name to check
+   * @return boolean true if stored parameter is overridable by url params (rule=0), otherwise false
+   */
+  public boolean hasOverridableParam(String key) {
+    return !hasImmutableParam(key) && this.keys.containsKey(key);
+  }
 	
 	/**
 	 * @since 9.3.6

@@ -83,8 +83,8 @@ import com.novartis.opensource.yada.YADAQueryConfigurationException;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
 import com.novartis.opensource.yada.YADAResourceException;
-import com.novartis.opensource.yada.YADASecurityException;
 import com.novartis.opensource.yada.format.YADAResponseException;
+import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.server.YADAServer;
 import com.novartis.opensource.yada.util.YADAUtils;
 

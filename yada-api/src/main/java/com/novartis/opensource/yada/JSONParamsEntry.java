@@ -98,7 +98,7 @@ public class JSONParamsEntry {
 		for(YADAParam param : this.params)
 		{
 			this.keys.put(param.getName(), param);
-			if(param.getRule() != YADAParam.OVERRIDEABLE)
+			if(param.getRule() != YADAParam.MUTABLE)
 				this.immutableKeys.put(param.getName(), param);
 		}
 	}
@@ -120,7 +120,7 @@ public class JSONParamsEntry {
 				String val = YADARequest.getParamValueForKey(jobj,frag);
 				if(val != null)
 				{
-					YADAParam param = new YADAParam(key,val,YADAParam.QUERY,YADAParam.OVERRIDEABLE);
+					YADAParam param = new YADAParam(key,val,YADAParam.QUERY,YADAParam.MUTABLE);
 					addParam(param);
 				}
 			}
@@ -272,7 +272,7 @@ public class JSONParamsEntry {
 	
 	/**
 	 * @param key the name of the parameter to check for immutabilitiy
-	 * @return {@code true} if there is a param with the name equal to {@code key} and a {@code rule} equal {@link YADAParam#NONOVERRIDEABLE}
+	 * @return {@code true} if there is a param with the name equal to {@code key} and a {@code rule} equal {@link YADAParam#IMMUTABLE}
 	 */
 	private boolean hasNonOverrideableParam(String key) {
 		return this.immutableKeys.containsKey(key);

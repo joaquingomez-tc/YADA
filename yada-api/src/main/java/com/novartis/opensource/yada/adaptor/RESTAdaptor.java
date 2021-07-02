@@ -64,8 +64,8 @@ import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADAQueryConfigurationException;
 import com.novartis.opensource.yada.YADAQueryResult;
 import com.novartis.opensource.yada.YADARequest;
-import com.novartis.opensource.yada.YADASecurityException;
-import com.novartis.opensource.yada.plugin.Authorization;
+import com.novartis.opensource.yada.security.Authorization;
+import com.novartis.opensource.yada.security.YADASecurityException;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -44,8 +44,8 @@ import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
 import com.novartis.opensource.yada.YADAResourceException;
 import com.novartis.opensource.yada.YADASQLException;
-import com.novartis.opensource.yada.YADASecurityException;
 import com.novartis.opensource.yada.YADAUnsupportedAdaptorException;
+import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.adaptor.YADAAdaptorException;
 import com.novartis.opensource.yada.adaptor.YADAAdaptorExecutionException;
 

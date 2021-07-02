@@ -15,7 +15,7 @@
 /**
  * 
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 /**
  * A simple POJO for transferring security policy metadata to the method applying the security policy.

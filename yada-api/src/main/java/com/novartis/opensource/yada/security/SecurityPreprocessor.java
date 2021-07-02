@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

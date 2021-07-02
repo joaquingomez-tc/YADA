@@ -1,11 +1,10 @@
 /**
  *
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 import com.novartis.opensource.yada.Finder;
 import com.novartis.opensource.yada.YADARequest;
-import com.novartis.opensource.yada.YADASecurityException;
 
 /**
  * @author Justin Finn

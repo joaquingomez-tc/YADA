@@ -46,6 +46,7 @@ import com.novartis.opensource.yada.plugin.Bypass;
 import com.novartis.opensource.yada.plugin.Postprocess;
 import com.novartis.opensource.yada.plugin.Preprocess;
 import com.novartis.opensource.yada.plugin.YADAPluginException;
+import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.util.FileUtils;
 import com.novartis.opensource.yada.util.QueryUtils;
 
@@ -976,7 +977,7 @@ public class Service {
             args   = plugin.substring(firstCommaIndex+1);
             plugin = plugin.substring(0, firstCommaIndex);
             // add a query parameter for the arg list
-            yp = new YADAParam(YADARequest.PS_ARGLIST, args, plugin, YADAParam.NONOVERRIDEABLE, true); 
+            yp = new YADAParam(YADARequest.PS_ARGLIST, args, plugin, YADAParam.IMMUTABLE, true); 
             yq.addParam(yp);
           }
 					l.debug("possible bypass plugin is["+plugin+"]");
@@ -1068,7 +1069,7 @@ public class Service {
 			      plugin = plugin.substring(0, firstCommaIndex);
 			      // add a query parameter for the arg list with the plugin class as the target
 			      // this will be detected later in the AbstractPreprocessor.engage method
-			      yp = new YADAParam(YADARequest.PS_ARGLIST, args, plugin, YADAParam.NONOVERRIDEABLE, true);
+			      yp = new YADAParam(YADARequest.PS_ARGLIST, args, plugin, YADAParam.IMMUTABLE, true);
 			      yq.addParam(yp);
           }
 			    // get the plugin class, instantiate it and engage it
@@ -1176,7 +1177,7 @@ public class Service {
             args   = plugin.substring(firstCommaIndex+1);
             plugin = plugin.substring(0, firstCommaIndex);
             // add a query parameter for the arg list
-            yp = new YADAParam(YADARequest.PS_ARGLIST, args, plugin, YADAParam.NONOVERRIDEABLE, true); 
+            yp = new YADAParam(YADARequest.PS_ARGLIST, args, plugin, YADAParam.IMMUTABLE, true); 
             yq.addParam(yp);
           }
 					l.debug("possible postprocess plugin is["+plugin+"]");

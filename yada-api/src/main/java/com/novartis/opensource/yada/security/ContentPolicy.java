@@ -12,9 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.novartis.opensource.yada.plugin;
-
-import com.novartis.opensource.yada.YADASecurityException;
+package com.novartis.opensource.yada.security;
 
 /**
  * @author Dave Varon

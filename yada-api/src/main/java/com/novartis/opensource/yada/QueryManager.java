@@ -374,7 +374,7 @@ public class QueryManager {
       {
         for (YADAQuery yq: noMap)
         {
-          YADAParam param = new YADAParam(YADARequest.PS_HARMONYMAP, "{}", YADAParam.QUERY, YADAParam.OVERRIDEABLE);
+          YADAParam param = new YADAParam(YADARequest.PS_HARMONYMAP, "{}", YADAParam.QUERY, YADAParam.MUTABLE);
           yq.addParam(param);
         }
       }

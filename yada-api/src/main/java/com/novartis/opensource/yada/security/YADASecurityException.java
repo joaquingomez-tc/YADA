@@ -15,7 +15,7 @@
 /**
  * 
  */
-package com.novartis.opensource.yada;
+package com.novartis.opensource.yada.security;
 
 import com.novartis.opensource.yada.plugin.YADAPluginException;
 
