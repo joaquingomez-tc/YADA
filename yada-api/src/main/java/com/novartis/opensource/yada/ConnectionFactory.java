@@ -415,7 +415,7 @@ public class ConnectionFactory {
           {
             l.debug("No props object expressed in param.");
           }
-          conf.put(YADA_CONF_APP, app);
+           conf.put(YADA_CONF_APP, app);
           
           if(src != null)
           {
@@ -705,7 +705,7 @@ public class ConnectionFactory {
     }
     catch (SQLException e)
     {
-      String msg = "There was a problem obtaining a JDBC Connection to [" + Finder.getYADAJndi()
+      String msg = "There was a problem obtaining a JDBC Connection to [" + app
           + "]. This could be caused by misconfiguration of the resource, recently changed credentials, or some other issue.";
       throw new YADAConnectionException(msg, e);
     }
