@@ -25,7 +25,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -165,9 +167,27 @@ public class Service {
         throw new YADARequestException(msg, e);
       }		  
 		}
+		else if(null != request.getHeader("Content-Type") 
+        && request.getHeader("Content-Type").startsWith("multipart/form-data"))
+		{
+		    l.info("multipart/form-data");
+		    try
+        {
+          for(Part p : request.getParts())
+          {
+            
+          }
+        }
+        catch (IOException | ServletException e)
+        {
+          throw new YADARequestException(e);
+        }
+		    
+		}
+		// could have "Content-Type: application/x-www-form-urlencoded"
 		else if(null != request.getParameterMap() && request.getParameterMap().size() > 0)
 		{
-		  handleRequest(request.getHeader("referer"), request.getParameterMap());
+		  handleRequest(request.getHeader("referer"), request.getParameterMap());		
 		}
 		else
 		{
