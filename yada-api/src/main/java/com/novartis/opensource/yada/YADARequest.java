@@ -1114,7 +1114,7 @@ public class YADARequest {
    *        different HTTP methods for
    *        {@link com.novartis.opensource.yada.adaptor.RESTAdaptor}
    */
-  private String                                 method       = ""; //METHOD_GET;
+  private String                                 method       = METHOD_GET;
   /**
    * Number of rows to return. Defaults to {@link #DEFAULT_PAGE_SIZE}
    */
