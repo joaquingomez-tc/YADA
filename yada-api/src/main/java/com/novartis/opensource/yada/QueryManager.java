@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -1088,6 +1090,66 @@ public class QueryManager {
           yq.addHttpHeader(name, httpHeaders.getString(name));
         }
       }      
+    }
+    
+    @SuppressWarnings("unchecked")
+    Map<String, Object> conf = (Map<String, Object>) ConnectionFactory.getConnectionFactory().getDsConf().get(yq.getApp());
+    Properties props = new Properties();
+    if(conf.containsKey(ConnectionFactory.YADA_CONF_PROPS))
+    {
+      for(String key : JSONObject.getNames((JSONObject)conf.get(ConnectionFactory.YADA_CONF_PROPS)))
+      {           
+        props.put(key, ((JSONObject)conf.get(ConnectionFactory.YADA_CONF_PROPS)).getString(key));            
+      }
+      String          paramStr = props.getProperty("params");
+      if (paramStr != null)
+      {
+        JSONArray yqp = new JSONArray(paramStr);
+        for (int i = 0; i < yqp.length(); i++)
+        {
+          JSONObject jo = yqp.getJSONObject(i);
+          YADAParam  yp = new YADAParam();
+          String     paramName = jo.getString("name");
+          String     paramVal  = jo.getString("value");
+          int        paramRule = jo.getInt("rule");
+          
+          for(String frag : YADAUtils.PARAM_FRAGS)
+          {
+            if(paramName.contentEquals(YADARequest.getParamKeyVal("PL_"+frag)) 
+                || paramName.contentEquals(YADARequest.getParamKeyVal("PS_"+frag)))
+            {
+              try
+              {
+                this.getYADAReq().invokeSetter(YADARequest.getParamKeyVal("PS_"+frag), paramVal);
+                break;
+              }
+              catch (YADARequestException e)
+              {
+                String msg = "Could not set request parameter from stored value";
+                throw new YADAQueryConfigurationException(msg, e);
+              }
+            }
+          }
+          
+          yp.setName(paramName);
+          yp.setValue(paramVal);
+          yp.setRule(paramRule);
+          
+          List<YADAParam> ypList = yq.getYADAQueryParamsForKey(paramName);
+          if(ypList.size() > 0)
+          {
+            YADAParam existingYp = ypList.get(0);
+            if(existingYp == null)
+              yq.addParam(yp);
+            else if(existingYp.getRule() == YADAParam.OVERRIDEABLE)
+              yq.getParam(paramName).get(0).setValue(paramVal);
+          }
+          else
+          {
+            yq.addParam(yp);
+          }
+        }
+      }
     }
     
     // TODO handle missing params exceptions here, throw YADARequestException

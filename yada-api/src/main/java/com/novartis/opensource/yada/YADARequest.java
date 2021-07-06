@@ -1114,7 +1114,7 @@ public class YADARequest {
    *        different HTTP methods for
    *        {@link com.novartis.opensource.yada.adaptor.RESTAdaptor}
    */
-  private String                                 method       = METHOD_GET;
+  private String                                 method       = ""; //METHOD_GET;
   /**
    * Number of rows to return. Defaults to {@link #DEFAULT_PAGE_SIZE}
    */
@@ -1311,6 +1311,8 @@ public class YADARequest {
    * Default constructor
    */
   public YADARequest() {
+    if(getRequest() != null)
+      setMethod(new String[] { request.getMethod() });
   }
 
   /**
@@ -1322,6 +1324,7 @@ public class YADARequest {
    *                              related to a parameter
    */
   public YADARequest(List<YADAParam> paramList) throws YADARequestException {
+    this();
     for (YADAParam param: paramList)
     {
       this.invokeSetter(param.getName(), param.getValue());

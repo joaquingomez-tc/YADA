@@ -1113,7 +1113,7 @@ public class YADAQuery {
 	public void replaceParam(String key, String value) 
 	{
 		YADAParam param = new YADAParam(key, value, YADAParam.QUERY, YADAParam.OVERRIDEABLE);
-		if(!hasParam(key))
+		if(hasParam(key))
 			replaceParam(param);
 		else
 			addParam(param);
