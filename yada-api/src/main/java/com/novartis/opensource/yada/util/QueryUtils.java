@@ -157,19 +157,19 @@ public class QueryUtils
 	/**
 	 * A constant equal to: {@value}
 	 */
-	public static final String RX_SELECT = "^SELECT.*";
+	public static final String RX_SELECT = "^(?:WITH.+)?SELECT.+";
 	/**
 	 * A constant equal to: {@value}
 	 */
-	public static final String RX_INSERT = "^INSERT.*";
+	public static final String RX_INSERT = "^INSERT.+";
 	/**
 	 * A constant equal to: {@value}
 	 */
-	public static final String RX_UPDATE = "^UPDATE.*";
+	public static final String RX_UPDATE = "^UPDATE.+";
 	/**
 	 * A constant equal to: {@value}
 	 */
-	public static final String RX_DELETE = "^DELETE.*";
+	public static final String RX_DELETE = "^DELETE.+";
 	/**
 	 * A constant equal to: {@code ^([^&lt;]+)((&lt;&lcub;1,2&rcub;)((?!rm|mkdir).+))*$ } 
 	 */
