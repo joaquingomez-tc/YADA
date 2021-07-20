@@ -1198,6 +1198,15 @@ public class YADAQuery {
   }
 
 	/**
+   * @since 4.0.0
+   * @param key parameter name to check
+   * @return boolean true if stored parameter is overridable by url params (rule=0), otherwise false
+   */
+  public boolean hasOverridableParam(String key) {
+    return !hasImmutableParam(key) && this.keys.containsKey(key);
+  }
+	
+	/**
 	 * @since 9.3.6
 	 * @param key parameter name to check
 	 * @return boolean true if stored parameter is not overridable by url params (rule=0), otherwise false

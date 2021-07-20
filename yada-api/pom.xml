@@ -6,7 +6,7 @@
     <artifactId>YADA</artifactId>
     <version>10.1.2-SNAPSHOT</version>
   </parent>
-  <artifactId>yada-api</artifactId>  
+  <artifactId>yada-api</artifactId>
   <url>http://github.com/Novartis/YADA</url>
   <distributionManagement>
     <site>
@@ -89,7 +89,7 @@
                 </configuration>
               </execution>
             </executions>
-          </plugin>          
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -160,9 +160,9 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <classpathPrefix>lib</classpathPrefix>    
+              <classpathPrefix>lib</classpathPrefix>
               <classpathLayoutType>custom</classpathLayoutType>
-              <customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>          
+              <customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
               <mainClass>com.novartis.opensource.yada.server.YADAServer</mainClass>
             </manifest>
             <manifestEntries>
@@ -181,7 +181,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>      
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -217,7 +217,7 @@
             <goals>
               <goal>run</goal>
             </goals>
-          </execution>            
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -246,7 +246,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.2.0</version>
         <configuration>
-          <detectJavaApiLink>false</detectJavaApiLink>          
+          <detectJavaApiLink>false</detectJavaApiLink>
         </configuration>
         <executions>
           <execution>
@@ -419,7 +419,7 @@
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
       <version>1.3.3</version>
-    </dependency>   
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -468,7 +468,7 @@
       <version>2.1.1</version> </dependency> -->
     <dependency>
       <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId> 
+      <artifactId>postgresql</artifactId>
     </dependency>
     <dependency>
       <groupId>com.amazon.redshift</groupId>
@@ -484,7 +484,7 @@
       <groupId>nl.javadude.assumeng</groupId>
       <artifactId>assumeng</artifactId>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>org.mozilla</groupId>
       <artifactId>rhino</artifactId>
@@ -500,7 +500,7 @@
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>3.4.5</version>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>javax.xml.soap</groupId>
       <artifactId>javax.xml.soap-api</artifactId>
