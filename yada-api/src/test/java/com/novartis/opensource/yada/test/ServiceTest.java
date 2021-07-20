@@ -53,8 +53,6 @@ import javax.xml.xpath.XPathFactory;
 import nl.javadude.assumeng.Assumption;
 import nl.javadude.assumeng.AssumptionListener;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -393,14 +391,20 @@ public class ServiceTest
     String[] params = null;
     for (int i = 0; i < paths.length; i++)
     {
-      params = (String[]) ArrayUtils.addAll(params, loadResource(paths[i]));
+      List<String> paramList = new ArrayList<>();
+      paramList.addAll(Arrays.asList(loadResource(paths[i])));
+      params = (String[]) paramList.toArray(new String[] {});
 
       if (engine != null)
       {
         String enginePath = paths[i].replace(".txt", "_" + engine + ".txt");
         String[] engineResources = loadResource(enginePath);
         if (engineResources != null)
-          params = (String[]) ArrayUtils.addAll(params, engineResources);
+        {
+          paramList = Arrays.asList(params);
+          paramList.addAll(Arrays.asList(engineResources));
+          params = (String[]) paramList.toArray();
+        }
       }
     }
     List<String> list = new ArrayList<>(Arrays.asList(params));
@@ -510,7 +514,11 @@ public class ServiceTest
       }
       else
       {
-        paraMap.put(param, (String[])ArrayUtils.add(vals, values.get(i)));
+        List<String> valList = new ArrayList<>();
+        if(vals.length > 0)
+          valList.addAll(Arrays.asList((String[]) vals));        
+        valList.add(values.get(i));
+        paraMap.put(param, valList.toArray(new String[] {}));
       }
       i++;
     }
@@ -1662,7 +1670,8 @@ public class ServiceTest
     JSONArray spec     = req.getHarmonyMap();
     String result      = svc.execute();
 
-    int qCount = StringUtils.countMatches(query,"qname") + StringUtils.countMatches(query,"q=");
+//    int qCount = StringUtils.countMatches(query,"qname") + StringUtils.countMatches(query,"q=");
+    int qCount = (query.split(Pattern.quote("qname"), -1).length - 1) + (query.split(Pattern.quote("q="), -1).length - 1);
     String line = null;
     int lineCount = 0;
     if (req.getFormat().equals(YADARequest.FORMAT_CSV))
@@ -1862,11 +1871,11 @@ public class ServiceTest
           for(String key : rowKeys)               // iterate over the row keys
           {
             if(key.matches("[A-Z]+"))            // upper case are spec vals
-              Assert.assertTrue(ArrayUtils.contains(currentSpecVals, key));  // row key is in current spec vals
+              Assert.assertTrue(Arrays.asList(currentSpecVals).indexOf(key) > -1);  // row key is in current spec vals
             else
             {
-              Assert.assertFalse(ArrayUtils.contains(currentSpecVals, key)); // row key is not current spec vals
-              Assert.assertFalse(ArrayUtils.contains(currentSpecKeys, key)); // row key is in current spec keys
+              Assert.assertFalse(Arrays.asList(currentSpecVals).indexOf(key) > -1); // row key is not current spec vals
+              Assert.assertFalse(Arrays.asList(currentSpecKeys).indexOf(key) > -1); // row key is in current spec keys
             }
           }
 
@@ -1876,13 +1885,13 @@ public class ServiceTest
             {
               try
               {
-                if(ArrayUtils.contains(intKeys, col))
+                if(Arrays.asList(intKeys).indexOf(col) > -1)
                   Assert.assertTrue(validateInteger(row.getString(col)));
-                else if(ArrayUtils.contains(floatKeys, col))
+                else if(Arrays.asList(floatKeys).indexOf(col) > -1)
                   Assert.assertTrue(validateNumber(row.getString(col)));
-                else if(ArrayUtils.contains(dateKeys, col))
+                else if(Arrays.asList(dateKeys).indexOf(col) > -1)
                   Assert.assertTrue(validateDate(row.getString(col)));
-                else if(ArrayUtils.contains(timeKeys, col))
+                else if(Arrays.asList(timeKeys).indexOf(col) > -1)
                   Assert.assertTrue(validateTime(row.getString(col)));
               }
               catch(ParseException e)

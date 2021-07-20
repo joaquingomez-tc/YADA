@@ -67,6 +67,13 @@ public abstract class AbstractPreprocessor
    * @since 7.0.0
    */
   private static final String PLUGIN_PKG = "com.novartis.opensource.yada.plugin.";
+  
+  /**
+   * Constant equal to {@value}
+   * 
+   * @since 10.2.0
+   */
+  private static final String SECURITY_PKG = "com.novartis.opensource.yada.security.";
 
   /**
    * Constant equal to {@value}
@@ -317,7 +324,7 @@ public abstract class AbstractPreprocessor
           // test for existing policy config
           if((boolean) spec.getClass().getMethod(method).invoke(spec))
           {
-            plugin = Class.forName(PLUGIN_PKG + iface);
+            plugin = Class.forName(SECURITY_PKG + iface);
             if (plugin.isAssignableFrom(getClass()))
             {
               setSecurityPolicy(this);

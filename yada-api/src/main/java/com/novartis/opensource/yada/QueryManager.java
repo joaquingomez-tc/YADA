@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,7 +34,6 @@ import javax.servlet.http.Cookie;
 import javax.xml.soap.SOAPConnection;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1052,11 +1052,13 @@ public class QueryManager {
     if (getJsonParams() != null)
     {
       String qpath = yq.getApp() + "/" + yq.getQname();
-      index = ArrayUtils.indexOf(getJsonParams().getKeys(), qpath);
+      index = Arrays.asList(getJsonParams().getKeys()).indexOf(qpath);
+//      index = ArrayUtils.indexOf(getJsonParams().getKeys(), qpath);
     }
     if(index == -1)
     {
-      index = ArrayUtils.indexOf(getJsonParams().getKeys(), yq.getQname());
+      index = Arrays.asList(getJsonParams().getKeys()).indexOf(yq.getQname());
+//      index = ArrayUtils.indexOf(getJsonParams().getKeys(), yq.getQname());
     }
     // get request params that pertain to the query
     // at this point all default source and query params have set in the queries

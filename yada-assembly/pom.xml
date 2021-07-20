@@ -197,7 +197,7 @@
             <directory>${basedir}/src/main/resources/conf</directory>
             <filtering>${filtering}</filtering>
             <includes>
-              <include>ehcache.xml</include>
+              <!-- <include>ehcache.xml</include> -->
               <include>log4j.properties</include>
               <include>YADA.properties</include>
             </includes>
@@ -247,7 +247,7 @@
         <directory>${basedir}/src/main/resources/conf</directory>
         <filtering>${filtering}</filtering>
         <includes>
-          <include>ehcache.xml</include>
+          <!-- <include>ehcache.xml</include> -->
           <include>log4j.properties</include>
           <include>YADA.properties</include>
         </includes>
@@ -400,6 +400,7 @@
     <dependency>
       <groupId>nl.javadude.assumeng</groupId>
       <artifactId>assumeng</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

@@ -342,7 +342,7 @@ public class Authorizer extends AbstractPostprocessor implements Authorization {
           if (hasToken())
           {
             // add identity to cache using token as key
-            this.setCacheEntry(YADA_IDENTITY_CACHE, (String) this.getToken(), id, YADA_IDENTITY_TTL);
+            this.setCacheEntry((String) this.getToken(), id);
             obtainedtoken = true;
           }
         }
@@ -592,7 +592,7 @@ public class Authorizer extends AbstractPostprocessor implements Authorization {
    * @return the {@link #identity} object from the {@link Authorization#YADA_IDENTITY_CACHE}
    */
   public Object obtainIdentity() {
-    Object result = getCacheEntry(YADA_IDENTITY_CACHE, (String) this.getToken());
+    Object result = getCacheEntry((String) this.getToken());
     return result;
   }
 

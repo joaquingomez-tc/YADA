@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -227,6 +226,11 @@ public class YADARequest {
    * A constant equal to: {@value}
    */
   public static final String PLUGIN_PKG            = "com.novartis.opensource.yada.plugin";
+  /**
+   * A constant equal to: {@value}
+   * @since 10.2.0
+   */
+  public static final String SECURITY_PKG          = "com.novartis.opensource.yada.security";
   /**
    * A constant equal to: {@value}. {@code Override/override} was renamed
    * {@code bypass}
@@ -2892,7 +2896,8 @@ public class YADARequest {
       this.plugin[i] = pluginConfig[0];
       if (pluginConfig.length > 1) // there's args
       {
-        String[] args = (String[]) ArrayUtils.remove(pluginConfig, 0);
+//        String[] args = (String[]) ArrayUtils.remove(pluginConfig, 0);
+        String[] args = Arrays.copyOfRange(pluginConfig, 1, pluginConfig.length);
         this.addPluginArgs(new LinkedList<>(Arrays.asList(args)));
       }
       else
@@ -3988,7 +3993,7 @@ public class YADARequest {
 
   private String getFormattedDebugString(String name, String[] strings) {
     String sSet = "Set [" + name + "]";
-    String sVal = "[" + ArrayUtils.toString(strings) + "]";
+    String sVal = "{"+String.join(",", strings)+"}";
     return String.format("%25s to %s", sSet, sVal);
   }
 }

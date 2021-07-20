@@ -20,9 +20,14 @@
       </excludes>
     </dependencySet>
     <dependencySet>
-      <outputDirectory>lib</outputDirectory>            
+      <outputDirectory>lib</outputDirectory>        
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>         
       <excludes>
         <exclude>${project.groupId}:yada-api:*</exclude>
+        <exclude>org.hsqldb:hsqldb:*</exclude>
+        <exclude>org.renjin:*:*</exclude>
+        <exclude>org.renjin.cran:*:*</exclude>
+        <exclude>org.mozilla:rhino:*</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>  

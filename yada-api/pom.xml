@@ -103,7 +103,7 @@
         <directory>${basedir}/src/main/resources/conf</directory>
         <filtering>true</filtering>
         <includes>
-          <include>ehcache.xml</include>
+          <!-- <include>ehcache.xml</include> -->
           <include>log4j.properties</include>
           <include>YADA.properties</include>
         </includes>
@@ -160,7 +160,9 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <classpathPrefix>lib</classpathPrefix>
+              <classpathPrefix>lib</classpathPrefix>    
+              <classpathLayoutType>custom</classpathLayoutType>
+              <customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>          
               <mainClass>com.novartis.opensource.yada.server.YADAServer</mainClass>
             </manifest>
             <manifestEntries>
@@ -312,7 +314,7 @@
             <link>https://commons.apache.org/proper/commons-lang/javadocs/api-2.4</link>
             <link>https://commons.apache.org/proper/commons-logging/javadocs/api-1.1.3</link>
 
-            <link>http://ehcache.org/apidocs/2.9</link>
+            <!-- <link>http://ehcache.org/apidocs/2.9</link> -->
             <link>http://www.slf4j.org/api</link>
             <link>https://xerces.apache.org/xerces2-j/javadocs/api</link>
             <link>http://logging.apache.org/log4j/1.2/apidocs</link>
@@ -403,41 +405,21 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.9.10.5</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
       <version>2.9.2</version>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20140107</version>
     </dependency>
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.9</version>
-    </dependency>
-    <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
       <version>1.3.3</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ehcache</groupId>
-      <artifactId>ehcache</artifactId>
-      <version>3.9.4</version>
-    </dependency>
+    </dependency>   
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -448,11 +430,6 @@
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.7.7</version>
     </dependency>
-   <!--  <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>1.4.01</version>
-    </dependency> -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -469,11 +446,6 @@
       <version>1.1</version>
       <scope>provided</scope>
     </dependency>
-    <!-- <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency> -->
     <!-- You'll need to install this jar manually in your maven repo -->
     <!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId>
       <version>4.0</version> <scope>test</scope> </dependency> -->
@@ -522,35 +494,13 @@
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>2.3.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>sqltool</artifactId>
-      <version>2.3.4</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>3.4.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-java</artifactId>
-      <version>3.0.0-beta3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-chrome-driver</artifactId>
-      <version>3.0.0-beta2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-firefox-driver</artifactId>
-      <version>3.0.0-beta2</version>
-      <scope>test</scope>
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>javax.xml.soap</groupId>
       <artifactId>javax.xml.soap-api</artifactId>
@@ -616,11 +566,11 @@
       <artifactId>jetty-rewrite</artifactId>
       <version>10.0.3</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-ri</artifactId>
       <version>2.3.2</version>
       <type>pom</type>
-    </dependency>
+    </dependency> -->
   </dependencies>
 </project>

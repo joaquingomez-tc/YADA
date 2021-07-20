@@ -539,7 +539,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
    * @since 9.2.0
    */
   private HttpRequestInitializer setAuthenticationOAuth2(GenericUrl url) throws YADASecurityException {
-    Credential credential = (Credential) getCacheEntry(YADA_CREDENTIAL_CACHE, oauth2.getString(OAUTH2_CLIENTID));
+    Credential credential = (Credential) getCacheEntry(oauth2.getString(OAUTH2_CLIENTID));
     if (credential == null)
     {
       HttpContent        content        = null;
@@ -564,8 +564,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
         tr.setScope(oauth2.getString(OAUTH2_SCOPE));
         tr.setTokenType(tokenResponse.getString(OAUTH2_TOKENTYPE));
         credential = new Credential(BearerToken.authorizationHeaderAccessMethod()).setFromTokenResponse(tr);
-        setCacheEntry(YADA_CREDENTIAL_CACHE, oauth2.getString(OAUTH2_CLIENTID), credential,
-            tokenResponse.getInt(OAUTH2_EXPIRESIN));
+        setCacheEntry(oauth2.getString(OAUTH2_CLIENTID), credential);
       }
       catch (IOException | JSONException | YADAAdaptorExecutionException e)
       {

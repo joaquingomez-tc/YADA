@@ -33,6 +33,7 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.novartis.opensource.yada.Finder;
 import com.novartis.opensource.yada.YADARequest;
+import com.novartis.opensource.yada.security.IdentityCache;
 
 
 /**
@@ -88,6 +89,11 @@ public class YADAServer {
    * Constant equal to {@value}. Used for setting keystore path
    */
   public final static String YADA_REPOSITORY = "YADA.repository";
+  
+  /**
+   * 
+   */
+  private final static IdentityCache YADA_IDENTITY_CACHE = new IdentityCache();
 
   /**
    * 
@@ -297,5 +303,12 @@ public class YADAServer {
     return getProperties().get(YADA_SERVER_HTTPS_PORT) != null
         && getProperties().get(YADA_SERVER_KEYSTORE_PATH) != null
         && getProperties().get(YADA_SERVER_KEYSTORE_SECRET) != null;
+  }
+
+  /**
+   * @return
+   */
+  public static IdentityCache getIdentityCache() {
+    return YADA_IDENTITY_CACHE;
   }
 }

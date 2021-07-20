@@ -1005,10 +1005,24 @@ public class Service {
 					{
 						try
 						{
-							Class<?> pluginClass = plugin.indexOf(YADARequest.PLUGIN_PKG) > -1 
-									? Class.forName(plugin) 
-									: Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
-							Class<?> bypass = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.BYPASS);
+						  Class<?> pluginClass = null;
+	            Class<?> bypass = null;
+	            if(plugin.indexOf(YADARequest.SECURITY_PKG) > -1 || plugin.indexOf(YADARequest.PLUGIN_PKG) > -1)
+	            {
+	              pluginClass = Class.forName(plugin); 
+	            }
+	            else
+	            {
+	              try
+	              {
+	                pluginClass = Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
+	              }
+	              catch(ClassNotFoundException e)
+	              {
+	                pluginClass = Class.forName(YADARequest.SECURITY_PKG + "." + plugin);              
+	              }
+	            }
+	            bypass = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.BYPASS);
 							if (pluginClass != null)
 							{
 								if(bypass.isAssignableFrom(pluginClass)) // this checks plugin type
@@ -1098,10 +1112,24 @@ public class Service {
 					{
 						try
 						{
-							Class<?> pluginClass = plugin.indexOf(YADARequest.PLUGIN_PKG) > -1 
-									? Class.forName(plugin) 
-									: Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
-							Class<?> preproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.PREPROCESS);
+						  Class<?> pluginClass = null;
+	            Class<?> preproc = null;
+	            if(plugin.indexOf(YADARequest.SECURITY_PKG) > -1 || plugin.indexOf(YADARequest.PLUGIN_PKG) > -1)
+	            {
+	              pluginClass = Class.forName(plugin); 
+	            }
+	            else
+	            {
+	              try
+	              {
+	                pluginClass = Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
+	              }
+	              catch(ClassNotFoundException e)
+	              {
+	                pluginClass = Class.forName(YADARequest.SECURITY_PKG + "." + plugin);
+	              }
+	            }
+	            preproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.PREPROCESS);
 							
 							if(preproc.isAssignableFrom(pluginClass)) 
 							{
@@ -1205,10 +1233,24 @@ public class Service {
 					{
 						try
 						{
-							Class<?> pluginClass = plugin.indexOf(YADARequest.PLUGIN_PKG) > -1 
-									? Class.forName(plugin) 
-									: Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
-							Class<?> postproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.POSTPROCESS);
+						  Class<?> pluginClass = null;
+	            Class<?> postproc = null;
+	            if(plugin.indexOf(YADARequest.SECURITY_PKG) > -1 || plugin.indexOf(YADARequest.PLUGIN_PKG) > -1)
+	            {
+	              pluginClass = Class.forName(plugin); 
+	            }
+	            else
+	            {
+	              try
+	              {
+	                pluginClass = Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
+	              }
+	              catch(ClassNotFoundException e)
+	              {
+	                pluginClass = Class.forName(YADARequest.SECURITY_PKG + "." + plugin);              
+	              }
+	            }
+	            postproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.POSTPROCESS);
 							if(postproc.isAssignableFrom(pluginClass)) 
 							{
 								l.info("Found a POSTPROCESS plugin with the classname ["+plugin+"]");
@@ -1273,10 +1315,24 @@ public class Service {
 				{
 					try
 					{
-						Class<?> pluginClass = plugin.indexOf(YADARequest.PLUGIN_PKG) > -1 
-								? Class.forName(plugin) 
-								: Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
-						Class<?> bypass = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.BYPASS);
+					  Class<?> pluginClass = null;
+            Class<?> bypass = null;
+            if(plugin.indexOf(YADARequest.SECURITY_PKG) > -1 || plugin.indexOf(YADARequest.PLUGIN_PKG) > -1)
+            {
+              pluginClass = Class.forName(plugin); 
+            }
+            else
+            {
+              try
+              {
+                pluginClass = Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
+              }
+              catch(ClassNotFoundException e)
+              {
+                pluginClass = Class.forName(YADARequest.SECURITY_PKG + "." + plugin);              
+              }
+            }
+            bypass = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.BYPASS);
 						if (pluginClass != null)
 						{
 							if(bypass.isAssignableFrom(pluginClass)) // this checks plugin type
@@ -1342,10 +1398,24 @@ public class Service {
 				{
 					try
 					{
-						Class<?> pluginClass = plugin.indexOf(YADARequest.PLUGIN_PKG) > -1 
-								? Class.forName(plugin) 
-								: Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
-						Class<?> preproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.PREPROCESS);
+					  Class<?> pluginClass = null;
+					  Class<?> preproc = null;
+					  if(plugin.indexOf(YADARequest.SECURITY_PKG) > -1 || plugin.indexOf(YADARequest.PLUGIN_PKG) > -1)
+					  {
+					    pluginClass = Class.forName(plugin); 
+					  }
+					  else
+					  {
+					    try
+					    {
+					      pluginClass = Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
+					    }
+					    catch(ClassNotFoundException e)
+					    {
+					      pluginClass = Class.forName(YADARequest.SECURITY_PKG + "." + plugin);
+					    }
+					  }
+						preproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.PREPROCESS);
 						
 						if(preproc.isAssignableFrom(pluginClass)) 
 						{
@@ -1363,62 +1433,20 @@ public class Service {
 									this.qMgr.releaseResources();
 									this.qMgr = new QueryManager(getYADARequest());
 								} 
-								catch (YADAQueryConfigurationException e)
+								catch (YADAQueryConfigurationException|YADAResourceException|YADAConnectionException
+								    |YADAFinderException|YADAUnsupportedAdaptorException|YADARequestException
+								    |YADAAdaptorException|YADAParserException e)
 								{
 									String msg = "Unable to reinitialize QueryManager with new parameters.";
 									throw new YADAPluginException(msg, e);
-								} 
-								catch (YADAResourceException e)
-								{
-									String msg = "Unable to reinitialize QueryManager with new parameters.";
-									throw new YADAPluginException(msg, e);
-								} 
-								catch (YADAConnectionException e)
-								{
-									String msg = "Unable to reinitialize QueryManager with new parameters.";
-									throw new YADAPluginException(msg, e);
-								} 
-								catch (YADAFinderException e)
-								{
-									String msg = "Unable to reinitialize QueryManager with new parameters.";
-									throw new YADAPluginException(msg, e);
-								} 
-								catch (YADAUnsupportedAdaptorException e)
-								{
-									String msg = "Unable to reinitialize QueryManager with new parameters.";
-									throw new YADAPluginException(msg, e);
-								} 
-								catch (YADARequestException e)
-								{
-									String msg = "Unable to reinitialize QueryManager with new parameters.";
-									throw new YADAPluginException(msg, e);
-								} 
-								catch (YADAAdaptorException e)
-								{
-									String msg = "Unable to reinitialize QueryManager with new parameters.";
-									throw new YADAPluginException(msg, e);
-								} 
-								catch (YADAParserException e)
-								{
-									String msg = "Unable to reinitialize QueryManager with new parameters.";
-									throw new YADAPluginException(msg, e);
-								}
+								} 								
 							}
-							catch(InstantiationException|NoSuchMethodException|InvocationTargetException e)
+							catch(InstantiationException|NoSuchMethodException|InvocationTargetException
+							    |IllegalAccessException|ClassCastException e)
 							{
 								String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
 								throw new YADAPluginException(msg,e);
-							}
-							catch(IllegalAccessException e)
-							{
-								String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
-								throw new YADAPluginException(msg,e);
-							}
-							catch(ClassCastException e)
-							{
-								String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
-								throw new YADAPluginException(msg,e);
-							} 
+							}							
 						}
 						else
 						{
@@ -1429,7 +1457,6 @@ public class Service {
 					{
 						String msg = "Could not find any plugin with the classname ["+plugin+"]"; 
 						l.error(msg,e);
-//						throw new YADAPluginException(msg,e);
 					}
 				}
 			}
@@ -1454,12 +1481,27 @@ public class Service {
 				l.debug("possible postprocess plugin is["+plugin+"]");
 				if (null != plugin && !"".equals(plugin))
 				{
-					try
-					{
-						Class<?> pluginClass = plugin.indexOf(YADARequest.PLUGIN_PKG) > -1 
-								? Class.forName(plugin) 
-								: Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
-						Class<?> postproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.POSTPROCESS);
+				  try
+          {
+            Class<?> pluginClass = null;
+            Class<?> postproc = null;
+            if(plugin.indexOf(YADARequest.SECURITY_PKG) > -1 || plugin.indexOf(YADARequest.PLUGIN_PKG) > -1)
+            {
+              pluginClass = Class.forName(plugin); 
+            }
+            else
+            {
+              try
+              {
+                pluginClass = Class.forName(YADARequest.PLUGIN_PKG + "." + plugin);
+              }
+              catch(ClassNotFoundException e)
+              {
+                pluginClass = Class.forName(YADARequest.SECURITY_PKG + "." + plugin);              
+              }
+            }
+            postproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.POSTPROCESS);
+
 						if(postproc.isAssignableFrom(pluginClass)) 
 						{
 							l.info("Found a POSTPROCESS plugin with the classname ["+plugin+"]");
@@ -1470,21 +1512,12 @@ public class Service {
 								  getYADARequest().setArgs(getYADARequest().getPluginArgs().get(i));
 								lResult = ((Postprocess)plugObj).engage(getYADARequest(), lResult);
 							}
-							catch(InstantiationException|NoSuchMethodException|InvocationTargetException e)
+							catch(InstantiationException|NoSuchMethodException|InvocationTargetException 
+							    |IllegalAccessException|ClassCastException e)
 							{
 								String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
 								throw new YADAPluginException(msg,e);
-							}
-							catch(IllegalAccessException e)
-							{
-								String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
-								throw new YADAPluginException(msg,e);
-							}
-							catch(ClassCastException e)
-							{
-								String msg = "Unable to instantiate plugin for class "+pluginClass.getName();
-								throw new YADAPluginException(msg,e);
-							}
+							}							
 						}
 						else
 						{
@@ -1495,7 +1528,6 @@ public class Service {
 					{
 						String msg = "Could not find any plugin with the classname ["+plugin+"]";
 						l.error(msg);
-//						throw new YADAPluginException(msg,e);
 					}
 				}
 			}

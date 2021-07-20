@@ -51,8 +51,6 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.ValuesList;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.novartis.opensource.yada.ConnectionFactory;
@@ -157,19 +155,19 @@ public class QueryUtils
 	/**
 	 * A constant equal to: {@value}
 	 */
-	public static final String RX_SELECT = "^SELECT.*";
+	public static final String RX_SELECT = "^(?:WITH.+)?SELECT.+";
 	/**
 	 * A constant equal to: {@value}
 	 */
-	public static final String RX_INSERT = "^INSERT.*";
+	public static final String RX_INSERT = "^INSERT.+";
 	/**
 	 * A constant equal to: {@value}
 	 */
-	public static final String RX_UPDATE = "^UPDATE.*";
+	public static final String RX_UPDATE = "^UPDATE.+";
 	/**
 	 * A constant equal to: {@value}
 	 */
-	public static final String RX_DELETE = "^DELETE.*";
+	public static final String RX_DELETE = "^DELETE.+";
 	/**
 	 * A constant equal to: {@code ^([^&lt;]+)((&lt;&lcub;1,2&rcub;)((?!rm|mkdir).+))*$ } 
 	 */
@@ -1572,14 +1570,14 @@ public class QueryUtils
 			char[]               dataTypes = yq.getDataTypes(row);
 			Matcher matcher;
 
-			l.debug("Processing inColumns [" + StringUtils.join(inColumns, ",") + "]");
+			l.debug("Processing inColumns [" + String.join(",",inColumns) + "]");
 			for (String in : inColumns)
 			{
 				int colIndex = -1, j = 0;
 				String inCol = in.toUpperCase(); 
 
 				// get the index of the 'incolumn' in the 'JDBCcolumns' array
-				l.debug("Looking for column [" + inCol + "] in columns array " + ArrayUtils.toString(columns));
+				l.debug("Looking for column [" + inCol + "] in columns array " + "{"+String.join(",", columns)+"}");
 				while (j < columns.length && colIndex != j)
 				{
 					if (inCol.contains(columns[j]))
@@ -1650,9 +1648,12 @@ public class QueryUtils
 							if (m == colIndex) // it's the first index
 								inData = data.get(colNames[m]);
 							else
-								// further indexes must build aggregate array
-								inData = (String[])ArrayUtils.addAll(	inData,
-																											data.get(colNames[m]));
+							{	
+							  // further indexes must build aggregate array
+  							List<String> inDataList = Arrays.asList(inData);
+  							inDataList.addAll(Arrays.asList(data.get(colNames[m])));
+  		          inData = (String[]) inDataList.toArray();
+							}
 						}
 
 						for (int m = 0; m < columns.length; m++)
@@ -1671,7 +1672,7 @@ public class QueryUtils
 							yq.getData().set(row, newData);
 						}
 					}
-					l.debug("Setting IN args [" + ArrayUtils.toString(inData) + "]");
+					l.debug("Setting IN args [{" + String.join(",", inData) + "}]");
 				}
 				if (inData != null)
 				{
@@ -1691,7 +1692,7 @@ public class QueryUtils
 					{
 						pList[k] = dtStr;
 					}
-					String pListStr = StringUtils.join(pList, ",");
+					String pListStr = String.join(",",pList);
 					l.debug("New parameter list [" + pListStr + "]");
 
 					// add additional parameters to coreSql

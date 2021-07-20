@@ -340,7 +340,7 @@ public class Gatekeeper extends AbstractPreprocessor {
    * @since 8.7.6
    */
   public Object obtainIdentity() {
-    Object result = getCacheEntry(YADA_IDENTITY_CACHE, (String) this.getToken());
+    Object result = getCacheEntry((String) this.getToken());
     return result;
   }
 
