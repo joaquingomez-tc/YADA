@@ -55,7 +55,8 @@ import nl.javadude.assumeng.AssumptionListener;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -115,7 +116,7 @@ public class ServiceTest
   /**
    * Local logger handle
    */
-  private static Logger l = Logger.getLogger(ServiceTest.class);
+  private static Logger l = LoggerFactory.getLogger(ServiceTest.class);
   /**
    * Constant ref to <code>log.stdout</code> system property.  When present or true, prints qname and result to console during testing.  This is useful for troubleshooting but otherwise a pain.
    */
@@ -839,7 +840,7 @@ public class ServiceTest
         {
           result.append(line);
         }
-        l.debug(result);
+        l.debug(result.toString());
         this.secData = new JSONObject(result.toString());
       }
     }

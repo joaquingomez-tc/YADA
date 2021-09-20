@@ -3,7 +3,8 @@ package com.novartis.opensource.yada.plugin;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADARequest;
@@ -18,7 +19,7 @@ public class SourceExchanger extends AbstractPreprocessor{
 	/**
 	 * Local logger handle
 	 */
-	private static final Logger LOG = Logger.getLogger(SourceExchanger.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SourceExchanger.class);
 
 	@Override	
 	public YADARequest engage(YADARequest yadaReq) throws YADAPluginException

@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -47,7 +48,7 @@ public class Joiner {
   /**
    * Local logger handle
    */
-  private static Logger     l     = Logger.getLogger(Joiner.class);
+  private static Logger     l     = LoggerFactory.getLogger(Joiner.class);
   
   /**
    * The array of {@link YADAQueryResult} objects currently processed by the {@link Response}

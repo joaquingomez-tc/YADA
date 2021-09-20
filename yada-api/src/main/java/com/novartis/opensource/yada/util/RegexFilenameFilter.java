@@ -17,7 +17,8 @@ package com.novartis.opensource.yada.util;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of {@link java.io.FilenameFilter} enabling use of a Regular Expression as filter criteria.
@@ -30,7 +31,7 @@ public class RegexFilenameFilter implements FilenameFilter {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(RegexFilenameFilter.class);
+	private static Logger l = LoggerFactory.getLogger(RegexFilenameFilter.class);
 	
 	/**
 	 * Default regular expression (any string): {@code "^.*$"}

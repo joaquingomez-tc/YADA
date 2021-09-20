@@ -14,7 +14,8 @@
  */
 package com.novartis.opensource.yada.adaptor;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONObject;
 
 import com.novartis.opensource.yada.YADARequest;
@@ -29,7 +30,7 @@ public class SQLServerAdaptor extends JDBCAdaptor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(SQLServerAdaptor.class);
+	private static Logger l = LoggerFactory.getLogger(SQLServerAdaptor.class);
 	/**
 	 * Default constructor
 	 */

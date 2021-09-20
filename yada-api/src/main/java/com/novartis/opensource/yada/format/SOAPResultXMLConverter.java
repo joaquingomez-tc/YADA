@@ -23,7 +23,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
@@ -45,7 +46,7 @@ public class SOAPResultXMLConverter extends AbstractConverter
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = Logger.getLogger(RESTResultJSONConverter.class);
+	private static Logger l = LoggerFactory.getLogger(RESTResultJSONConverter.class);
 
   /**
    * Java XML API component

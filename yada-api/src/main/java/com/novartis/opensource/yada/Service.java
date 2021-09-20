@@ -31,7 +31,8 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,7 +71,7 @@ public class Service {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(Service.class);
+	private static Logger l = LoggerFactory.getLogger(Service.class);
 	/**
 	 * Constant equal to: {@value}
 	 */

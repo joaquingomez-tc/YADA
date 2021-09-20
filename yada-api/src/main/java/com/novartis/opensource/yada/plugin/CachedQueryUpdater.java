@@ -20,7 +20,8 @@ package com.novartis.opensource.yada.plugin;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONObject;
 
 import com.novartis.opensource.yada.ConnectionFactory;
@@ -46,7 +47,7 @@ public class CachedQueryUpdater extends AbstractPostprocessor
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(CachedQueryUpdater.class);
+	private static Logger l = LoggerFactory.getLogger(CachedQueryUpdater.class);
 	/**
 	 * Constant with value equal to: {@value}
 	 */

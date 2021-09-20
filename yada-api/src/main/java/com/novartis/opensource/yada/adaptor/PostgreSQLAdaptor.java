@@ -14,7 +14,8 @@
  */
 package com.novartis.opensource.yada.adaptor;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.YADARequest;
 
@@ -29,7 +30,7 @@ public class PostgreSQLAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(PostgreSQLAdaptor.class);
+	private static Logger l = LoggerFactory.getLogger(PostgreSQLAdaptor.class);
 	
 	/**
 	 * Default subclass constructor (calls {@code super()}

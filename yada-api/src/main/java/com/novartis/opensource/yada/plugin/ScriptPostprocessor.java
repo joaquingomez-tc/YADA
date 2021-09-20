@@ -25,7 +25,8 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 import java.net.HttpCookie;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.Finder;
 import com.novartis.opensource.yada.YADARequest;
@@ -41,7 +42,7 @@ public class ScriptPostprocessor extends AbstractPostprocessor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(ScriptPostprocessor.class);
+	private static Logger l = LoggerFactory.getLogger(ScriptPostprocessor.class);
 	/**
 	 * Constant equal to: {@value}
 	 */

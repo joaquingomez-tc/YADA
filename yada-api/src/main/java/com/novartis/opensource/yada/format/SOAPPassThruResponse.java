@@ -14,7 +14,8 @@
  */
 package com.novartis.opensource.yada.format;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A stub implementation of a pass-thru enabling SOAP queries to retrieve only the content provided by the endpoint.
@@ -30,6 +31,6 @@ public class SOAPPassThruResponse extends AbstractResponse
    * Local logger handle
    */
 	@SuppressWarnings("unused")
-	private static Logger l = Logger.getLogger(SOAPPassThruResponse.class);
+	private static Logger l = LoggerFactory.getLogger(SOAPPassThruResponse.class);
 	//TODO implement this class
 }

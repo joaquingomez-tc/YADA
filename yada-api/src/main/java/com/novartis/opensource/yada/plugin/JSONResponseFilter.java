@@ -7,7 +7,8 @@ import com.novartis.opensource.yada.YADARequest;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +26,7 @@ public class JSONResponseFilter extends AbstractPostprocessor {
   /**
    * local logger
    */
-  private final static Logger l = Logger.getLogger(JSONResponseFilter.class);
+  private final static Logger l = LoggerFactory.getLogger(JSONResponseFilter.class);
 
   /**
    * Null constructor 

@@ -53,7 +53,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,7 +102,7 @@ public class Gatekeeper extends AbstractPreprocessor {
   /**
    * Local logger handle
    */
-  private static final Logger LOG = Logger.getLogger(Gatekeeper.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Gatekeeper.class);
 
   /**
    * Constant equal to {@value}

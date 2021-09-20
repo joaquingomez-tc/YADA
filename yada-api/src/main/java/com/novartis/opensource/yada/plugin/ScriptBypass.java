@@ -20,7 +20,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.Finder;
 import com.novartis.opensource.yada.YADARequest;
@@ -36,7 +37,7 @@ public class ScriptBypass extends AbstractBypass {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(ScriptBypass.class);
+	private static Logger l = LoggerFactory.getLogger(ScriptBypass.class);
 	
 	/**
 	 * Enables the execution of a script stored in the {@code yada.bin} directory.

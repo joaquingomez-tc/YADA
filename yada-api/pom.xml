@@ -104,7 +104,7 @@
         <filtering>true</filtering>
         <includes>
           <include>ehcache.xml</include>
-          <include>log4j.properties</include>
+          <include>jetty-logging.properties</include>
           <include>YADA.properties</include>
         </includes>
       </resource>
@@ -121,7 +121,7 @@
         <filtering>true</filtering>
         <targetPath>conf</targetPath>
         <excludes>
-          <exclude>log4j.properties</exclude>
+          <exclude>jetty-logging.properties</exclude>
           <exclude>YADA*.properties</exclude>
         </excludes>
       </testResource>
@@ -129,7 +129,7 @@
         <directory>${basedir}/src/test/resources/conf</directory>
         <filtering>true</filtering>
         <includes>
-          <include>log4j.properties</include>
+          <include>jetty-logging.properties</include>
           <include>YADA*.properties</include>
         </includes>
       </testResource>
@@ -169,7 +169,7 @@
           </archive>
           <excludes>
             <exclude>**/YADA.properties</exclude>
-            <exclude>**/log4j.properties</exclude>
+            <exclude>**/jetty-logging.properties</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -315,7 +315,7 @@
             <link>http://ehcache.org/apidocs/2.9</link>
             <link>http://www.slf4j.org/api</link>
             <link>https://xerces.apache.org/xerces2-j/javadocs/api</link>
-            <link>http://logging.apache.org/log4j/1.2/apidocs</link>
+            <!-- <link>http://logging.apache.org/log4j/1.2/apidocs</link> -->
             <link>https://docs.oracle.com/javaee/6/api</link>
             <link>http://docs.oracle.com/cd/E17802_01/products/products/servlet/2.5/docs/servlet-2_5-mr2</link>
             <!-- tomcat-dbcp -->
@@ -362,7 +362,7 @@
       </plugin>
     </plugins>
   </reporting>
-  <dependencies>
+  <dependencies>    
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
@@ -428,11 +428,11 @@
       <artifactId>commons-lang</artifactId>
       <version>2.6</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.1.1</version>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>
@@ -441,22 +441,17 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.7</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.7.7</version>
-    </dependency>
-   <!--  <dependency>
+    </dependency> -->
+    <!-- <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
       <version>1.4.01</version>
     </dependency> -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -538,7 +533,7 @@
       <artifactId>HikariCP</artifactId>
       <version>3.4.5</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <version>3.0.0-beta3</version>
@@ -555,7 +550,7 @@
       <artifactId>selenium-firefox-driver</artifactId>
       <version>3.0.0-beta2</version>
       <scope>test</scope>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>javax.xml.soap</groupId>
       <artifactId>javax.xml.soap-api</artifactId>

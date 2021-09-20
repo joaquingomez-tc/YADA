@@ -25,7 +25,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Another {@code yada.io} base class for handling XML files.
@@ -36,7 +37,7 @@ public class XMLFileHelper {
 	/** 
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(XMLFileHelper.class);
+	private static Logger l = LoggerFactory.getLogger(XMLFileHelper.class);
 	/**
 	 * Constant equal to: {@value}
 	 */

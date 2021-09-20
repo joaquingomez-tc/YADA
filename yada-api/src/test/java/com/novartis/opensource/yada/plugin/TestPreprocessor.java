@@ -17,7 +17,8 @@
  */
 package com.novartis.opensource.yada.plugin;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +35,7 @@ public class TestPreprocessor extends AbstractPreprocessor
 	/**
      * Local logger handle
      */
-	private static Logger l = Logger.getLogger(TestPreprocessor.class);
+	private static Logger l = LoggerFactory.getLogger(TestPreprocessor.class);
 
 	/**
 	 * Executes the query defined in {@code yadaReq} and analyzes the results.  If the

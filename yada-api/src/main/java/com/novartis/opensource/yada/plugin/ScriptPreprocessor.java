@@ -20,7 +20,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +42,7 @@ public class ScriptPreprocessor extends AbstractPreprocessor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(ScriptPreprocessor.class);
+	private static Logger l = LoggerFactory.getLogger(ScriptPreprocessor.class);
 	
 	/**
 	 * Enables the execution of a script stored in the {@code yada.bin} directory.

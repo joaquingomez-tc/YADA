@@ -21,7 +21,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,7 +51,7 @@ public class Authorizer extends AbstractPostprocessor implements Authorization {
   /**
    * @since 9.0.0
    */
-  private static Logger l = Logger.getLogger(Authorizer.class);
+  private static Logger l = LoggerFactory.getLogger(Authorizer.class);
   
   /**
    * Contains resource and allowList

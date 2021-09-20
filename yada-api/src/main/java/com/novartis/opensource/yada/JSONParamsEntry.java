@@ -21,7 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +42,7 @@ public class JSONParamsEntry {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(JSONParamsEntry.class);
+	private static Logger l = LoggerFactory.getLogger(JSONParamsEntry.class);
 	/**
 	 * Internal structure to hold column names/data values passed in request config 
 	 */

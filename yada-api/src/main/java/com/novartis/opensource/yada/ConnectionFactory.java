@@ -44,7 +44,8 @@ import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,7 +60,7 @@ public class ConnectionFactory {
   /**
    * Local logger handle
    */
-  private final static Logger l = Logger.getLogger(ConnectionFactory.class);
+  private final static Logger l = LoggerFactory.getLogger(ConnectionFactory.class);
 
   /**
    * Constant equal to {@value}
@@ -247,7 +248,7 @@ public class ConnectionFactory {
     catch (YADAConnectionException e)
     {
       String msg = "Could not connect to YADA index.";
-      l.fatal(msg);
+      l.error(msg);
       System.exit(1);
     }
   }

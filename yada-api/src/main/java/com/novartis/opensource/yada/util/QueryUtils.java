@@ -53,7 +53,8 @@ import net.sf.jsqlparser.statement.select.ValuesList;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.ConnectionFactory;
 import com.novartis.opensource.yada.Finder;
@@ -85,7 +86,7 @@ public class QueryUtils
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(QueryUtils.class);
+	private static Logger l = LoggerFactory.getLogger(QueryUtils.class);
 	/**
 	 * A constant equal to: {@value}
 	 * @since 9.1.0

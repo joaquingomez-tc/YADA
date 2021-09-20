@@ -283,11 +283,11 @@
 				<artifactId>java-jwt</artifactId>
 				<version>3.10.3</version>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.17</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>nl.javadude.assumeng</groupId>
 				<artifactId>assumeng</artifactId>
@@ -305,16 +305,21 @@
 				<artifactId>javax.xml.soap-api</artifactId>
 				<version>1.4.0</version>
 			</dependency>
-				<dependency>
-					<groupId>org.postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-					<version>42.2.14</version>
-				</dependency>
-		      <dependency>
-        <groupId>com.sun.xml.messaging.saaj</groupId>
-        <artifactId>saaj-impl</artifactId>
-        <version>1.4.0</version>
-    </dependency>
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>42.2.14</version>
+			</dependency>
+		    <dependency>
+                <groupId>com.sun.xml.messaging.saaj</groupId>
+                <artifactId>saaj-impl</artifactId>
+                <version>1.4.0</version>
+            </dependency>
+		    <dependency>
+		        <groupId>org.slf4j</groupId>
+		        <artifactId>slf4j-api</artifactId>
+		        <version>1.7.7</version>
+		    </dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>

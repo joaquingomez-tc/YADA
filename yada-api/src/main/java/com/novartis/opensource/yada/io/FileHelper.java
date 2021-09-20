@@ -17,7 +17,8 @@ package com.novartis.opensource.yada.io;
 import java.io.Reader;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The abstract root of the {@code yada.io} package.  It contains constants and method stubs and implementations
@@ -30,7 +31,7 @@ public abstract class FileHelper
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(FileHelper.class);
+	private static Logger l = LoggerFactory.getLogger(FileHelper.class);
 	
 	/**
 	 * Constant equal to: {@value} 

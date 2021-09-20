@@ -11,7 +11,8 @@ import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetMetaDataImpl;
 import javax.sql.rowset.RowSetProvider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.Service;
 import com.novartis.opensource.yada.YADAQuery;
@@ -30,7 +31,7 @@ public class SecurityPluginDetector extends AbstractPostprocessor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(Service.class);
+	private static Logger l = LoggerFactory.getLogger(Service.class);
 	/**
 	 * The {@code NAME} column
 	 */

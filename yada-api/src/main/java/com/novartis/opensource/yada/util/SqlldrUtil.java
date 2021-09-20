@@ -28,7 +28,8 @@ import java.util.regex.Pattern;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.zaxxer.hikari.HikariDataSource;
 //import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
@@ -42,7 +43,7 @@ public class SqlldrUtil {
 	/**
 	 * Local logging handle
 	 */
-	private static Logger l = Logger.getLogger(SqlldrUtil.class);
+	private static Logger l = LoggerFactory.getLogger(SqlldrUtil.class);
 
 //  sqlldr procs
 	/**

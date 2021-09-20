@@ -33,7 +33,7 @@
       <directory>src/main/resources/conf</directory>
       <includes>
         <include>YADA.properties</include>
-        <include>log4j.properties</include>
+        <include>jetty-logging.properties</include>
       </includes>
     </fileSet>
   </fileSets>

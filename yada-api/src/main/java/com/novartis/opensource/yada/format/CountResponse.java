@@ -17,7 +17,8 @@
  */
 package com.novartis.opensource.yada.format;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.YADAQueryResult;
 import com.novartis.opensource.yada.YADARequest;
@@ -36,7 +37,7 @@ public class CountResponse extends AbstractResponse
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = Logger.getLogger(CountResponse.class);
+	private static Logger l = LoggerFactory.getLogger(CountResponse.class);
 	/**
 	 * Ivar containing the result to be returned by this class's {@link #toString()} method
 	 */

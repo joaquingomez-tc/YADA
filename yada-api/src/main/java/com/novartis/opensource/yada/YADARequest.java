@@ -36,7 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +67,7 @@ public class YADARequest {
   /**
    * Local logger hangle
    */
-  private static Logger l = Logger.getLogger(YADARequest.class);
+  private static Logger l = LoggerFactory.getLogger(YADARequest.class);
   // constants
   /**
    * A constant equal to: {@value}. This is the default value for the
@@ -3831,7 +3832,7 @@ public class YADARequest {
     while (iter.hasNext())
     {
       DiskFileItem fi = (DiskFileItem) iter.next();
-      l.debug(fi);
+      l.debug(fi.toString());
       // set parameters from form fields
       if (fi.isFormField())
       {

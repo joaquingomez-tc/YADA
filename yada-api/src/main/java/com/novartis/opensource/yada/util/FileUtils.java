@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,7 +42,7 @@ public class FileUtils {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(FileUtils.class);
+	private static Logger l = LoggerFactory.getLogger(FileUtils.class);
 	
 	/**
 	 * Check if a directory existss

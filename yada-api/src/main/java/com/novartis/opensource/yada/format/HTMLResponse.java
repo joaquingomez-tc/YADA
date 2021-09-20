@@ -18,7 +18,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.YADAQueryConfigurationException;
 import com.novartis.opensource.yada.YADAQueryResult;
@@ -33,7 +34,7 @@ public class HTMLResponse extends AbstractResponse {
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = Logger.getLogger(HTMLResponse.class);
+	private static Logger l = LoggerFactory.getLogger(HTMLResponse.class);
 	/**
    * Ivar containing the result to be returned by this class's {@link #toString()} method
    */

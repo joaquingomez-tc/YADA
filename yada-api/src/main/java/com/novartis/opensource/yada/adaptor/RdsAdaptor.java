@@ -6,7 +6,8 @@ import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.renjin.eval.EvalException;
 import org.renjin.script.RenjinScriptEngineFactory;
 import org.renjin.sexp.SEXP;
@@ -24,7 +25,7 @@ public class RdsAdaptor extends FileSystemAdaptor {
   /**
    * Local logger instance
    */
-  private static Logger l = Logger.getLogger(RdsAdaptor.class);
+  private static Logger l = LoggerFactory.getLogger(RdsAdaptor.class);
   
   /**
    * Delimeter separating file name and references to objects in file
