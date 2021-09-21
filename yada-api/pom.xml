@@ -172,7 +172,8 @@
           </archive>
           <excludes>
             <exclude>**/YADA.properties</exclude>
-            <!-- <exclude>**/log4j.properties</exclude> -->
+            <exclude>**/log4j.properties</exclude>
+            <exclude>**/jetty-logging.properties</exclude>
           </excludes>
         </configuration>
         <executions>
