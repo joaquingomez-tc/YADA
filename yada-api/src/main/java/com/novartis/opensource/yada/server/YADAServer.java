@@ -90,6 +90,18 @@ public class YADAServer {
    * Constant equal to {@value}. Used for setting keystore path
    */
   public final static String YADA_REPOSITORY = "YADA.repository";
+  
+  /**
+   * Constant equal to {@value}. Used for request log configuration
+   * @since 10.1.3
+   */
+  public final static String YADA_SERVER_REQUEST_LOG_FILE = "YADA.server.request.log.file";
+  
+  /**
+   * Constant equal to {@value}. Used for request log configuration
+   * @since 10.1.3
+   */
+  public final static String YADA_SERVER_REQUEST_LOG_FORMAT = "YADA.server.request.log.format";
 
   /**
    * 
@@ -241,7 +253,9 @@ public class YADAServer {
     
     // attach the handler to the server
     server.setHandler(handlerList);
-    server.setRequestLog(new CustomRequestLog());
+    String reqLogFile = getProperties().getProperty(YADA_SERVER_REQUEST_LOG_FILE);
+    String reqLogFmt  = getProperties().getProperty(YADA_SERVER_REQUEST_LOG_FORMAT);
+    server.setRequestLog(new CustomRequestLog(reqLogFile, reqLogFmt));
     ErrorHandler errorHandler = new YADAErrorHandler();
     server.setErrorHandler(errorHandler);
     // Start the YADAServer so it starts accepting connections from clients.
