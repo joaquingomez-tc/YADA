@@ -29,6 +29,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.SecuredRedirectHandler;
+import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
@@ -233,12 +234,14 @@ public class YADAServer {
      *   |       |                                           |
      *   |       |                                           +-- YADARequestHandler
      *   |       +-- DefaultHandler
+     *   |       
      *   |
      *   +-- YADAErrorHandler
      */
     
     // attach the handler to the server
     server.setHandler(handlerList);
+    server.setRequestLog(new CustomRequestLog());
     ErrorHandler errorHandler = new YADAErrorHandler();
     server.setErrorHandler(errorHandler);
     // Start the YADAServer so it starts accepting connections from clients.
