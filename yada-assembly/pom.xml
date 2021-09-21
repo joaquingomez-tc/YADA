@@ -168,6 +168,9 @@
                   <resources>
                     <resource>
                       <directory>${basedir}/../yada-api/src/main/resources</directory>
+                      <excludes>
+                        <exclude>**/*.properties</exclude>
+                      </excludes>
                       <filtering>true</filtering>
                     </resource>
                   </resources>
