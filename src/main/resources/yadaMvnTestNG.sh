@@ -188,7 +188,7 @@ then
   # GOAL=org.codehaus.cargo:cargo-maven2-plugin:run
   # CONTAINER_ID=-Dcargo.maven.containerId=tomcat8x
   # CONTAINER_URL=-Dcargo.maven.containerUrl=https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/8.5.49/tomcat-8.5.49.zip
-  CMD="java ${YADA_PROPS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-api-${YADA_VERSION}.jar"
+  CMD="java ${YADA_PROPS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-${YADA_VERSION}.jar"
 else
   CMD="$MAVEN $MAVEN_DEBUG clean verify -P${PROFILE} $DEBUG -Dsuspend.debugger=$SUSPEND $COMMON_VARS"
 fi
