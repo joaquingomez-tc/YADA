@@ -104,7 +104,7 @@
         <filtering>true</filtering>
         <includes>
           <include>ehcache.xml</include>
-          <include>jetty-logging.properties</include>
+          <include>log4j.properties</include>
           <include>YADA.properties</include>
         </includes>
       </resource>
@@ -121,7 +121,7 @@
         <filtering>true</filtering>
         <targetPath>conf</targetPath>
         <excludes>
-          <exclude>jetty-logging.properties</exclude>
+          <exclude>log4j.properties</exclude>
           <exclude>YADA*.properties</exclude>
         </excludes>
       </testResource>
@@ -129,7 +129,7 @@
         <directory>${basedir}/src/test/resources/conf</directory>
         <filtering>true</filtering>
         <includes>
-          <include>jetty-logging.properties</include>
+          <include>log4j.properties</include>
           <include>YADA*.properties</include>
         </includes>
       </testResource>
@@ -169,7 +169,7 @@
           </archive>
           <excludes>
             <exclude>**/YADA.properties</exclude>
-            <exclude>**/jetty-logging.properties</exclude>
+            <exclude>**/log4j.properties</exclude>
           </excludes>
         </configuration>
         <executions>
