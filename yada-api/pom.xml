@@ -168,6 +168,7 @@
             </manifest>
             <manifestEntries>
               <yada-api-version>${project.parent.version}</yada-api-version>
+              <Class-Path>lib/log4j.properties</Class-Path>
             </manifestEntries>
           </archive>
           <excludes>
