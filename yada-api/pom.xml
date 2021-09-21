@@ -105,7 +105,6 @@
         <includes>
           <include>ehcache.xml</include>
           <include>log4j.properties</include>
-          <include>jetty-logging.properties</include>
           <include>YADA.properties</include>
         </includes>
       </resource>
@@ -123,7 +122,6 @@
         <targetPath>conf</targetPath>
         <excludes>
           <exclude>log4j.properties</exclude>
-          <exclude>jetty-logging.properties</exclude>
           <exclude>YADA*.properties</exclude>
         </excludes>
       </testResource>
@@ -132,7 +130,6 @@
         <filtering>true</filtering>
         <includes>
           <include>log4j.properties</include>
-          <include>jetty-logging.properties</include>
           <include>YADA*.properties</include>
         </includes>
       </testResource>
@@ -168,13 +165,12 @@
             </manifest>
             <manifestEntries>
               <yada-api-version>${project.parent.version}</yada-api-version>
-              <Class-Path>lib/log4j.properties</Class-Path>
+              <Class-Path>log4j.properties</Class-Path>
             </manifestEntries>
           </archive>
           <excludes>
             <exclude>**/YADA.properties</exclude>
             <exclude>**/log4j.properties</exclude>
-            <exclude>**/jetty-logging.properties</exclude>
           </excludes>
         </configuration>
         <executions>
