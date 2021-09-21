@@ -34,7 +34,7 @@ import javax.xml.soap.SOAPConnection;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
-import org.slf4j.Logger;
+import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +64,7 @@ public class QueryManager {
   /**
    * Local logger handle
    */
-  private static Logger           l               = LoggerFactory.getLogger(QueryManager.class);
+  private static Logger           l               = Logger.getLogger(QueryManager.class);
   /**
    * Local handle to configuration object
    */
