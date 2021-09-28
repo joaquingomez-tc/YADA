@@ -14,7 +14,8 @@
  */
 package com.novartis.opensource.yada.format;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +87,7 @@ public class JSONResponse extends AbstractResponse {
    * Local logger handle
    */
 	@SuppressWarnings("unused")
-	private static Logger l = Logger.getLogger(JSONResponse.class);
+	private static Logger l = LoggerFactory.getLogger(JSONResponse.class);
 	/**
 	 * The result to be returned by this class's {@link #toString()} method
 	 */

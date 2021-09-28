@@ -50,7 +50,8 @@ import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.deparser.DeleteDeParser;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of {@link StatementVisitor} which currently handles
@@ -70,7 +71,7 @@ public class Parser implements StatementVisitor {
   /**
    * Local logger handle
    */
-  private static Logger l = Logger.getLogger(Parser.class);
+  private static Logger l = LoggerFactory.getLogger(Parser.class);
   /**
    * Constant equal to: {@value}
    */
@@ -405,7 +406,7 @@ public class Parser implements StatementVisitor {
       this.setStatement(this.parserManager.parse(new StringReader(code)));
       this.deparse(this.getStatement());
     } catch (JSQLParserException e) {
-      l.error(e.getCause());
+      l.error(e.getCause().toString());
       String msg = "The query was not parsable.  Other than the query being invalid, this could be because it is non-compliant, unsupported, or not SQL";
       l.error(msg + "\n" + code);
       throw new YADAParserException(msg, e);

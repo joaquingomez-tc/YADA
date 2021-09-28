@@ -20,7 +20,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.YADARequest;
 
@@ -35,7 +36,7 @@ public class SQLiteAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(SQLiteAdaptor.class);
+	private static Logger l = LoggerFactory.getLogger(SQLiteAdaptor.class);
 	
 	/**
 	 * Default subclass constructor (calls {@code super()}

@@ -10,7 +10,8 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
@@ -28,6 +29,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.SecuredRedirectHandler;
+import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
@@ -45,7 +47,7 @@ public class YADAServer {
   /**
    * Local logger handle
    */
-  static Logger              l           = Logger.getLogger(YADAServer.class);
+  static Logger              l           = LoggerFactory.getLogger(YADAServer.class);
   
   /**
    * Container of configuration data which shouldn't be hardcoded. 
@@ -94,6 +96,17 @@ public class YADAServer {
    * 
    */
   private final static IdentityCache YADA_IDENTITY_CACHE = new IdentityCache();
+
+  /* Constant equal to {@value}. Used for request log configuration
+   * @since 10.1.3
+   */
+  public final static String YADA_SERVER_REQUEST_LOG_FILE = "YADA.server.request.log.file";
+  
+  /**
+   * Constant equal to {@value}. Used for request log configuration
+   * @since 10.1.3
+   */
+  public final static String YADA_SERVER_REQUEST_LOG_FORMAT = "YADA.server.request.log.format";
 
   /**
    * 
@@ -238,12 +251,16 @@ public class YADAServer {
      *   |       |                                           |
      *   |       |                                           +-- YADARequestHandler
      *   |       +-- DefaultHandler
+     *   |       
      *   |
      *   +-- YADAErrorHandler
      */
     
     // attach the handler to the server
     server.setHandler(handlerList);
+    String reqLogFile = getProperties().getProperty(YADA_SERVER_REQUEST_LOG_FILE);
+    String reqLogFmt  = getProperties().getProperty(YADA_SERVER_REQUEST_LOG_FORMAT);
+    server.setRequestLog(new CustomRequestLog(reqLogFile, reqLogFmt));
     ErrorHandler errorHandler = new YADAErrorHandler();
     server.setErrorHandler(errorHandler);
     // Start the YADAServer so it starts accepting connections from clients.
@@ -287,7 +304,7 @@ public class YADAServer {
     catch (IOException e)
     {
       String msg = String.format("Cannot find or load YADA properties file %s", path);
-      l.fatal(msg);
+      l.error(msg);
       System.exit(1);
     }
     return props;

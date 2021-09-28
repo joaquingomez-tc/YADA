@@ -39,7 +39,8 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.SelectVisitor;
 import net.sf.jsqlparser.statement.select.SubSelect;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A subclass of net.sf.jsqlparser.util.deparser.ExpressionDeParser which is called during
@@ -51,7 +52,7 @@ public class YADAExpressionDeParser extends
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(YADAExpressionDeParser.class);
+	private static Logger l = LoggerFactory.getLogger(YADAExpressionDeParser.class);
 	/**
 	 * A java.util.ArrayList to store instances of {@link Column} found in the WHERE clause
 	 */

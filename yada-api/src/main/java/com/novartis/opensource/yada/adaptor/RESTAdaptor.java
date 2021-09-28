@@ -40,7 +40,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.api.client.auth.oauth.OAuthParameters;
 import com.google.api.client.auth.oauth.OAuthRsaSigner;
@@ -81,7 +82,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
   /**
    * Local logger handle
    */
-  private static Logger l = Logger.getLogger(RESTAdaptor.class);
+  private static Logger l = LoggerFactory.getLogger(RESTAdaptor.class);
 
   /**
    * Constant equal to: {@value}. The character set name.

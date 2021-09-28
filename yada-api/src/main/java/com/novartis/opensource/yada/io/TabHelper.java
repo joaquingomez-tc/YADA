@@ -17,7 +17,8 @@ package com.novartis.opensource.yada.io;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An extension of {@link FileHelper} specifically for parsing tab-delimited source files.
@@ -29,7 +30,7 @@ public class TabHelper extends FileHelper {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(TabHelper.class);
+	private static Logger l = LoggerFactory.getLogger(TabHelper.class);
 	
 	/**
 	 * Splits the column header into an array on {@link FileHelper#TAB}

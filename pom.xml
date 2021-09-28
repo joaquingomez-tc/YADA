@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.novartis.opensource</groupId>
 	<artifactId>YADA</artifactId>
-	<version>10.1.2-SNAPSHOT</version>
+	<version>10.1.3-SNAPSHOT</version>
 	<name>YADA</name>
 	<url>https://github.com/varontron/YADA</url>
 	<description>YADA Framework</description>
@@ -37,7 +37,7 @@
 	<developers>
 		<developer>
 			<name>David Varon</name>
-			<email>varontron@gmail.com</email>			
+			<email>varontron@gmail.com</email>
 		</developer>
 	</developers>
 	<scm>
@@ -137,7 +137,7 @@
                                 <exclude>src/main/java/com/novartis/opensource/yada/plugin/Authorizer.java</exclude>
                                 <exclude>src/main/java/com/novartis/opensource/yada/plugin/SourceExchanger.java</exclude>
                                 <exclude>src/main/java/com/novartis/opensource/yada/YADASecuritySpec.java</exclude>
-                                <exclude>src/main/java/com/novartis/opensource/yada/plugin/Authorization.java</exclude>                                
+                                <exclude>src/main/java/com/novartis/opensource/yada/plugin/Authorization.java</exclude>
                             </excludes>
                         </configuration>
                         <executions>
@@ -194,13 +194,13 @@
                                 <version>8029</version>
                             </dependency>
                         </dependencies>
-                    </plugin>                    
+                    </plugin>
                 </plugins>
             </build>
 
         </profile>
     </profiles>
-	<build>  
+	<build>
       <pluginManagement>
         <plugins>
           <plugin>
@@ -310,11 +310,16 @@
 				<artifactId>postgresql</artifactId>
 				<version>42.2.14</version>
 			</dependency>
-	        <dependency>
-                <groupId>com.sun.xml.messaging.saaj</groupId>
-                <artifactId>saaj-impl</artifactId>
-                <version>1.4.0</version>
-            </dependency>
+	    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.7</version>
+	    </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.7.32</version>
+      </dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>

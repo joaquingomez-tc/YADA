@@ -114,12 +114,8 @@ done
 
 CMD=
 MAVEN=mvn
-WORKSPACE=/Users/dvaron/Documents/work
-YADA_SRCDIR=$WORKSPACE/YADA
-# CONTAINER=tomcat
-# TOMCAT_VERSION=8x
-# YADA_LOCAL_TOMCAT_HOME=-DYADA.local.tomcat.home=$WORKSPACE/containers/$CONTAINER$TOMCAT_VERSION/
 MVN_DEPLOYMENT_GOAL=-Ddeployment.goal=start
+# YADA_SRCDIR environment variable must be set
 LOG=$YADA_SRCDIR/src/main/resources/testng.log
 LOG_STDOUT=-Dlog.stdout=true
 SKIP_LICENSE=-Dlicense.skip=true
@@ -185,10 +181,7 @@ then
   then
     DEBUG="'-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE'"
   fi
-  # GOAL=org.codehaus.cargo:cargo-maven2-plugin:run
-  # CONTAINER_ID=-Dcargo.maven.containerId=tomcat8x
-  # CONTAINER_URL=-Dcargo.maven.containerUrl=https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/8.5.49/tomcat-8.5.49.zip
-  CMD="java ${YADA_PROPS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-api-${YADA_VERSION}.jar"
+  CMD="java ${YADA_PROPS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-${YADA_VERSION}.jar"
 else
   CMD="$MAVEN $MAVEN_DEBUG clean verify -P${PROFILE} $DEBUG -Dsuspend.debugger=$SUSPEND $COMMON_VARS"
 fi

@@ -25,7 +25,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +54,7 @@ public abstract class JDBCAdaptor extends Adaptor{
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(JDBCAdaptor.class);
+	private static Logger l = LoggerFactory.getLogger(JDBCAdaptor.class);
 	/**
 	 * Constant equal to: {@code d}
 	 */

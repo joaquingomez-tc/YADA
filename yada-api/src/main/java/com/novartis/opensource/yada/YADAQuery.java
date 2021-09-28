@@ -39,7 +39,8 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.ValuesList;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,7 +78,7 @@ public class YADAQuery {
   /**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(YADAQuery.class);
+	private static Logger l = LoggerFactory.getLogger(YADAQuery.class);
 	/**
 	 * Constant equal to {@value}
 	 */
@@ -1187,15 +1188,6 @@ public class YADAQuery {
 	public boolean hasMutableParam(String key) {
 		return !hasImmutableParam(key) && this.keys.containsKey(key);
 	}
-
-	/**
-   * @since 4.0.0
-   * @param key parameter name to check
-   * @return boolean true if stored parameter is overridable by url params (rule=0), otherwise false
-   */
-  public boolean hasOverridableParam(String key) {
-    return !hasImmutableParam(key) && this.keys.containsKey(key);
-  }
 
 	/**
    * @since 4.0.0

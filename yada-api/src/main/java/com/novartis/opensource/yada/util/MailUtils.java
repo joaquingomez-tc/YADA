@@ -25,7 +25,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.plugin.EmailBypassPlugin;
 
@@ -39,7 +40,7 @@ public class MailUtils {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(MailUtils.class);
+	private static Logger l = LoggerFactory.getLogger(MailUtils.class);
 	
 	/**
 	 * Retrieves the current mail session object from the application context

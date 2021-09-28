@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.novartis.opensource</groupId>
     <artifactId>YADA</artifactId>
-    <version>10.1.2-SNAPSHOT</version>
+    <version>10.1.3-SNAPSHOT</version>
   </parent>
   <artifactId>yada-api</artifactId>
   <url>http://github.com/Novartis/YADA</url>
@@ -167,6 +167,7 @@
             </manifest>
             <manifestEntries>
               <yada-api-version>${project.parent.version}</yada-api-version>
+              <Class-Path>log4j.properties</Class-Path>
             </manifestEntries>
           </archive>
           <excludes>
@@ -317,7 +318,7 @@
             <!-- <link>http://ehcache.org/apidocs/2.9</link> -->
             <link>http://www.slf4j.org/api</link>
             <link>https://xerces.apache.org/xerces2-j/javadocs/api</link>
-            <link>http://logging.apache.org/log4j/1.2/apidocs</link>
+            <!-- <link>http://logging.apache.org/log4j/1.2/apidocs</link> -->
             <link>https://docs.oracle.com/javaee/6/api</link>
             <link>http://docs.oracle.com/cd/E17802_01/products/products/servlet/2.5/docs/servlet-2_5-mr2</link>
             <!-- tomcat-dbcp -->
@@ -423,16 +424,10 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.7</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.7</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -511,10 +506,6 @@
       <version>5.8.1.202007141445-r</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.messaging.saaj</groupId>
-      <artifactId>saaj-impl</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.kosprov.jargon2</groupId>
       <artifactId>jargon2-api</artifactId>
       <version>1.1.1</version>
@@ -529,17 +520,35 @@
       <groupId>org.renjin</groupId>
       <artifactId>renjin-script-engine</artifactId>
       <version>3.5-beta76</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.renjin.cran</groupId>
       <artifactId>jsonlite</artifactId>
       <version>1.6-b1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
+      </exclusions>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.renjin.cran</groupId>
       <artifactId>rjson</artifactId>
       <version>0.2.15-renjin-21</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -566,11 +575,13 @@
       <artifactId>jetty-rewrite</artifactId>
       <version>10.0.3</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>com.sun.xml.ws</groupId>
-      <artifactId>jaxws-ri</artifactId>
-      <version>2.3.2</version>
-      <type>pom</type>
-    </dependency> -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
   </dependencies>
 </project>

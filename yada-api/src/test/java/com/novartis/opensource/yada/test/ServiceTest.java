@@ -53,7 +53,10 @@ import javax.xml.xpath.XPathFactory;
 import nl.javadude.assumeng.Assumption;
 import nl.javadude.assumeng.AssumptionListener;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -113,7 +116,7 @@ public class ServiceTest
   /**
    * Local logger handle
    */
-  private static Logger l = Logger.getLogger(ServiceTest.class);
+  private static Logger l = LoggerFactory.getLogger(ServiceTest.class);
   /**
    * Constant ref to <code>log.stdout</code> system property.  When present or true, prints qname and result to console during testing.  This is useful for troubleshooting but otherwise a pain.
    */
@@ -323,8 +326,8 @@ public class ServiceTest
       }
       props = ConnectionFactoryTest.getProps();
     }
-    this.host = props.getProperty("YADA.host");    
-    String ctx = YADAServer.getProperties().getProperty("YADA.server.context");    
+    this.host = props.getProperty("YADA.host");
+    String ctx = YADAServer.getProperties().getProperty("YADA.server.context");
     this.uri = (ctx.startsWith("/") ? ctx : "/"+ctx) + props.getProperty("YADA.uri");
     this.auth = props.getProperty("YADA.auth");
     this.user = props.getProperty("YADA.user");
@@ -516,7 +519,7 @@ public class ServiceTest
       {
         List<String> valList = new ArrayList<>();
         if(vals.length > 0)
-          valList.addAll(Arrays.asList((String[]) vals));        
+          valList.addAll(Arrays.asList((String[]) vals));
         valList.add(values.get(i));
         paraMap.put(param, valList.toArray(new String[] {}));
       }
@@ -690,7 +693,7 @@ public class ServiceTest
    *         path
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
-   * @throws YADAException if query prep or execution failsif the insert queries fail 
+   * @throws YADAException if query prep or execution failsif the insert queries fail
    */
   @BeforeMethod(groups = { "json", "standard", "options", "api", "jsp", "plugins", "sqlite_debug" })
   public void dbPrep() throws URISyntaxException, IOException, YADAException
@@ -718,7 +721,7 @@ public class ServiceTest
    *         path
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
-   * @throws YADAException if query prep or execution failsif the delete queries fail 
+   * @throws YADAException if query prep or execution failsif the delete queries fail
    */
   @AfterMethod(groups = { "json", "standard", "options", "api", "jsp", "plugins", "sqlite_debug" })
   public void dbClean() throws URISyntaxException, IOException, YADAException
@@ -736,7 +739,7 @@ public class ServiceTest
    *         path
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
-   * @throws YADAException if query prep or execution failsif the insert or delete queries fail 
+   * @throws YADAException if query prep or execution failsif the insert or delete queries fail
    * @since 5.1.0
    */
   public void prepOrClean(String[] paths) throws URISyntaxException, IOException, YADAException
@@ -806,7 +809,7 @@ public class ServiceTest
     }
 
     String protocol = "http";
-    protocol += this.host.endsWith("443") ? "s" : "";    
+    protocol += this.host.endsWith("443") ? "s" : "";
     String target = protocol + "://" + this.host + encQuery;
     URL url = null;
     try
@@ -847,7 +850,7 @@ public class ServiceTest
         {
           result.append(line);
         }
-        l.debug(result);
+        l.debug(result.toString());
         this.secData = new JSONObject(result.toString());
       }
     }
@@ -890,7 +893,7 @@ public class ServiceTest
    * Execute standard parameter tests
    *
    * @param query the query to execute
-   * @throws YADAException if query prep or execution failsif query prep or execution fails 
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "standard", "api" })
   @QueryFile(list = {})
@@ -1015,7 +1018,7 @@ public class ServiceTest
     logQuery(query);
     String method = null;
     HttpURLConnection connection = null;
-    
+
     boolean pathStyle = query.startsWith("/");
     String protocol = "http";
     protocol += this.host.endsWith("443") ? "s" : "";
@@ -1146,7 +1149,7 @@ public class ServiceTest
    * Tests pipe-delimited response with json params
    *
    * @param query the query to execute
-   * @throws YADAException if query prep or execution failsif query prep or execution fails 
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "json", "options", "api" })
   @QueryFile(list = {})

@@ -5,7 +5,8 @@ package com.novartis.opensource.yada.adaptor;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 
 import com.novartis.opensource.yada.YADARequest;
@@ -23,7 +24,7 @@ public class FileSystemAnnotatedAdaptor extends FileSystemAdaptor {
   /**
    * Local instance of logger
    */
-  static Logger l = Logger.getLogger(FileSystemAnnotatedAdaptor.class);
+  static Logger l = LoggerFactory.getLogger(FileSystemAnnotatedAdaptor.class);
   
   /**
    * Default constructor.

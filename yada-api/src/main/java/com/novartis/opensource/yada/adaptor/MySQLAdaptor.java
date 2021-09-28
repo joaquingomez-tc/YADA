@@ -14,7 +14,8 @@
  */
 package com.novartis.opensource.yada.adaptor;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.YADARequest;
 
@@ -29,7 +30,7 @@ public class MySQLAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(MySQLAdaptor.class);
+	private static Logger l = LoggerFactory.getLogger(MySQLAdaptor.class);
 	
 	/**
 	 * Default subclass constructor (calls {@code super()}

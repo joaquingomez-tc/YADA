@@ -28,7 +28,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -53,7 +56,7 @@ public class Finder {
   /**
    * Local logger handle
    */
-  static Logger              l           = Logger.getLogger(Finder.class);
+  static Logger              l           = LoggerFactory.getLogger(Finder.class);
   /**
    * Hardcoded to the stardard value: {@value}. Used to identify mapped sources in
    * the YADA Index.

@@ -20,7 +20,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONObject;
 
 import com.novartis.opensource.yada.YADARequest;
@@ -37,7 +38,7 @@ public class OracleAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(OracleAdaptor.class);
+	private static Logger l = LoggerFactory.getLogger(OracleAdaptor.class);
 	/**
 	 * Default constructor
 	 */

@@ -18,7 +18,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +34,7 @@ public class YADABufferedReader extends BufferedReader {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(YADABufferedReader.class);
+	private static Logger l = LoggerFactory.getLogger(YADABufferedReader.class);
 	
 	/**
 	 * Instance variable.  The {@link FileHelper} enables functionality essential to {@link #readLine2JSON()} 
@@ -104,7 +105,7 @@ public class YADABufferedReader extends BufferedReader {
 					{
 						result.put(head[i],line[i]);
 					}
-					l.debug(result);
+					l.debug(result.toString(2));
 				}
 				else
 				{

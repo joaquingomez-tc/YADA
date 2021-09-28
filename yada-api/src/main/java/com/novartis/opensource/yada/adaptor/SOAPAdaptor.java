@@ -38,7 +38,8 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -62,7 +63,7 @@ public class SOAPAdaptor extends Adaptor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(SOAPAdaptor.class);
+	private static Logger l = LoggerFactory.getLogger(SOAPAdaptor.class);
 	/**
 	 * Constant equal to {@value}
 	 */

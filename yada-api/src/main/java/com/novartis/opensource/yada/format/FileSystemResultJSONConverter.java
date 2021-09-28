@@ -20,7 +20,8 @@ package com.novartis.opensource.yada.format;
 import java.io.File;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +40,7 @@ public class FileSystemResultJSONConverter extends AbstractConverter
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = Logger.getLogger(FileSystemResultJSONConverter.class);
+	private static Logger l = LoggerFactory.getLogger(FileSystemResultJSONConverter.class);
 	/**
 	 * Constant equal to: {@value}
 	 */

@@ -17,7 +17,8 @@ package com.novartis.opensource.yada;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +45,7 @@ public class JSONParams extends LinkedHashMap<String, JSONParamsEntry> {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(JSONParams.class);
+	private static Logger l = LoggerFactory.getLogger(JSONParams.class);
 	
 	/** 
 	 * Default constructor, provides no additional functionality.

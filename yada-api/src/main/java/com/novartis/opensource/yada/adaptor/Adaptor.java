@@ -17,7 +17,8 @@
  */
 package com.novartis.opensource.yada.adaptor;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADAQueryResult;
@@ -47,7 +48,7 @@ public abstract class Adaptor
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = Logger.getLogger(Adaptor.class);
+	private static Logger l = LoggerFactory.getLogger(Adaptor.class);
 	/**
 	 * Local request configuration (i.e., {@link YADARequest}) object
 	 */

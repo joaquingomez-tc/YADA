@@ -22,7 +22,9 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * ADFHelper is for files in Adnan Derti format.  These are tab-delimited files with the following fileheader:
@@ -48,7 +50,7 @@ public class ADFHelper extends TabHelper {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(ADFHelper.class);
+	private static Logger l = LoggerFactory.getLogger(ADFHelper.class);
 	
 	//  header regex basic matches this:  __(header): (value)
 	/**

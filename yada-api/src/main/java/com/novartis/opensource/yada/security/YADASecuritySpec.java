@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +28,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
   /**
    * 
    */
-  private static Logger l = Logger.getLogger(YADASecuritySpec.class); 
+  private static Logger l = LoggerFactory.getLogger(YADASecuritySpec.class); 
   
   /**
    * 

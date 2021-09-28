@@ -25,7 +25,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.ConnectionFactory;
 import com.novartis.opensource.yada.Finder;
@@ -47,7 +48,7 @@ public class FileSystemAdaptor extends Adaptor
   /**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(FileSystemAdaptor.class);	
+	private static Logger l = LoggerFactory.getLogger(FileSystemAdaptor.class);	
 	/**
 	 * Constant equal to: {@value}
 	 */

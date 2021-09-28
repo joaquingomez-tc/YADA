@@ -16,7 +16,8 @@ package com.novartis.opensource.yada.plugin;
 
 import javax.mail.Session;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,7 +33,7 @@ public class EmailBypassPlugin extends AbstractBypass {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(EmailBypassPlugin.class);
+	private static Logger l = LoggerFactory.getLogger(EmailBypassPlugin.class);
 	
 	/**
 	 * Extracts parameters from {@link YADARequest#getMail()} spec and 

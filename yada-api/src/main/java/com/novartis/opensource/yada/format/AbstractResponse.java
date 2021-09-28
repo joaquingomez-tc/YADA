@@ -20,7 +20,8 @@ package com.novartis.opensource.yada.format;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONObject;
 
 import com.novartis.opensource.yada.Parser;
@@ -41,7 +42,7 @@ public abstract class AbstractResponse implements Response
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(AbstractResponse.class);
+	private static Logger l = LoggerFactory.getLogger(AbstractResponse.class);
 	/**
 	 * Constant with value equal to: {@value}
 	 */

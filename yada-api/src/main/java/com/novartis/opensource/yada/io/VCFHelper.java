@@ -22,7 +22,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** 
  * See VCF specification here: <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">1000Genomes</a>
@@ -34,7 +35,7 @@ public class VCFHelper extends TabHelper{
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(VCFHelper.class);
+	private static Logger l = LoggerFactory.getLogger(VCFHelper.class);
 	/**
 	 * Constant equal to: {@code "##(.*)=(.*)"}
 	 */

@@ -25,7 +25,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.Finder;
 import com.novartis.opensource.yada.YADARequest;
@@ -41,7 +42,7 @@ public class XSLPostprocessor extends AbstractPostprocessor {
 	/**
    * Local logger handle
    */
-	private static Logger l = Logger.getLogger(XSLPostprocessor.class);
+	private static Logger l = LoggerFactory.getLogger(XSLPostprocessor.class);
 	/**
 	 * Constant equal to: {@value}
 	 */

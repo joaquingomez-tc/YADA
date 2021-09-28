@@ -19,7 +19,8 @@ package com.novartis.opensource.yada.plugin;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.ConnectionFactory;
 import com.novartis.opensource.yada.Finder;
@@ -38,7 +39,7 @@ public class CacheUpdater extends AbstractBypass
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = Logger.getLogger(CacheUpdater.class);
+	private static Logger l = LoggerFactory.getLogger(CacheUpdater.class);
 
 	/** 
 	 * @see com.novartis.opensource.yada.plugin.Bypass#engage(com.novartis.opensource.yada.YADARequest)

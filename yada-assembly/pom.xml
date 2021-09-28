@@ -4,10 +4,10 @@
   <parent>
     <groupId>com.novartis.opensource</groupId>
     <artifactId>YADA</artifactId>
-    <version>10.1.2-SNAPSHOT</version>
+    <version>10.1.3-SNAPSHOT</version>
   </parent>
   <artifactId>yada-assembly</artifactId>
-  <packaging>pom</packaging>  
+  <packaging>pom</packaging>
   <properties>
     <assembly.format>tar.gz</assembly.format>
     <filtering>false</filtering>
@@ -16,7 +16,7 @@
   <profiles>
     <profile>
       <id>test</id>
-      <properties>        
+      <properties>
         <skip.test.resources>false</skip.test.resources>
         <filtering>true</filtering>
         <test.properties>/conf/TestNG_YADA_HTTP.properties</test.properties>
@@ -25,7 +25,7 @@
       <build>
         <testResources>
           <testResource>
-            <directory>${basedir}/src/test/resources/conf</directory>        
+            <directory>${basedir}/src/test/resources/conf</directory>
             <targetPath>conf</targetPath>
             <excludes>
               <exclude>log4j.properties</exclude>
@@ -43,7 +43,7 @@
           <testResource>
             <directory>${basedir}/src/test/resources/test</directory>
             <targetPath>test</targetPath>
-          </testResource>      
+          </testResource>
           <testResource>
             <directory>${basedir}/src/test/resources/bin</directory>
             <filtering>true</filtering>
@@ -87,7 +87,7 @@
                 <goals>
                   <goal>integration-test</goal>
                 </goals>
-              </execution>             
+              </execution>
             </executions>
           </plugin>
         </plugins>
@@ -207,7 +207,7 @@
             <includes>
               <include>utils/**</include>
             </includes>
-          </resource>          
+          </resource>
         </resources>
         <plugins>
           <plugin>
@@ -218,10 +218,10 @@
               <phase>package</phase>
               <goals>
                 <goal>single</goal>
-              </goals>            
+              </goals>
               <configuration>
                 <finalName>YADA-${project.version}</finalName>
-                <appendAssemblyId>false</appendAssemblyId>              
+                <appendAssemblyId>false</appendAssemblyId>
                 <descriptors>
                   <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
                 </descriptors>
@@ -235,8 +235,8 @@
       </plugins>
       </build>
     </profile>
-    
-    
+
+
   </profiles>
   <build>
     <filters>
@@ -257,8 +257,8 @@
         <includes>
           <include>utils/**</include>
         </includes>
-      </resource>      
-    </resources>    
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -268,10 +268,10 @@
             <phase>package</phase> <!-- bind to the packaging phase -->
             <goals>
               <goal>single</goal>
-            </goals>            
+            </goals>
             <configuration>
               <finalName>YADA-${project.version}</finalName>
-              <appendAssemblyId>false</appendAssemblyId>              
+              <appendAssemblyId>false</appendAssemblyId>
               <descriptors>
                 <descriptor>src/main/resources/conf/assembly.xml</descriptor>
               </descriptors>
@@ -282,7 +282,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>com.bazaarvoice.maven.plugins</groupId>
         <artifactId>process-exec-maven-plugin</artifactId>
@@ -301,7 +301,7 @@
               <!-- <healthcheckUrl></healthcheckUrl> -->
               <waitAfterLaunch>5</waitAfterLaunch>
               <arguments>
-                <argument>java</argument>                
+                <argument>java</argument>
                 <argument>-jar</argument>
                 <argument>${env.YADA_PROPS}</argument>
                 <argument>yada-api-${project.version}.jar</argument>
@@ -362,21 +362,21 @@
             <id>process-resources</id>
             <phase>package</phase>
             <goals>
-              <goal>resources</goal>              
-            </goals>           
+              <goal>resources</goal>
+            </goals>
           </execution>
           <execution>
             <id>process-test-resources</id>
             <phase>package</phase>
             <goals>
-              <goal>testResources</goal>              
-            </goals>           
+              <goal>testResources</goal>
+            </goals>
             <configuration>
               <skip>${skip.test.resources}</skip>
             </configuration>
           </execution>
         </executions>
-      </plugin>     
+      </plugin>
     </plugins>
   </build>
   <dependencies>
