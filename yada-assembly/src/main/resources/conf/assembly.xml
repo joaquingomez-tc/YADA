@@ -21,6 +21,7 @@
     </dependencySet>
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>         
       <excludes>
         <exclude>${project.groupId}:yada-api:*</exclude>
         <exclude>org.hsqldb:hsqldb:*</exclude>
@@ -39,6 +40,6 @@
         <include>YADA.properties</include>
         <include>log4j.properties</include>
       </includes>
-    </fileSet>    
+    </fileSet>
   </fileSets>
 </assembly>
