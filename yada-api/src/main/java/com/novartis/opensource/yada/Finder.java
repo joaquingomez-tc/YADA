@@ -24,21 +24,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import javax.naming.InitialContext;
-
-//import javax.naming.NameClassPair;
-//import javax.naming.NamingEnumeration;
-//import javax.naming.NamingException;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -681,17 +674,17 @@ public class Finder {
       throws YADAConnectionException, YADAFinderException, YADAQueryConfigurationException {
     final String qname    = q;
     YADAQuery    yq       = null;
-    Element      cachedYq = null;
+    YADAQuery    cachedYq = null;
 //    System.out.println(System.getProperties().get("java.class.path"));
-    ConnectionFactory cf        = ConnectionFactory.getConnectionFactory();
-    Cache             yadaIndex = cf.getCacheConnection(YADA_CACHE_MGR, YADA_CACHE);
+    ConnectionFactory     cf        = ConnectionFactory.getConnectionFactory();
+    Map<String,YADAQuery> yadaIndex = cf.getCache();
 
     if (yadaIndex != null)
     {
       cachedYq = yadaIndex.get(qname);
       if (cachedYq != null)
       {
-        yq = new YADAQuery((YADAQuery) cachedYq.getObjectValue());
+        yq = new YADAQuery(cachedYq);
         l.debug("YADAQuery [" + qname + "] retrieved from cache");
       }
       else
@@ -707,8 +700,7 @@ public class Finder {
           yq = getQueryFromIndex(q);
         }
         // update cache
-        Element yqElement = new Element(qname, yq);
-        yadaIndex.put(yqElement);
+        yadaIndex.put(qname,yq);
         yq.setCached(true);
         l.debug("YADAQuery [" + qname + "] stored in cache.");
       }

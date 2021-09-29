@@ -40,7 +40,7 @@
 
  */
 
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
@@ -76,8 +76,8 @@ import com.novartis.opensource.yada.YADAQueryConfigurationException;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
 import com.novartis.opensource.yada.YADASQLException;
-import com.novartis.opensource.yada.YADASecurityException;
-import com.novartis.opensource.yada.YADASecuritySpec;
+import com.novartis.opensource.yada.plugin.AbstractPreprocessor;
+import com.novartis.opensource.yada.plugin.YADAPluginException;
 import com.novartis.opensource.yada.util.YADAUtils;
 
 import net.sf.jsqlparser.JSQLParserException;
@@ -341,7 +341,7 @@ public class Gatekeeper extends AbstractPreprocessor {
    * @since 8.7.6
    */
   public Object obtainIdentity() {
-    Object result = getCacheEntry(YADA_IDENTITY_CACHE, (String) this.getToken());
+    Object result = getCacheEntry((String) this.getToken());
     return result;
   }
 

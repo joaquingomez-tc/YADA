@@ -12,22 +12,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.novartis.opensource.yada.plugin;
-
-import com.novartis.opensource.yada.YADASecurityException;
+/**
+ * 
+ */
+package com.novartis.opensource.yada.security;
 
 /**
  * @author Dave Varon
  * @since 7.0.0
- *
  */
-public interface ContentPolicy extends SecurityPolicy {
-
+public interface Validation
+{
+  
   /**
-   * An implementation of row-level security, this enables amendment of SQL query 
-   * prior to execution, to restrict content dynamically per request.
    * @throws YADASecurityException when the user is unauthorized or there is an error in policy processing
    */
-  public void applyContentPolicy() throws YADASecurityException;
-
+  public void validateYADARequest() throws YADASecurityException;
+  
+  /**
+   * @throws YADASecurityException when the user is unauthorized or there is an error in regex syntax
+   */
+  public void validateURL() throws YADASecurityException;
+  
+  /**
+   * @throws YADASecurityException when the user is unauthorized or there is an error in token processing
+   */
+  public void validateToken() throws YADASecurityException;
+ 
+  
+  /**
+   * @param securityPolicy the policy object
+   * @throws YADASecurityException when the user is unauthorized or there is an error in policy processing
+   */
+  public void applyPolicy(SecurityPolicy securityPolicy) throws YADASecurityException;
 }

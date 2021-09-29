@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,9 +34,9 @@ import javax.servlet.http.Cookie;
 import javax.xml.soap.SOAPConnection;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +55,7 @@ import com.novartis.opensource.yada.util.YADAUtils;
  * objects using {@link Finder#getQuery(String)}, and creating global and
  * query-based data structures for storing and mapping source connections,
  * statements, and results.
- * 
+ *
  * @since 4.0.0
  * @author David Varon
  * @see Service#execute()
@@ -119,7 +120,7 @@ public class QueryManager {
    * Constructor stores config object and JSONParams if necessary, then calls
    * effectively bootstraps query management process by calling
    * {@link #processQueries()}
-   * 
+   *
    * @since 4.0.0
    * @param yadaReq YADA request configuration
    * @throws YADAUnsupportedAdaptorException when the adaptor can't be
@@ -154,7 +155,7 @@ public class QueryManager {
 
   /**
    * Default constructor
-   * 
+   *
    * @since 7.1.0
    */
   public QueryManager() {
@@ -166,7 +167,7 @@ public class QueryManager {
    * requests) or {@link #endowQueries(JSONParams)} for json params requests,
    * followed by setting harmony maps, and {@link #prepQueriesForExecution()} in
    * succession
-   * 
+   *
    * @param yadaReq the {@link YADARequest} to process
    * @throws YADAFinderException             when there is an issue retrieving a
    *                                         query from the YADA index
@@ -220,7 +221,7 @@ public class QueryManager {
    * A broker method which calls {@link #endowQuery(String)} (for standard param
    * requests) or {@link #endowQueries(JSONParams)} for json params requests,
    * followed by {@link #prepQueriesForExecution()} in succession
-   * 
+   *
    * @throws YADAFinderException             when there is an issue retrieving a
    *                                         query from the YADA index
    * @throws YADAConnectionException         when there is an issue opening a
@@ -278,7 +279,7 @@ public class QueryManager {
    * enables inclusion of both mapped and unmapped columns in a single result,
    * specifically necessary for {@link YADARequest#FORMAT_CSV} and other delimited
    * formats.
-   * 
+   *
    * @since 6.1.0
    */
   private void setGlobalHarmonyMaps() {
@@ -323,7 +324,7 @@ public class QueryManager {
    * Populates a {@link JSONObject} with the unique set of keys, i.e., original
    * column or field names passed into the request in {@link JSONParams} or in the
    * {@link YADARequest#PS_HARMONYMAP} parameter.
-   * 
+   *
    * @param global The {@link JSONObject} to populate
    * @param local  The {@link JSONObject} containing the key/value pairs to
    *               transfer to {@code global}
@@ -352,7 +353,7 @@ public class QueryManager {
    * {@code null}, iterates over the queries in the request, identifying those
    * that have embedded {@code h} specs and those that do not. If any queries
    * contain specs, those that do not are provided with empty maps.
-   * 
+   *
    * @throws YADARequestException when the resulting harmonyMap is non-compliant
    * @since 6.1.0
    */
@@ -377,7 +378,7 @@ public class QueryManager {
       {
         for (YADAQuery yq: noMap)
         {
-          YADAParam param = new YADAParam(YADARequest.PS_HARMONYMAP, "{}", YADAParam.QUERY, YADAParam.OVERRIDEABLE);
+          YADAParam param = new YADAParam(YADARequest.PS_HARMONYMAP, "{}", YADAParam.QUERY, YADAParam.MUTABLE);
           yq.addParam(param);
         }
       }
@@ -389,7 +390,7 @@ public class QueryManager {
    * If the connection is not yet in the index, it is created from the source
    * stored in the {@code yq} object. If the protocol value in the query is not
    * SOAP or JDBC, the method exits silently
-   * 
+   *
    * @param yq the query object containing the source string for setting the
    *           connection
    * @throws YADAConnectionException when the connection to the source in the
@@ -426,7 +427,7 @@ public class QueryManager {
    * referenced by the parameter. If the connection object returned by the query
    * is not a JDBC connection, but, for instance, a SOAPConnection, the error will
    * be caught and handled gracefully.
-   * 
+   *
    * @param yq the query containing the statements to commit
    * @throws YADAConnectionException when the commit fails
    */
@@ -467,7 +468,7 @@ public class QueryManager {
   /**
    * Executes a commit on all connections created during processing of the current
    * request.
-   * 
+   *
    * @throws YADAConnectionException when the commit fails
    */
   public void commit() throws YADAConnectionException {
@@ -488,7 +489,7 @@ public class QueryManager {
             msg += "   Commit successful on [" + source + "].\n";
             msg += "------------------------------------------------------------\n";
             l.info(msg);
-          }          
+          }
           else if(!connection.getAutoCommit())
           {
             deferCommit(source);
@@ -511,7 +512,7 @@ public class QueryManager {
   /**
    * Adds {@code source} to the internal {@code #deferredCommits} list for
    * execution of commit on the connection after results are parsed.
-   * 
+   *
    * @param app the name of the YADA app mapped to the datasource config
    * @since 4.2.0
    */
@@ -528,7 +529,7 @@ public class QueryManager {
    * {@link java.sql.PreparedStatement}s and {@link java.sql.CallableStatement}s
    * using the utility methods in
    * {@link com.novartis.opensource.yada.ConnectionFactory}
-   * 
+   *
    * @throws YADAConnectionException when there is a problem closing any of the
    *                                 resources
    * @see ConnectionFactory#releaseResources(ResultSet)
@@ -613,7 +614,7 @@ public class QueryManager {
 
   /**
    * Adds the SQL function statement to the internal index
-   * 
+   *
    * @param yq   the query object
    * @param code the raw code
    */
@@ -623,7 +624,7 @@ public class QueryManager {
 
   /**
    * Adds the JDBC statement to the internal index
-   * 
+   *
    * @param yq   the query containing the {@code code} and the index to which to
    *             add the statement
    * @param code the SQL to map to the statement
@@ -638,7 +639,7 @@ public class QueryManager {
 
   /**
    * Adds the JDBC statement to the internal index at the specified position
-   * 
+   *
    * @param row  the index of {@link YADAQuery}{@code .pstmt} at which to store
    *             the {@link PreparedStatement}
    * @param yq   the query containing the {@code code} and the index to which to
@@ -655,7 +656,7 @@ public class QueryManager {
 
   /**
    * Adds the JDBC statement to the internal index
-   * 
+   *
    * @param yq   the query containing the {@code code} and the index to which to
    *             add the statement
    * @param p    the statement for the data query, serving as a key for the count
@@ -673,7 +674,7 @@ public class QueryManager {
 
   /**
    * Adds the SOAP message to the internal index
-   * 
+   *
    * @param yq   the query containing the code and index
    * @param code the soap message
    */
@@ -690,7 +691,7 @@ public class QueryManager {
 
   /**
    * Adds the REST url string to the internal index
-   * 
+   *
    * @param yq   the query containing the code and index
    * @param code the rest url string
    */
@@ -709,9 +710,9 @@ public class QueryManager {
    * Prepares the query for execution by retrieving the wrapped query code,
    * amending it if needed, as prescribed by request parameters, and links the
    * query statement with it's database connection.
-   * 
+   *
    * @param yq the {@link YADAQuery} to prep
-   * 
+   *
    * @since 7.0.0
    * @throws YADAResourceException           when a query's source attribute can't
    *                                         be found in the application context,
@@ -734,7 +735,7 @@ public class QueryManager {
   void prepQueryForExecution(YADAQuery yq) throws YADAResourceException, YADAUnsupportedAdaptorException,
       YADAConnectionException, YADARequestException, YADAAdaptorException, YADAParserException {
 //    yq.addCoreCode(0, yq.getYADACode());
-    String conformedCode = yq.getConformedCode();    
+    String conformedCode = yq.getConformedCode();
     String wrappedCode   = "";
     int    dataSize      = yq.getData().size() > 0 ? yq.getData().size() : 1;
     if (this.qutils.requiresConnection(yq))
@@ -783,7 +784,7 @@ public class QueryManager {
           if (yq.hasParamValue(YADARequest.PS_FILTERS))
           {
             filters = new JSONObject(yq.getYADAQueryParamValue(YADARequest.PS_FILTERS)[0]);
-            // TODO add filter json schema validation, but not here--in setter 
+            // TODO add filter json schema validation, but not here--in setter
           }
         }
         catch (JSONException e)
@@ -794,10 +795,10 @@ public class QueryManager {
 
         for (int row = 0; row < dataSize; row++)
         {
-//          int coreCodeIndex = dataSize > 1 ? row : 0; 
-           
+//          int coreCodeIndex = dataSize > 1 ? row : 0;
+
           if (yq.getInList() != null && yq.getInList().size() > 0)
-          {            
+          {
             this.qutils.processInList(yq, row);
           }
           if (yq.getValuesList() != null)
@@ -924,7 +925,7 @@ public class QueryManager {
   /**
    * Populates the data and parameter storage in the query object, using values
    * passed in request object
-   * 
+   *
    * @since 4.0.0
    * @param jSONParams the request param containing the query information to
    *                   process
@@ -940,7 +941,7 @@ public class QueryManager {
    *                                         instantiated
    * @throws YADAResourceException           when the query {@code q} can't be
    *                                         found in the index
-   * 
+   *
    */
   YADAQuery[] endowQueries(JSONParams jSONParams) throws YADAConnectionException, YADAFinderException,
       YADAQueryConfigurationException, YADAResourceException, YADAUnsupportedAdaptorException {
@@ -963,7 +964,7 @@ public class QueryManager {
   /**
    * Populates the data and parameter storage in the {@code yq} object, using
    * values passed {@code entry}
-   * 
+   *
    * @param yq    the {@link YADAQuery} to augment
    * @param entry the {@link JSONParamsEntry} containing the values to store in
    *              the query
@@ -977,7 +978,7 @@ public class QueryManager {
    *                                         found in the index
    * @throws YADAConnectionException         when a connection pool or string
    *                                         cannot be established
-   * 
+   *
    */
   YADAQuery endowQuery(YADAQuery yq, JSONParamsEntry entry) throws YADAQueryConfigurationException,
       YADAResourceException, YADAUnsupportedAdaptorException, YADAConnectionException {
@@ -991,11 +992,11 @@ public class QueryManager {
    * Populates the data and parameter storage in the query object, using values
    * passed in request object. When the request has a qname and params, it is for
    * a singular query.
-   * 
+   *
    * @param q the name of the query to process
    * @return a {@link YADAQuery} object retrieved from the YADA index
    *         corresponding to {@code q}
-   * 
+   *
    * @throws YADAFinderException             when the query {@code q} can't be
    *                                         found in the YADA index
    * @throws YADAConnectionException         when a connection to the YADA index
@@ -1034,7 +1035,7 @@ public class QueryManager {
   /**
    * Populates the data and parameter storage in the query object, using values
    * passed in request object
-   * 
+   *
    * @since 4.0.0
    * @param yq the query object to be processed
    * @return {@code yq}, now endowed with metadata
@@ -1053,20 +1054,22 @@ public class QueryManager {
     if (getJsonParams() != null)
     {
       String qpath = yq.getApp() + "/" + yq.getQname();
-      index = ArrayUtils.indexOf(getJsonParams().getKeys(), qpath);
+      index = Arrays.asList(getJsonParams().getKeys()).indexOf(qpath);
+//      index = ArrayUtils.indexOf(getJsonParams().getKeys(), qpath);
     }
     if(index == -1)
     {
-      index = ArrayUtils.indexOf(getJsonParams().getKeys(), yq.getQname());
+      index = Arrays.asList(getJsonParams().getKeys()).indexOf(yq.getQname());
+//      index = ArrayUtils.indexOf(getJsonParams().getKeys(), yq.getQname());
     }
     // get request params that pertain to the query
     // at this point all default source and query params have set in the queries
     yq.addRequestParams(this.yadaReq.getRequestParamsForQueries(), index);
-    
+
     yq.setAdaptorClass(this.qutils.getAdaptorClass(yq.getApp()));
-    
+
     if (RESTAdaptor.class.equals(yq.getAdaptorClass()))
-    {      
+    {
       if (this.getYADAReq().hasCookies())
       {
         for (String cookieName: this.yadaReq.getCookies())
@@ -1090,17 +1093,17 @@ public class QueryManager {
           String name = keys.next();
           yq.addHttpHeader(name, httpHeaders.getString(name));
         }
-      }      
+      }
     }
-    
+
     @SuppressWarnings("unchecked")
     Map<String, Object> conf = (Map<String, Object>) ConnectionFactory.getConnectionFactory().getDsConf().get(yq.getApp());
     Properties props = new Properties();
     if(conf.containsKey(ConnectionFactory.YADA_CONF_PROPS))
     {
       for(String key : JSONObject.getNames((JSONObject)conf.get(ConnectionFactory.YADA_CONF_PROPS)))
-      {           
-        props.put(key, ((JSONObject)conf.get(ConnectionFactory.YADA_CONF_PROPS)).getString(key));            
+      {
+        props.put(key, ((JSONObject)conf.get(ConnectionFactory.YADA_CONF_PROPS)).getString(key));
       }
       String          paramStr = props.getProperty("params");
       if (paramStr != null)
@@ -1113,10 +1116,10 @@ public class QueryManager {
           String     paramName = jo.getString("name");
           String     paramVal  = jo.getString("value");
           int        paramRule = jo.getInt("rule");
-          
+
           for(String frag : YADAUtils.PARAM_FRAGS)
           {
-            if(paramName.contentEquals(YADARequest.getParamKeyVal("PL_"+frag)) 
+            if(paramName.contentEquals(YADARequest.getParamKeyVal("PL_"+frag))
                 || paramName.contentEquals(YADARequest.getParamKeyVal("PS_"+frag)))
             {
               try
@@ -1131,11 +1134,11 @@ public class QueryManager {
               }
             }
           }
-          
+
           yp.setName(paramName);
           yp.setValue(paramVal);
           yp.setRule(paramRule);
-          
+
           List<YADAParam> ypList = yq.getYADAQueryParamsForKey(paramName);
           if(ypList.size() > 0)
           {
@@ -1152,7 +1155,7 @@ public class QueryManager {
         }
       }
     }
-    
+
     // TODO handle missing params exceptions here, throw YADARequestException
     // TODO review instances where YADAQueryConfigurationException is thrown
     this.qutils.setProtocol(yq);
@@ -1175,7 +1178,7 @@ public class QueryManager {
 
   /**
    * Accessor for array of {@link YADAQuery} objects.
-   * 
+   *
    * @since 4.0.0
    * @return array of YADAQuery objects
    */
@@ -1185,7 +1188,7 @@ public class QueryManager {
 
   /**
    * Accessor for {@link YADAQuery} at index.
-   * 
+   *
    * @param index the position of the desired query in the internal array
    * @return YADAQuery at the desired index
    */
@@ -1195,7 +1198,7 @@ public class QueryManager {
 
   /**
    * Returns the value of {@link YADARequest#PS_UPDATE_STATS}
-   * 
+   *
    * @return {@code true} by default, or {@code false} if set deliberately in the
    *         request
    */
@@ -1205,7 +1208,7 @@ public class QueryManager {
 
   /**
    * Standard accessor.
-   * 
+   *
    * @return the local {@link YADARequest}
    */
   private YADARequest getYADAReq() {
@@ -1214,7 +1217,7 @@ public class QueryManager {
 
   /**
    * Standard mutator for variable
-   * 
+   *
    * @param yadaReq YADA request configuration
    */
   private void setYADAReq(YADARequest yadaReq) {
@@ -1223,7 +1226,7 @@ public class QueryManager {
 
   /**
    * Standard accessor for variable
-   * 
+   *
    * @return the jsonParams object
    */
   private JSONParams getJsonParams() {
@@ -1232,7 +1235,7 @@ public class QueryManager {
 
   /**
    * Standard mutator for variable
-   * 
+   *
    * @param jsonParams the config object to set
    */
   private void setJsonParams(JSONParams jsonParams) {

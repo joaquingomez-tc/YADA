@@ -15,7 +15,7 @@
 /**
  *
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 import javax.servlet.http.HttpSession;
 
@@ -24,7 +24,9 @@ import org.json.JSONObject;
 
 import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADARequest;
-import com.novartis.opensource.yada.YADASecurityException;
+import com.novartis.opensource.yada.plugin.AbstractPostprocessor;
+import com.novartis.opensource.yada.plugin.Preprocess;
+import com.novartis.opensource.yada.plugin.YADAPluginException;
 
 /**
  * This plugin is both a {@link Preprocess} and {@link Postprocess} plugin.
@@ -39,7 +41,7 @@ import com.novartis.opensource.yada.YADASecurityException;
  * @deprecated since 8.7.6
  */
 @Deprecated
-public class Login extends AbstractPostprocessor implements Preprocess{
+public class Login extends AbstractPostprocessor implements Preprocess {
 
   /**
    * Examies the payload.  If it contains &gt;0 rows, it will store the payload in the session.

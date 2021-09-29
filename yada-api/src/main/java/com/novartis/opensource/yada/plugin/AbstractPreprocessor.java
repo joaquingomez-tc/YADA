@@ -43,8 +43,15 @@ import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
 import com.novartis.opensource.yada.YADASQLException;
-import com.novartis.opensource.yada.YADASecurityException;
-import com.novartis.opensource.yada.YADASecuritySpec;
+import com.novartis.opensource.yada.security.YADASecuritySpec;
+import com.novartis.opensource.yada.security.Authorization;
+import com.novartis.opensource.yada.security.ContentPolicy;
+import com.novartis.opensource.yada.security.ExecutionPolicy;
+import com.novartis.opensource.yada.security.SecurityPolicy;
+import com.novartis.opensource.yada.security.SecurityPolicyRecord;
+import com.novartis.opensource.yada.security.TokenValidator;
+import com.novartis.opensource.yada.security.Validation;
+import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.util.YADAUtils;
 
 /**
@@ -60,6 +67,13 @@ public abstract class AbstractPreprocessor
    * @since 7.0.0
    */
   private static final String PLUGIN_PKG = "com.novartis.opensource.yada.plugin.";
+  
+  /**
+   * Constant equal to {@value}
+   * 
+   * @since 10.2.0
+   */
+  private static final String SECURITY_PKG = "com.novartis.opensource.yada.security.";
 
   /**
    * Constant equal to {@value}
@@ -310,7 +324,7 @@ public abstract class AbstractPreprocessor
           // test for existing policy config
           if((boolean) spec.getClass().getMethod(method).invoke(spec))
           {
-            plugin = Class.forName(PLUGIN_PKG + iface);
+            plugin = Class.forName(SECURITY_PKG + iface);
             if (plugin.isAssignableFrom(getClass()))
             {
               setSecurityPolicy(this);

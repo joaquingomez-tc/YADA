@@ -1,15 +1,10 @@
 /**
  *
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
-import com.novartis.opensource.yada.Finder;
 import com.novartis.opensource.yada.YADARequest;
-import com.novartis.opensource.yada.YADASecurityException;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
+import com.novartis.opensource.yada.server.YADAServer;
 
 /**
  * @author Justin Finn
@@ -19,7 +14,7 @@ import net.sf.ehcache.Element;
 public interface Authorization {
 
   /**
-   * Constant with value: {@value}   
+   * Constant with value: {@value}
    */
   public final static String JWSKEY = "jws.key";
 
@@ -119,7 +114,7 @@ public interface Authorization {
    * Constant equal to: 14399
    */
   public final static Integer YADA_IDENTITY_TTL = 14399;
-  
+
   /**
    * Constant equal to: {@value}
    */
@@ -160,19 +155,19 @@ public interface Authorization {
 
   /**
    * Constant equal to {@value}
-   * 
+   *
    */
   public final static String RX_HDR_AUTH_USR_PREFIX = "(Basic)(.+?)([A-Za-z0-9\\-\\._~\\+\\/]+=*)";
 
   /**
    * Constant equal to {@value}
-   * 
+   *
    */
   public final static String RX_HDR_AUTH_USR_CREDS = "(.+)[:=](.+)";
 
   /**
    * Constant equal to {@value} Formerly: (Bearer)(.+?)([a-zA-Z0-9-_.]{5,})
-   * 
+   *
    */
   public final static String RX_HDR_AUTH_TKN_PREFIX = "(Bearer)(.+?)([A-Za-z0-9\\-\\._~\\+\\/]+=*)";
 
@@ -198,7 +193,7 @@ public interface Authorization {
 
   /**
    * Authorization of general use for given context
-   * 
+   *
    * @param payload a string to validate
    * @throws YADASecurityException when authorization fails for any reason, e.g., invalid credentials or token
    */
@@ -206,14 +201,14 @@ public interface Authorization {
 
   /**
    * Authorization of query use for given context
-   * 
+   *
    * @throws YADASecurityException when authorization fails for any reason, e.g., invalid credentials or token
    */
   public void authorize() throws YADASecurityException;
 
   /**
    * Confirm token is valid and user possesses necessary grants. Intended for use in a postprocessor plugin.
-   * 
+   *
    * @see Authorizer
    * @param yadaReq the {@link YADARequest} containing the headers to validate
    * @param result the default auth query result, e.g., {@code 401 Unauthorized}
@@ -222,57 +217,48 @@ public interface Authorization {
   public void authorizeYADARequest(YADARequest yadaReq, String result) throws YADASecurityException;
 
   /**
-   * Write to the IAM cache
-   * 
+   * Write to the IAM cache. This default implementation of this method signature does nothing.
+   * It could be overridden to support an external or third party cache.
+   * Use the {@link #setCacheEntry(String, Object)} signature with native {@link IdentityCache} cache.
+   *
    * @param cache the name of the cache
    * @param key the cache entry name
    * @param cacheValue the cache entry value
    * @param ttl the time-to-live of the entry
    */
-  public default void setCacheEntry(String cache, String key, Object cacheValue, Integer ttl) {
-    CacheManager cacheManager = CacheManager.getCacheManager(Finder.YADA_CACHE_MGR);
-    if (cacheManager.getCache(cache) == null && cacheManager != null)
-    { // .name(cache)
-      // .maxElementsInMemory(1000) ... 1000
-      // elements
-      // .overflowToDisk(false)
-      // .eternal(false)
-      // .timeToLiveSeconds(ttl) ... ttl minute
-      // token total lifetime
-      // .timeToIdleSeconds(ttl) ... ttl minute
-      // token idle lifetime
-      Cache cachez = new Cache(cache, 1000, false, false, ttl, ttl);
-      cacheManager.addCache(cachez);
-    }
-    Cache   cacheIndex   = cacheManager.getCache(cache);
-    Element cacheElement = new Element(key, cacheValue);
-    cacheIndex.put(cacheElement);
+  public default void setCacheEntry(String cache, String key, Object cacheValue, Integer ttl) {  }
+
+  /**
+   * Write to the native {@link IdentityCache} IAM cache.
+   * @param key the cache entry name
+   * @param cacheValue the cache entry value
+   * @since 10.2.0
+   */
+  public default void setCacheEntry(String key, Object cacheValue) {
+    YADAServer.getIdentityCache().put(key, cacheValue);
   }
 
   /**
-   * Read the IAM cache
-   * 
+   * Read the IAM cache.  This default implementation of this method signature does nothing
+   * and returns null.  It could be overridden to support an external or third party cache.
+   * Use the {@link #getCacheEntry(String)} signature with native {@link IdentityCache} cache.
+   *
    * @param cache the name of the cache
    * @param key the name of the entry to retrieve
    * @return the stored string
    */
   public default Object getCacheEntry(String cache, String key) {
-    Object       cacheValue   = null;
-    Element      cacheDict    = null;
-    CacheManager cacheManager = CacheManager.getCacheManager(Finder.YADA_CACHE_MGR);
-    if (cacheManager != null)
-    {
-      Cache cacheIndex = cacheManager.getCache(cache);
-      if (cacheIndex != null)
-      {
-        cacheDict = cacheIndex.get(key);
-        if (cacheDict != null)
-        {
-          cacheValue = cacheDict.getObjectValue();
-        }
-      }
-    }
-    return cacheValue;
+    return null;
+  }
+
+  /**
+   * Read the native {@link IdentityCache} IAM cache
+   * @param key the name of the entry to retrieve
+   * @return the stored object
+   * @since 10.2.0
+   */
+  public default Object getCacheEntry(String key) {
+    return YADAServer.getIdentityCache().get(key);
   }
 
 }

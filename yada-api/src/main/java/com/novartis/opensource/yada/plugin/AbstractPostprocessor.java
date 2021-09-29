@@ -36,7 +36,9 @@ import org.json.JSONObject;
 import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
-import com.novartis.opensource.yada.YADASecurityException;
+import com.novartis.opensource.yada.security.Authorization;
+import com.novartis.opensource.yada.security.TokenValidator;
+import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.util.YADAUtils;
 
 /**

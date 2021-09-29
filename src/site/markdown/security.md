@@ -15,7 +15,7 @@ YADA Security is comprised of a four-tier cascading system featuring
 3. [Query execution protection](#featexec)
 4. [Content protection](#featcontent)
 
-The mechanism for a YADA Security implementation is a *preprocessor plugin*, configured as a *default YADA parameter* attached to the query for which protection is desired. Such a plugin, `com.novartis.opensource.yada.plugin.Gatekeeper` is provided.
+The mechanism for a YADA Security implementation is a *preprocessor plugin*, configured as a *default YADA parameter* attached to the query for which protection is desired. Such a plugin, `com.novartis.opensource.yada.security.Gatekeeper` is provided.
 
 When using a custom class other than `Gatekeeper` to implement security, it is still advantageous to extend `Gatekeeper`, or at least `com.novartis.opensource.yada.plugin.AbstractPreprocessor` if possible, as it contains many constants, default method implementations, and other conveniences.
 
@@ -56,7 +56,7 @@ http://myyada.mydomain.com/q/MY secured query/p/val
 --> Status Code: 401 Unathorized
 ```
 
-If this query is protected, using a default YADA parameter referencing a preprocessor plugin that implements `com.novartis.opensource.yada.plugin.Validation`, any request for that query at that host would be fail with a `401 Unauthorized` error.
+If this query is protected, using a default YADA parameter referencing a preprocessor plugin that implements `com.novartis.opensource.yada.security.Validation`, any request for that query at that host would be fail with a `401 Unauthorized` error.
 
 Conversely, the request:
 
@@ -199,7 +199,7 @@ As with all YADA security configurations, two default parameters are required.  
 Also:
 
 * `pl` is the alias for the `plugin` YADA parameter
-* `FQCN` = Fully Qualified Class Name, e.g., instead of `Gatekeeper`, `com.novartis.opensource.yada.plugin.Gatekeeper`. FQCN is typically only necessary if the package name is different (but class-loader issues could make a liar out of me.) In the examples below, the value `class` is used as a placeholder.
+* `FQCN` = Fully Qualified Class Name, e.g., instead of `Gatekeeper`, `com.novartis.opensource.yada.security.Gatekeeper`. FQCN is typically only necessary if the package name is different (but class-loader issues could make a liar out of me.) In the examples below, the value `class` is used as a placeholder.
 * Mutabiltiy = `1` = Non-overrideable (immutable)  
 * `regex` means a regular expression, i.e `myhost\.mydomain\..+`.  
   *  The default method `AbstractPreprocessor.validateURL(String pathRx)` supports both omission and inclusion of the protocol portion of the url, i.e., i.e `http://myhost\.mydomain\..+` is also a valid regular expression to use here.
@@ -228,7 +228,7 @@ The token validation is configured only as a method in the security plugin. Ther
 
 The plugin should implement the `void validateToken()` method. The method has no return value, and should throw a `YADASecurityException` when encountering an invalid state.
 
-This is the trivial implementation in `com.novartis.opensource.yada.plugin.Gatekeeper`:
+This is the trivial implementation in `com.novartis.opensource.yada.security.Gatekeeper`:
 
 ```java
   /**

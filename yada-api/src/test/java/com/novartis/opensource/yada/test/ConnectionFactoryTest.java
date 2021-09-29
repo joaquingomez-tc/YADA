@@ -16,14 +16,10 @@ package com.novartis.opensource.yada.test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.sql.Connection;
+import java.util.Map;
 import java.util.Properties;
-
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.config.CacheConfiguration;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
@@ -32,6 +28,7 @@ import org.testng.annotations.Test;
 
 import com.novartis.opensource.yada.ConnectionFactory;
 import com.novartis.opensource.yada.YADAConnectionException;
+import com.novartis.opensource.yada.YADAQuery;
 
 /**
  * Test class responsible for validating {@link ConnectionFactory} methods, and also for setup of JNDI context necessary for testing.
@@ -51,6 +48,12 @@ public class ConnectionFactoryTest {
 	private static Properties props = new Properties();
 	
 	/**
+	 * In memory query store
+	 * @since 10.1.1
+	 */
+	private Map<String,YADAQuery> YADAIndex = new ConcurrentHashMap<>();
+	
+	/**
 	 * Test prep method which creates and populates a local JNDI context to facilitate testing independently of Tomcat.
 	 * @param properties the path to the properties file, expected to be set in the TestNG xml config file.
 	 */
@@ -62,35 +65,11 @@ public class ConnectionFactoryTest {
 		  
 		  
 			// load properties
-			setProps(properties);
-			
-      // Init cache
-      String file = "ehcache.xml";
-      try
-      {
-	      URL    url  = getClass().getClassLoader().getResource(file);
-	      if (url != null)
-	      {
-	    	  CacheManager.create(url);
-	      }
-	      else
-	      {
-	        CacheManager YADAIndexManager = CacheManager.create();
-	        Cache YADAIndex = new Cache(new CacheConfiguration("YADAIndex",0).eternal(true));
-	        YADAIndexManager.addCache(YADAIndex);
-	      }
-      } 
-      catch(CacheException e)
-      {
-    	  CacheManager YADAIndexManager = CacheManager.create(getClass().getClassLoader().getResourceAsStream("/"+file));
-    	  Cache YADAIndex = new Cache(new CacheConfiguration("YADAIndex",0).eternal(true));
-    	  YADAIndexManager.addCache(YADAIndex);
-      }
+			setProps(properties);		      
 		}    
-		catch (Exception e)
+		catch (IOException e)
 		{
-			//e.printStackTrace();
-			
+			e.printStackTrace();
 		}
 	}
 	

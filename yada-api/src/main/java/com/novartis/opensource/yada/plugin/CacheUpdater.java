@@ -17,18 +17,15 @@
  */
 package com.novartis.opensource.yada.plugin;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.novartis.opensource.yada.ConnectionFactory;
 import com.novartis.opensource.yada.Finder;
-import com.novartis.opensource.yada.YADAConnectionException;
 import com.novartis.opensource.yada.YADAFinderException;
 import com.novartis.opensource.yada.YADAQuery;
-import com.novartis.opensource.yada.YADAQueryConfigurationException;
 import com.novartis.opensource.yada.YADARequest;
 
 /**
@@ -46,41 +43,28 @@ public class CacheUpdater extends AbstractBypass
 
 	/** 
 	 * @see com.novartis.opensource.yada.plugin.Bypass#engage(com.novartis.opensource.yada.YADARequest)
-	 */
-	@SuppressWarnings("unchecked")
+	 */	
   @Override
 	public String engage(YADARequest yadaReq) throws YADAPluginException
-	{
-		Cache yadaIndex = ConnectionFactory.getConnectionFactory().getCacheConnection(Finder.YADA_CACHE_MGR,Finder.YADA_CACHE);
-		for(Object q : yadaIndex.getKeys().toArray(new Object[yadaIndex.getKeys().size()]))
+	{    
+		Map<String,YADAQuery> yadaIndex = ConnectionFactory.getConnectionFactory().getCache();
+		for(String q : yadaIndex.keySet().toArray(new String[yadaIndex.keySet().size()]))
 		{
-			try
-			{
-				l.debug("Refreshing verson of [" + q + "] in cache.");
-				YADAQuery yq = null;
-				try 
-				{
-				  yq = new Finder().getQueryFromIndex((String)q);
-				}
-				catch(YADAFinderException e)
-				{
-				  l.warn("Attempted to update cached version non-existent query. This usually means someone changed the qname directly in the index. The old query was removed from the cache.");
-				  yadaIndex.remove(q);
-				} 
-				if(yq != null)
-				{
-				  Element element = new Element(q, yq);
-				  yadaIndex.put(element); // automatically overwrites, or writes anew
-				}
-			} 
-			catch (YADAConnectionException e)
-			{
-				throw new YADAPluginException(e.getMessage(), e);
-			} 
-			catch (YADAQueryConfigurationException e) 
+			l.debug("Refreshing verson of [" + q + "] in cache.");
+      YADAQuery yq = null;
+      try 
       {
-			  throw new YADAPluginException(e.getMessage(), e);
-			}
+        yq = new Finder().getQueryFromLib(q);
+      }
+      catch(YADAFinderException e)
+      {
+        l.warn("Attempted to update cached version non-existent query. This usually means someone changed the qname directly in the index. The old query was removed from the cache.");
+        yadaIndex.remove(q);
+      } 
+      if(yq != null)
+      {				  
+        yadaIndex.put(q,yq); // automatically overwrites, or writes anew
+      }
 		}
 		return "Cache successfully updated on " + new java.util.Date().toString();
 	}

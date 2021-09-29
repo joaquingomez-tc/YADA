@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADAQueryResult;
 import com.novartis.opensource.yada.YADARequest;
-import com.novartis.opensource.yada.YADASecurityException;
+import com.novartis.opensource.yada.security.YADASecurityException;
 
 /**
  * The abstract Adaptor class is at the root of the package hierarchy. Adaptors

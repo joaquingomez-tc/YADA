@@ -53,10 +53,10 @@ import javax.xml.xpath.XPathFactory;
 import nl.javadude.assumeng.Assumption;
 import nl.javadude.assumeng.AssumptionListener;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,8 +84,8 @@ import com.novartis.opensource.yada.YADAQueryConfigurationException;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
 import com.novartis.opensource.yada.YADAResourceException;
-import com.novartis.opensource.yada.YADASecurityException;
 import com.novartis.opensource.yada.format.YADAResponseException;
+import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.server.YADAServer;
 import com.novartis.opensource.yada.util.YADAUtils;
 
@@ -326,8 +326,8 @@ public class ServiceTest
       }
       props = ConnectionFactoryTest.getProps();
     }
-    this.host = props.getProperty("YADA.host");    
-    String ctx = YADAServer.getProperties().getProperty("YADA.server.context");    
+    this.host = props.getProperty("YADA.host");
+    String ctx = YADAServer.getProperties().getProperty("YADA.server.context");
     this.uri = (ctx.startsWith("/") ? ctx : "/"+ctx) + props.getProperty("YADA.uri");
     this.auth = props.getProperty("YADA.auth");
     this.user = props.getProperty("YADA.user");
@@ -394,14 +394,20 @@ public class ServiceTest
     String[] params = null;
     for (int i = 0; i < paths.length; i++)
     {
-      params = (String[]) ArrayUtils.addAll(params, loadResource(paths[i]));
+      List<String> paramList = new ArrayList<>();
+      paramList.addAll(Arrays.asList(loadResource(paths[i])));
+      params = (String[]) paramList.toArray(new String[] {});
 
       if (engine != null)
       {
         String enginePath = paths[i].replace(".txt", "_" + engine + ".txt");
         String[] engineResources = loadResource(enginePath);
         if (engineResources != null)
-          params = (String[]) ArrayUtils.addAll(params, engineResources);
+        {
+          paramList = Arrays.asList(params);
+          paramList.addAll(Arrays.asList(engineResources));
+          params = (String[]) paramList.toArray();
+        }
       }
     }
     List<String> list = new ArrayList<>(Arrays.asList(params));
@@ -511,7 +517,11 @@ public class ServiceTest
       }
       else
       {
-        paraMap.put(param, (String[])ArrayUtils.add(vals, values.get(i)));
+        List<String> valList = new ArrayList<>();
+        if(vals.length > 0)
+          valList.addAll(Arrays.asList((String[]) vals));
+        valList.add(values.get(i));
+        paraMap.put(param, valList.toArray(new String[] {}));
       }
       i++;
     }
@@ -683,7 +693,7 @@ public class ServiceTest
    *         path
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
-   * @throws YADAException if query prep or execution failsif the insert queries fail 
+   * @throws YADAException if query prep or execution failsif the insert queries fail
    */
   @BeforeMethod(groups = { "json", "standard", "options", "api", "jsp", "plugins", "sqlite_debug" })
   public void dbPrep() throws URISyntaxException, IOException, YADAException
@@ -711,7 +721,7 @@ public class ServiceTest
    *         path
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
-   * @throws YADAException if query prep or execution failsif the delete queries fail 
+   * @throws YADAException if query prep or execution failsif the delete queries fail
    */
   @AfterMethod(groups = { "json", "standard", "options", "api", "jsp", "plugins", "sqlite_debug" })
   public void dbClean() throws URISyntaxException, IOException, YADAException
@@ -729,7 +739,7 @@ public class ServiceTest
    *         path
    * @throws IOException if the {@link InputStream} used for reading test files
    *         can't be closed
-   * @throws YADAException if query prep or execution failsif the insert or delete queries fail 
+   * @throws YADAException if query prep or execution failsif the insert or delete queries fail
    * @since 5.1.0
    */
   public void prepOrClean(String[] paths) throws URISyntaxException, IOException, YADAException
@@ -799,7 +809,7 @@ public class ServiceTest
     }
 
     String protocol = "http";
-    protocol += this.host.endsWith("443") ? "s" : "";    
+    protocol += this.host.endsWith("443") ? "s" : "";
     String target = protocol + "://" + this.host + encQuery;
     URL url = null;
     try
@@ -883,7 +893,7 @@ public class ServiceTest
    * Execute standard parameter tests
    *
    * @param query the query to execute
-   * @throws YADAException if query prep or execution failsif query prep or execution fails 
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "standard", "api" })
   @QueryFile(list = {})
@@ -1008,7 +1018,7 @@ public class ServiceTest
     logQuery(query);
     String method = null;
     HttpURLConnection connection = null;
-    
+
     boolean pathStyle = query.startsWith("/");
     String protocol = "http";
     protocol += this.host.endsWith("443") ? "s" : "";
@@ -1139,7 +1149,7 @@ public class ServiceTest
    * Tests pipe-delimited response with json params
    *
    * @param query the query to execute
-   * @throws YADAException if query prep or execution failsif query prep or execution fails 
+   * @throws YADAException if query prep or execution failsif query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "json", "options", "api" })
   @QueryFile(list = {})
@@ -1663,7 +1673,8 @@ public class ServiceTest
     JSONArray spec     = req.getHarmonyMap();
     String result      = svc.execute();
 
-    int qCount = StringUtils.countMatches(query,"qname") + StringUtils.countMatches(query,"q=");
+//    int qCount = StringUtils.countMatches(query,"qname") + StringUtils.countMatches(query,"q=");
+    int qCount = (query.split(Pattern.quote("qname"), -1).length - 1) + (query.split(Pattern.quote("q="), -1).length - 1);
     String line = null;
     int lineCount = 0;
     if (req.getFormat().equals(YADARequest.FORMAT_CSV))
@@ -1863,11 +1874,11 @@ public class ServiceTest
           for(String key : rowKeys)               // iterate over the row keys
           {
             if(key.matches("[A-Z]+"))            // upper case are spec vals
-              Assert.assertTrue(ArrayUtils.contains(currentSpecVals, key));  // row key is in current spec vals
+              Assert.assertTrue(Arrays.asList(currentSpecVals).indexOf(key) > -1);  // row key is in current spec vals
             else
             {
-              Assert.assertFalse(ArrayUtils.contains(currentSpecVals, key)); // row key is not current spec vals
-              Assert.assertFalse(ArrayUtils.contains(currentSpecKeys, key)); // row key is in current spec keys
+              Assert.assertFalse(Arrays.asList(currentSpecVals).indexOf(key) > -1); // row key is not current spec vals
+              Assert.assertFalse(Arrays.asList(currentSpecKeys).indexOf(key) > -1); // row key is in current spec keys
             }
           }
 
@@ -1877,13 +1888,13 @@ public class ServiceTest
             {
               try
               {
-                if(ArrayUtils.contains(intKeys, col))
+                if(Arrays.asList(intKeys).indexOf(col) > -1)
                   Assert.assertTrue(validateInteger(row.getString(col)));
-                else if(ArrayUtils.contains(floatKeys, col))
+                else if(Arrays.asList(floatKeys).indexOf(col) > -1)
                   Assert.assertTrue(validateNumber(row.getString(col)));
-                else if(ArrayUtils.contains(dateKeys, col))
+                else if(Arrays.asList(dateKeys).indexOf(col) > -1)
                   Assert.assertTrue(validateDate(row.getString(col)));
-                else if(ArrayUtils.contains(timeKeys, col))
+                else if(Arrays.asList(timeKeys).indexOf(col) > -1)
                   Assert.assertTrue(validateTime(row.getString(col)));
               }
               catch(ParseException e)

@@ -51,8 +51,6 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.ValuesList;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,10 +73,10 @@ import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * Utilities for query string manipulation and accounting.
- * 
+ *
  * @since 4.0.0
  * @author David Varon
- * 
+ *
  */
 public class QueryUtils
 {
@@ -172,7 +170,7 @@ public class QueryUtils
 	 */
 	public static final String RX_DELETE = "^DELETE.+";
 	/**
-	 * A constant equal to: {@code ^([^&lt;]+)((&lt;&lcub;1,2&rcub;)((?!rm|mkdir).+))*$ } 
+	 * A constant equal to: {@code ^([^&lt;]+)((&lt;&lcub;1,2&rcub;)((?!rm|mkdir).+))*$ }
 	 */
 	public final static String RX_FILE_URI = "^([^<]+)((<{1,2})((?!rm|mkdir).+))?$";
 	/**
@@ -283,14 +281,14 @@ public class QueryUtils
 	/**
 	 * Retrieves the adaptor class from the application context given the
 	 * parameter values.
-	 * 
+	 *
 	 * @param source the JNDI string or url mapped to the query's app in the YADA index
 	 * @param version the version of the framework, for selection of the proper adaptor
 	 * @return the {@link Class} of the appropriate adaptor
 	 * @throws YADAResourceException when {@code source} can't be found, or there is an issue with the
 	 *           application context
 	 * @throws YADAUnsupportedAdaptorException when the adaptor class mapped to {@code source} can't be found
-	 * @deprecated since 8.0.0           
+	 * @deprecated since 8.0.0
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated
@@ -305,7 +303,7 @@ public class QueryUtils
 			try
 			{
 				ctx = new InitialContext();
-			} 
+			}
 			catch (NamingException e)
 			{
 				String msg = "Could not create context.";
@@ -315,23 +313,23 @@ public class QueryUtils
 			try
 			{
 				ds = (DataSource)ctx.lookup(source);
-			} 
+			}
 			catch (NamingException e)
 			{
 				String msg = "Could not find data source at " + source;
 				throw new YADAResourceException(msg, e);
 			}
-			
+
 			//TODO add integration tests for multiple containers after breaking tomcat dbcp dependency
 			//     http://docs.oracle.com/javase/1.5.0/docs/api/java/sql/DriverManager.html?is-external=true
 			driverName = ((HikariDataSource)ds).getDriverClassName();
 			l.debug("JDBC driver is [" + driverName + "]");
 			className = Finder.getEnv("adaptor/" + driverName + version);
-		} 
+		}
 		else if (source.matches(RX_SOAP))
 		{
 			className = SOAP_ADAPTOR_CLASS_NAME;
-		} 
+		}
 		else if (source.matches(RX_FILE))
 		{
 			className = FILESYSTEM_ADAPTOR_CLASS_NAME;
@@ -342,12 +340,12 @@ public class QueryUtils
 		try
 		{
 			adaptorClass = (Class<Adaptor>)Class.forName(className);
-		} 
+		}
 		catch (ClassNotFoundException e)
 		{
 			String msg = "Could not find appropriate adaptor class";
 			throw new YADAUnsupportedAdaptorException(msg, e);
-		} 
+		}
 		catch (NoClassDefFoundError e)
 		{
 			String msg = "Could not find appropriate adaptor class";
@@ -357,7 +355,7 @@ public class QueryUtils
 	}
 
 	/**
-	 * 
+	 *
 	 * @param app the query's APP code
 	 * @return Class of type Adaptor mapped to the {@code source}
 	 * @throws YADAResourceException when {@code source} can't be found, or there is an issue with the application context
@@ -369,14 +367,14 @@ public class QueryUtils
 	{
 	  String driverName = "";
     String className = REST_ADAPTOR_CLASS_NAME;
-    ConnectionFactory factory = ConnectionFactory.getConnectionFactory(); 
+    ConnectionFactory factory = ConnectionFactory.getConnectionFactory();
     String type = factory.getAppConnectionType(app);
     if(type == null)
     {
       factory.createDataSources();
       type = factory.getAppConnectionType(app);
     }
-    
+
     if(type.equals(ConnectionFactory.TYPE_JDBC))
     {
       HikariDataSource ds = factory.getDataSourceMap().get(app);
@@ -385,12 +383,12 @@ public class QueryUtils
     }
     else if(type.equals(ConnectionFactory.TYPE_URL))
     {
-      Properties props = ConnectionFactory.getConnectionFactory().getWsSourceMap().get(app);    
-      String url  = props.getProperty(ConnectionFactory.YADA_CONF_SOURCE); 
+      Properties props = ConnectionFactory.getConnectionFactory().getWsSourceMap().get(app);
+      String url  = props.getProperty(ConnectionFactory.YADA_CONF_SOURCE);
       if (url.matches(RX_SOAP))
       {
         className = SOAP_ADAPTOR_CLASS_NAME;
-      } 
+      }
       else if (url.matches(RX_FILE))
       {
         // interrogate url and or configuration object to obtain adaptor class or file extn
@@ -400,7 +398,7 @@ public class QueryUtils
         }
         else if(props.containsKey(KEY_EXTENSION))
         {
-          
+
           className = Finder.getEnv(props.getProperty(KEY_EXTENSION.toLowerCase()));
         }
         else
@@ -410,19 +408,19 @@ public class QueryUtils
       }
       // else default is REST, set up top
     }
-    
+
     l.debug("JDBCAdaptor class is [" + className + "]");
-    
+
     Class<Adaptor> adaptorClass;
     try
     {
       adaptorClass = (Class<Adaptor>)Class.forName(className);
-    } 
+    }
     catch (ClassNotFoundException e)
     {
       String msg = "Could not find appropriate adaptor class";
       throw new YADAUnsupportedAdaptorException(msg, e);
-    } 
+    }
     catch (NoClassDefFoundError e)
     {
       String msg = "Compiled adaptor class could not be loaded";
@@ -432,7 +430,7 @@ public class QueryUtils
 	}
 
 	/**
-	 * 
+	 *
 	 * @param query the query object to process
 	 * @return Class of type JDBCAdaptor mapped to the source string stored in the YADAQuery object
 	 * @throws YADAResourceException when the source stored in query can't be found, or there is an issue with the application context
@@ -446,7 +444,7 @@ public class QueryUtils
 	/**
 	 * Returns an instance of {@code adaptorClass} using the "YADARequest"
 	 * constructor.
-	 * 
+	 *
 	 * @param adaptorClass Class of type JDBCAdaptor mapped to the source string stored in
 	 *          the YADAQuery object
 	 * @param yadaReq request config
@@ -468,22 +466,22 @@ public class QueryUtils
 		{
 			String msg = "Error instanting adaptor for class " + adaptorClass.getName();
 			throw new YADAUnsupportedAdaptorException(msg, e);
-		} 
+		}
 		catch (IllegalArgumentException e)
 		{
 			String msg = "Error instanting adaptor for class " + adaptorClass.getName();
 			throw new YADAUnsupportedAdaptorException(msg, e);
-		} 
+		}
 		catch (SecurityException e)
 		{
 			String msg = "Error instanting adaptor for class " + adaptorClass.getName();
 			throw new YADAUnsupportedAdaptorException(msg, e);
-		} 
+		}
 		catch (InvocationTargetException e)
 		{
 			String msg = "Error instanting adaptor for class " + adaptorClass.getName();
 			throw new YADAUnsupportedAdaptorException(msg, e);
-		} 
+		}
 		catch (NoSuchMethodException e)
 		{
 			String msg = "Error instanting adaptor for class  s" + adaptorClass.getName();
@@ -494,7 +492,7 @@ public class QueryUtils
 
 	/**
 	 * Returns an instance of {@code adaptorClass} using the no-arg constructor.
-	 * 
+	 *
 	 * @param adaptorClass the class name of the YADA adaptor associated to the query
 	 * @return an instance of the provided class
 	 * @throws YADAUnsupportedAdaptorException when the {@code adaptorClass} cannot be instantiated
@@ -533,7 +531,7 @@ public class QueryUtils
 
 	/**
 	 * Returns {@code true} if the adaptor class is {@link #SOAP_ADAPTOR_CLASS}
-	 * 
+	 *
 	 * @param adaptorClass
 	 *          the class name of the YADA adaptor associated to the query
 	 * @return {@code true} if the adaptor class is {@link #SOAP_ADAPTOR_CLASS}
@@ -545,7 +543,7 @@ public class QueryUtils
 
 	/**
 	 * Returns {@code true} if the adaptor class is {@link #REST_ADAPTOR_CLASS}
-	 * 
+	 *
 	 * @param adaptorClass
 	 *          the class name of the YADA adaptor associated to the query
 	 * @return {@code true} if the adaptor class is {@link #REST_ADAPTOR_CLASS}
@@ -558,7 +556,7 @@ public class QueryUtils
 	/**
 	 * Returns {@code true} if the adaptor class is
 	 * {@link #FILESYSTEM_ADAPTOR_CLASS}
-	 * 
+	 *
 	 * @param adaptorClass
 	 *          the class name of the YADA adaptor associated to the query
 	 * @return {@code true} if the adaptor class is
@@ -582,7 +580,7 @@ public class QueryUtils
 
 	/**
 	 * Utility wrapper method to manage {@link Parser} instantiation and parsing.
-	 * 
+	 *
 	 * @param yq
 	 *          The query object containing the SQL to parse
 	 * @throws YADAParserException when the parser fails
@@ -593,9 +591,9 @@ public class QueryUtils
 	{
 	  // new method
 		Parser parser = new Parser();
-		
+
 		parser.parseDeparse(yq.getYADACode());
-		
+
 		yq.setStatement(parser.getStatement());
 		yq.setType(parser.getStatementType());
     yq.setColumnList(parser.getColumnList());
@@ -607,11 +605,11 @@ public class QueryUtils
 	}
 
 	/**
-	 * Initiates the parse/deparse process for a statement, and 
+	 * Initiates the parse/deparse process for a statement, and
 	 * recovers gracefully if {@link CCJSqlParserManager#parse(java.io.Reader)} throws a
-	 * {@link JSQLParserException} in which case it will use a regular expression to infer 
+	 * {@link JSQLParserException} in which case it will use a regular expression to infer
 	 * the query type.
-	 * 
+	 *
 	 * @param yq the query object containing the code to parse
 	 * @throws YADAUnsupportedAdaptorException when the adaptor can't be found or instantiated
 	 */
@@ -625,8 +623,8 @@ public class QueryUtils
 			try
 			{
 			  // Attempts to parse the JDBC statement
-				processJDBCStatement(yq); 
-			} 
+				processJDBCStatement(yq);
+			}
 			catch (YADAParserException e)
 			{
 				l.warn("Attempting to qualify previously unparsable statement");
@@ -641,15 +639,15 @@ public class QueryUtils
 				else if (isDelete(code))
 					yq.setType(Parser.DELETE);
 			}
-		} 
+		}
 		else if (isSoap(adaptorClass))
 		{
 			yq.setType(Parser.SOAP);
-		} 
+		}
 		else if (isRest(adaptorClass))
 		{
 			yq.setType(Parser.REST);
-		} 
+		}
 		else if (isFileSystem(adaptorClass))
 		{
 			if (isRead(code))
@@ -662,7 +660,7 @@ public class QueryUtils
         yq.setType(RM);
 			else if (isMkdir(code))
         yq.setType(MKDIR);
-		} 
+		}
 		else
 		{
 			String msg = "The query you are attempting to execute requires a protocol or class that is not supported.  This could be a configuration issue.";
@@ -673,7 +671,7 @@ public class QueryUtils
 	/**
 	 * Interrogates {@code yq} for the adaptor class and sets the protocol
 	 * attribute accordingly.
-	 * 
+	 *
 	 * @param yq the query object in which to set the protocol attribute
 	 * @throws YADAUnsupportedAdaptorException when the adaptor class cannot be found
 	 */
@@ -687,11 +685,11 @@ public class QueryUtils
 		else if (isSoap(adaptorClass))
 		{
 			yq.setProtocol(Parser.SOAP);
-		} 
+		}
 		else if (isRest(adaptorClass))
 		{
 			yq.setProtocol(Parser.REST);
-		} 
+		}
 		else if (isFileSystem(adaptorClass))
 		{
 			yq.setProtocol(Parser.FILE);
@@ -707,7 +705,7 @@ public class QueryUtils
 	/**
 	 * Returns {@code true} if the query content matches an SQL callable statement
 	 * syntax (see {@link #RX_CALLABLE}.
-	 * 
+	 *
 	 * @param coreSql
 	 *          stored code (with YADA markup)
 	 * @return {@code true} if the query content matches an SQL callable statement
@@ -722,7 +720,7 @@ public class QueryUtils
 	/**
 	 * Returns {@code true} if the query content matches an SQL SELECT statement
 	 * syntax (see {@link #RX_SELECT}.
-	 * 
+	 *
 	 * @param code
 	 *          stored code (with YADA markup)
 	 * @return {@code true} if the query content matches an SQL SELECT statement
@@ -738,7 +736,7 @@ public class QueryUtils
 	/**
 	 * Returns {@code true} if the query content matches an SQL UPDATE statement
 	 * syntax (see {@link #RX_UPDATE}.
-	 * 
+	 *
 	 * @param code
 	 *          stored code (with YADA markup)
 	 * @return {@code true} if the query content matches an SQL UPDATe statement
@@ -753,7 +751,7 @@ public class QueryUtils
 	}
 	/**
 	 * Returns {@code true} if the query type matches {@link Parser#UPDATE}.
-	 * 
+	 *
 	 * @param yq
 	 *          the query object to check
 	 * @return {@code true} if the query type is {@link Parser#UPDATE}. s
@@ -765,7 +763,7 @@ public class QueryUtils
 	/**
 	 * Returns {@code true} if the query content matches an SQL INSERT statement
 	 * syntax (see {@link #RX_INSERT}.
-	 * 
+	 *
 	 * @param code
 	 *          stored code (with YADA markup)
 	 * @return {@code true} if the query content matches an SQL INSERT statement
@@ -780,7 +778,7 @@ public class QueryUtils
 	}
 	/**
 	 * Returns {@code true} if the query type matches {@link Parser#INSERT}.
-	 * 
+	 *
 	 * @param yq
 	 *          the query object to check
 	 * @return {@code true} if the query type is {@link Parser#INSERT}.
@@ -792,7 +790,7 @@ public class QueryUtils
 	/**
 	 * Returns {@code true} if the query content matches an SQL DELETE statement
 	 * syntax (see {@link #RX_DELETE}.
-	 * 
+	 *
 	 * @param code
 	 *          stored code (with YADA markup)
 	 * @return {@code true} if the query content matches an SQL DELETE statement
@@ -807,7 +805,7 @@ public class QueryUtils
 	}
 	/**
 	 * Returns {@code true} if the query type matches {@link Parser#DELETE}.
-	 * 
+	 *
 	 * @param yq
 	 *          the query object to check
 	 * @return {@code true} if the query type is {@link Parser#DELETE}.
@@ -820,7 +818,7 @@ public class QueryUtils
 	/**
 	 * Returns {@code true} if the query content matches an SQL DELETE statement
 	 * syntax (see {@link #RX_DELETE}.
-	 * 
+	 *
 	 * @param code
 	 *          stored code (with YADA markup)
 	 * @return {@code true} if the query content matches an SQL DELETE statement
@@ -842,11 +840,11 @@ public class QueryUtils
 	}
 	/**
 	 * Returns {@code true} if the query content matches an the {@link #RX_FILE_URI} regex
-	 * 
+	 *
 	 * @param code
 	 *          stored code (with YADA markup)
 	 * @return {@code true} if the query content matches
-	 *         
+	 *
 	 */
 	public boolean isWrite(String code)
 	{
@@ -862,28 +860,28 @@ public class QueryUtils
 		}
 		return false;
 	}
-	
+
 	/**
    * Returns {@code true} if the query content matches an the {@link #RX_FILE_RM} regex
-   * 
+   *
    * @param code
    *          stored code (with YADA markup)
    * @return {@code true} if the query content matches
-   * @since 9.0.3        
+   * @since 9.0.3
    */
   public boolean isRm(String code)
   {
     Matcher m1 = Pattern.compile(RX_FILE_RM).matcher(code);
     return m1.matches();
   }
-  
+
   /**
    * Returns {@code true} if the query content matches an the {@link #RX_FILE_MKDIR} regex
-   * 
+   *
    * @param code
    *          stored code (with YADA markup)
    * @return {@code true} if the query content matches
-   * @since 9.0.3        
+   * @since 9.0.3
    */
   public boolean isMkdir(String code)
   {
@@ -893,7 +891,7 @@ public class QueryUtils
 
 	/**
 	 * Test if the query requires a stored connection
-	 * 
+	 *
 	 * @param yq
 	 *          the query to evaluate
 	 * @return {@code true} if the query's protocol is {@link Parser#JDBC} or
@@ -901,7 +899,7 @@ public class QueryUtils
 	 */
 	public boolean requiresConnection(YADAQuery yq)
 	{
-		return (yq.getProtocol().equals(Parser.JDBC) // TODO this is now redundant to YADAQuery.getType -- perhaps this could be refactored 
+		return (yq.getProtocol().equals(Parser.JDBC) // TODO this is now redundant to YADAQuery.getType -- perhaps this could be refactored
 		    || yq.getProtocol().equals(Parser.SOAP));
 	}
 
@@ -910,7 +908,7 @@ public class QueryUtils
 	 * not {@code null}, has a length &gt; 0, equals {@code true}, and the query type
 	 * is equal to {@link Parser#INSERT}, {@link Parser#UPDATE}, or
 	 * {@link Parser#DELETE}
-	 * 
+	 *
 	 * @param yq
 	 *          the query to commit
 	 * @return {@code true} if the {@link YADARequest#PS_COMMITQUERY} parameter is
@@ -921,16 +919,16 @@ public class QueryUtils
 	 */
 	public boolean isCommitQuery(YADAQuery yq)
 	{
-		return yq.getYADAQueryParamValue(YADARequest.PS_COMMITQUERY) != null 
-				&& yq.getYADAQueryParamValue(YADARequest.PS_COMMITQUERY).length > 0 
-				&& Boolean.parseBoolean(yq.getYADAQueryParamValue(YADARequest.PS_COMMITQUERY)[0]) 
+		return yq.getYADAQueryParamValue(YADARequest.PS_COMMITQUERY) != null
+				&& yq.getYADAQueryParamValue(YADARequest.PS_COMMITQUERY).length > 0
+				&& Boolean.parseBoolean(yq.getYADAQueryParamValue(YADARequest.PS_COMMITQUERY)[0])
 				&& (this.isInsert(yq) || this.isUpdate(yq) || this.isDelete(yq));
 	}
 
 	/**
 	 * Returns {@code true} if the query content matches an SQL DELETE statement
 	 * syntax (see {@link #RX_DELETE}.
-	 * 
+	 *
 	 * @param code
 	 *          stored code (with YADA markup)
 	 * @return {@code true} if the query content matches an SQL DELETE statement
@@ -955,7 +953,7 @@ public class QueryUtils
 	/**
 	 * Returns the soap query that is passed as an argument. This method does
 	 * nothing.
-	 * 
+	 *
 	 * @param xmlStr
 	 *          the soap query
 	 * @return the soap query
@@ -967,7 +965,7 @@ public class QueryUtils
 
 	/**
 	 * Returns a {@link URL} built from the provided {@code urlStr}
-	 * 
+	 *
 	 * @param urlStr
 	 *          the url string to convert to an object
 	 * @return a {@link URL} object
@@ -978,7 +976,7 @@ public class QueryUtils
 		try
 		{
 			url = new URL(urlStr);
-		} 
+		}
 		catch (MalformedURLException e)
 		{
 			e.printStackTrace();
@@ -994,7 +992,7 @@ public class QueryUtils
 	 * <strong>NOTE:</strong> not sure why this method isn't throwing an
 	 * exception.
 	 * </p>
-	 * 
+	 *
 	 * @param sql
 	 *          conformed code (without YADA markup)
 	 * @param conn
@@ -1007,7 +1005,7 @@ public class QueryUtils
 		try
 		{
 			c = conn.prepareCall(sql);
-		} 
+		}
 		catch (SQLException e)
 		{
 			l.error(e.getMessage());
@@ -1018,7 +1016,7 @@ public class QueryUtils
 	/**
 	 * Creates and returns a {@link java.sql.PreparedStatement} from {@code sql}
 	 * on the {@code conn}
-	 * 
+	 *
 	 * @param sql conformed code (without YADA markup)
 	 * @param conn connection object derived from YADA query's source attribute
 	 * @return the desired statement object
@@ -1030,7 +1028,7 @@ public class QueryUtils
 		try
 		{
 			pstmt = conn.prepareStatement(sql);
-		} 
+		}
 		catch (SQLException e)
 		{
 			String msg = "Unable to create or configure the PreparedStatementfor the requested query in the YADA Index.";
@@ -1041,7 +1039,7 @@ public class QueryUtils
 
 	/**
 	 * Removes all YADA data type symbols from source code.
-	 * 
+	 *
 	 * @param code
 	 *          stored code with YADA markup
 	 * @return the transformed code
@@ -1055,7 +1053,7 @@ public class QueryUtils
 	/**
 	 * Parses the source code, generating a {@code char} array of data types in
 	 * order of occurrence.
-	 * 
+	 *
 	 * @param sql
 	 *          stored code with YADA markup
 	 * @return a {@code char} array of data types
@@ -1076,39 +1074,39 @@ public class QueryUtils
 		}
 		return dataTypes;
 	}
-	
+
 	/**
 	 * This method creates a list for positional-indexed storage of data values,
    * then iterates over the list of jdbc-parameterized columns, extracting the
    * corresponding values from the data map. It then stores the value in the
    * list at it's proper positional index. Finally, the indexed value list is
    * added to the list of value lists in the query {@code yq}, at position {@code row}.
-   * 
-   * This method uses the value returned by {@link YADAQuery#getParameterizedColumnList()} 
-   * instead of {@link YADAQuery#getParameterizedColumns()}, and 
-   * supercedes {@link #setValsInPosition(YADAQuery, int)} 
-   * 
+   *
+   * This method uses the value returned by {@link YADAQuery#getParameterizedColumnList()}
+   * instead of {@link YADAQuery#getParameterizedColumns()}, and
+   * supercedes {@link #setValsInPosition(YADAQuery, int)}
+   *
 	 * @param yq the query containing the data to process
    * @param row the index of the data list
    * @since 7.1.0
 	 */
-	public void setPositionalParameterValues(YADAQuery yq, int row) 
+	public void setPositionalParameterValues(YADAQuery yq, int row)
 	{
 	  // the indexed positional value list for the current "row"
 	  List<String> valsInPosition = new ArrayList<>();
-	  
+
 	  // any subtables in values claused previously processed in the loop below
 	  List<String> processedValuesAliases = new ArrayList<>();
-	  
+
 	  // only process if there's data
     if (yq.getData().size() > 0)
     {
       // get the columns corresponding to jdbc parameters
       List<Column> paramColumns = yq.getParameterizedColumnList();
-      
-      // get the data for the current "row" 
+
+      // get the data for the current "row"
       Map<String,String[]> data = yq.getDataRow(row);
-      
+
       // iterate over parameterized columns in the query
 //      for (int paramColIndex = 0; paramColIndex < paramColumms.size(); paramColIndex++)
       int paramColIndex = 0;
@@ -1117,10 +1115,10 @@ public class QueryUtils
 //        String paramColName = paramColumns.get(paramColIndex).getColumnName();
 
         String paramColName = column.getColumnName();
-        // get table name  
+        // get table name
         Table  table = column.getTable();
-        String tabName = "";        
-        if(table.getAlias() != null 
+        String tabName = "";
+        if(table.getAlias() != null
             && !table.getAlias().getName().contentEquals(""))
         {
           tabName = table.getAlias().getName().trim();
@@ -1129,7 +1127,7 @@ public class QueryUtils
         {
           tabName = table.getName().trim();
         }
-        
+
         if(data.containsKey(tabName))
         {
           paramColName = tabName;
@@ -1138,25 +1136,25 @@ public class QueryUtils
         {
           paramColName = tabName.toUpperCase();
         }
-        // standard params or deliberate names, i.e., REST params        
+        // standard params or deliberate names, i.e., REST params
         else if(data.containsKey(YADA_COLUMN + (paramColIndex + 1)))
           paramColName = YADA_COLUMN + (paramColIndex + 1);
         // named columns in json params
         else if (data.containsKey(paramColName.toUpperCase()))
           paramColName = paramColName.toUpperCase();
         // named columns with quotes
-        else if(data.containsKey(paramColName.replaceAll("\"", "").toUpperCase()))        
+        else if(data.containsKey(paramColName.replaceAll("\"", "").toUpperCase()))
           paramColName = paramColName.replaceAll("\"", "").toUpperCase();
-        
+
         // obtain the values for the column
         String[] valsForColumn;
         valsForColumn = data.get(paramColName);
-        
-        
-        
-        if(!processedValuesAliases.contains(tabName))        
-        {         
-          // handle VALUE columns         
+
+
+
+        if(!processedValuesAliases.contains(tabName))
+        {
+          // handle VALUE columns
           if(yq.getValuesList() != null
               && yq.getValuesList().getAlias() != null
               && yq.getValuesList().getAlias().getName().trim().contentEquals(tabName))
@@ -1166,29 +1164,29 @@ public class QueryUtils
             {
               valsForColumn = String.join(",", Arrays.asList(valsForColumn)).split(",");
             }
-              
-            /* 
+
+            /*
              * A query such as:
-             *            
+             *
              *   select * from tab a join (values (?v, ?v)) vals(v,w) on a.col1 = vals.v and a.col2 = ?i
-             *   
+             *
              * with standard paramters would contain the following:
-             * 
-             *   YADA_1 = [(A,1),(B,2),(Z,3)]           *   
+             *
+             *   YADA_1 = [(A,1),(B,2),(Z,3)]           *
              *   YADA_3 = 1
-             *   
+             *
              * with JSONParams, data would be
-             * 
+             *
              *   {"vals":[(A,1),(B,2),(Z,3)],"cols2":1}
-             * 
+             *
              * valsInPosition must result in [A,1,B,2,C,3,1]
-             * 
-             */             
+             *
+             */
             // if we haven't processed the values alias yet, do them all
             for(int valIndex = 0; valIndex < valsForColumn.length; valIndex++)
             {
               String val = valsForColumn[valIndex];
-              String cleanVal = "";              
+              String cleanVal = "";
               Matcher m_paren  = RX_VALUES_PARAM_SINGLE.matcher(val);
               Matcher m_left   = RX_VALUES_PARAM_LEFT.matcher(val);
               Matcher m_right  = RX_VALUES_PARAM_RIGHT.matcher(val);
@@ -1206,13 +1204,13 @@ public class QueryUtils
               }
               else
               {
-                // middle of value set 
+                // middle of value set
                 cleanVal = val;
               }
               valsInPosition.add(cleanVal);
             }
             processedValuesAliases.add(alias);
-                  
+
           }
           else
           {
@@ -1237,7 +1235,7 @@ public class QueryUtils
 	 * list at it's proper positional index. Finally, the indexed value list is
 	 * added to the list of value lists in the query {@code yq}, at position
 	 * {@code row}.
-	 * 
+	 *
 	 * @param yq
 	 *          the query containing the data to process
 	 * @param row
@@ -1252,12 +1250,12 @@ public class QueryUtils
 			Map<String,String[]> data = yq.getDataRow(row);
 			for (int j = 0; j < columns.length; j++)
 			{
-				String colName = columns[j]; 
+				String colName = columns[j];
 				if(data.containsKey(YADA_COLUMN + (j + 1)))
           colName = YADA_COLUMN + (j + 1);
         else if (data.containsKey(colName.toUpperCase()))
-          colName = colName.toUpperCase();   
-				    
+          colName = colName.toUpperCase();
+
 				String[] valsForColumn;
 
 				valsForColumn = data.get(colName);
@@ -1275,7 +1273,7 @@ public class QueryUtils
 	/**
 	 * While processing JDBC statements, this method handles mapping of data
 	 * values to JDBC positional parameters.
-	 * 
+	 *
 	 * @param yq
 	 *          the query containing the statement
 	 * @param row
@@ -1301,7 +1299,7 @@ public class QueryUtils
 	 * Calls the appropriate setter method for {@code type} in the {@code pstmt},
 	 * performing the appropriate type conversion or syntax change as needed
 	 * (e.g., for {@link java.sql.Date}s)
-	 * 
+	 *
 	 * @param pstmt
 	 *          the statement to which to assign the parameter values
 	 * @param index
@@ -1311,7 +1309,7 @@ public class QueryUtils
 	 * @param val
 	 *          the value to assign
 	 */
-	
+
 	private void setQueryParameter(PreparedStatement pstmt, int index, char type,
 																	String val)
 	{
@@ -1330,7 +1328,7 @@ public class QueryUtils
 						if ("".equals(val) || val == null)
 						{
 							pstmt.setNull(index, java.sql.Types.DATE);
-						} 
+						}
 						else
 						{
 							SimpleDateFormat sdf = new SimpleDateFormat(STANDARD_DATE_FMT);
@@ -1348,7 +1346,7 @@ public class QueryUtils
 								pstmt.setDate(index, sqlDateVal);
 							}
 						}
-					} 
+					}
 					catch (Exception e)
 					{
 						l.error("Error: " + e.getMessage());
@@ -1359,19 +1357,19 @@ public class QueryUtils
 					{
 						int ival = Integer.parseInt(val);
 						pstmt.setInt(index, ival);
-					} 
+					}
 					catch (NumberFormatException nfe)
 					{
 						l.error("Error: " + nfe.getMessage());
 						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
 						pstmt.setNull(index, java.sql.Types.INTEGER);
-					} 
+					}
 					catch (NullPointerException npe)
 					{
 						l.error("Error: " + npe.getMessage());
 						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
 						pstmt.setNull(index, java.sql.Types.INTEGER);
-					} 
+					}
 					catch (Exception sqle)
 					{
 						l.error("Error: " + sqle.getMessage());
@@ -1384,13 +1382,13 @@ public class QueryUtils
 					{
 						float fval = Float.parseFloat(val);
 						pstmt.setFloat(index, fval);
-					} 
+					}
 					catch (NumberFormatException nfe)
 					{
 						l.error("Error: " + nfe.getMessage());
 						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
 						pstmt.setNull(index, java.sql.Types.INTEGER);
-					} 
+					}
 					catch (NullPointerException npe)
 					{
 						l.error("Error: " + npe.getMessage());
@@ -1424,25 +1422,25 @@ public class QueryUtils
 					pstmt.setString(index, val);
 					break;
 			}
-		} 
+		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 			l.error(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Uses the metadata collected during {@link Parser#parseDeparse(String)} to
 	 * modify the {@link Statement} by appending positional parameters to IN clause
-	 * expression lists, dynamically, based on the data passed in the request. 
-	 * 
+	 * expression lists, dynamically, based on the data passed in the request.
+	 *
 	 * Also stores the transformed data types, param counts, and SQL corresponding to the row
 	 * so the return value is for illustrative or logging purposes only, in all likelihood.
 	 * @param yq the query to process
 	 * @param row the index of the data array passed for processing
 	 * @return the modified YADA SQL
-	 * @throws YADAParserException if parsing or deparsing the query encounters a non-conforming state 
+	 * @throws YADAParserException if parsing or deparsing the query encounters a non-conforming state
 	 * @since 7.1.0
 	 */
 	public String processInList(YADAQuery yq, int row) throws YADAParserException
@@ -1454,11 +1452,11 @@ public class QueryUtils
 	    //TODO there should be a better way than reparsing to get access to the parser.
 	    //     like aren't the incols and expression map already in the query at this point?
 	    //     Probably just need to store the statement object in the yq
-	    try 
+	    try
 	    {
 	      parser.parseDeparse(yq.getYADACode());
-	    } 
-	    catch (YADAParserException e) 
+	    }
+	    catch (YADAParserException e)
 	    {
 	      String msg = "Unable to reparse statement for IN clause processing.";
 	      throw new YADAParserException(msg, e);
@@ -1466,7 +1464,7 @@ public class QueryUtils
 	    List<Column>             inColumns  = parser.getInColumnList();
 	    Map<Column,InExpression> inExprs    = parser.getInExpressionMap();
 	    Map<String,String[]>     dataForRow = yq.getDataRow(row);
-	    
+
 	    // iterate inColumns list
 	    for(int colIndex=0; colIndex<inColumns.size(); colIndex++)
 	    {
@@ -1486,17 +1484,17 @@ public class QueryUtils
 	        {
 	        	colName = colName.replaceAll("\"", "").toUpperCase();
 	        }
-	        
+
 	        // length of value array for inColumn
 	        int dataLen = dataForRow.get(colName).length;
-	        
-	        // special case of comma-separated strings, e.g., ["A,B,C"] (instead of ["A","B","C"]) 
+
+	        // special case of comma-separated strings, e.g., ["A,B,C"] (instead of ["A","B","C"])
 	        if(dataLen == 1)
 	        {
 	          dataForRow.put(colName, dataForRow.get(colName)[0].split(","));
 	          dataLen = dataForRow.get(colName).length;
 	        }
-	        
+
 	        // special case of standard params without brackets e.g., p=1,2,3,4
 	        if(colName.startsWith(YADA_COLUMN)
 	            && colIndex == (inColumns.size() - 1) // last index
@@ -1510,18 +1508,18 @@ public class QueryUtils
 	            String name = YADA_COLUMN + i;
 	            int j=0;
 	            while(j<dataForRow.get(name).length)
-	            { 
+	            {
 	              if(j > 0)
 	                inVals.append(",");
 	              inVals.append(dataForRow.get(name)[j++]);
 	            }
 	          }
-	          
+
 	          dataForRow.put(colName, inVals.toString().split(","));
 	          dataLen  = dataForRow.get(colName).length;
 	        }
-	        
-	        	        
+
+
 	        // amend the in clause with the additional markup
 	        InExpression     inExpr         = inExprs.get(inColumn);
 	        ItemsList        rightItemsList = inExpr.getRightItemsList();
@@ -1551,7 +1549,7 @@ public class QueryUtils
 	 * determined, the original SQL is amended with additional jdbc parameter
 	 * placeholders (i.e., {@code ?}), and the amended SQL is stored in the
 	 * {@code yq}.
-	 * 
+	 *
 	 * @param yq
 	 *          the query being processed
 	 * @param row
@@ -1573,14 +1571,14 @@ public class QueryUtils
 			char[]               dataTypes = yq.getDataTypes(row);
 			Matcher matcher;
 
-			l.debug("Processing inColumns [" + StringUtils.join(inColumns, ",") + "]");
+			l.debug("Processing inColumns [" + String.join(",",inColumns) + "]");
 			for (String in : inColumns)
 			{
 				int colIndex = -1, j = 0;
-				String inCol = in.toUpperCase(); 
+				String inCol = in.toUpperCase();
 
 				// get the index of the 'incolumn' in the 'JDBCcolumns' array
-				l.debug("Looking for column [" + inCol + "] in columns array " + ArrayUtils.toString(columns));
+				l.debug("Looking for column [" + inCol + "] in columns array " + "{"+String.join(",", columns)+"}");
 				while (j < columns.length && colIndex != j)
 				{
 					if (inCol.contains(columns[j]))
@@ -1651,9 +1649,12 @@ public class QueryUtils
 							if (m == colIndex) // it's the first index
 								inData = data.get(colNames[m]);
 							else
-								// further indexes must build aggregate array
-								inData = (String[])ArrayUtils.addAll(	inData,
-																											data.get(colNames[m]));
+							{
+							  // further indexes must build aggregate array
+  							List<String> inDataList = Arrays.asList(inData);
+  							inDataList.addAll(Arrays.asList(data.get(colNames[m])));
+  		          inData = (String[]) inDataList.toArray();
+							}
 						}
 
 						for (int m = 0; m < columns.length; m++)
@@ -1672,7 +1673,7 @@ public class QueryUtils
 							yq.getData().set(row, newData);
 						}
 					}
-					l.debug("Setting IN args [" + ArrayUtils.toString(inData) + "]");
+					l.debug("Setting IN args [{" + String.join(",", inData) + "}]");
 				}
 				if (inData != null)
 				{
@@ -1692,7 +1693,7 @@ public class QueryUtils
 					{
 						pList[k] = dtStr;
 					}
-					String pListStr = StringUtils.join(pList, ",");
+					String pListStr = String.join(",",pList);
 					l.debug("New parameter list [" + pListStr + "]");
 
 					// add additional parameters to coreSql
@@ -1717,39 +1718,39 @@ public class QueryUtils
 	}
 
 	/**
-	 * Replaces YADA markup in {@code VALUES} clause in {@code SELECT} statement with 
-	 * corresponding parameter values.  Called internally by {@link QueryManager} 
+	 * Replaces YADA markup in {@code VALUES} clause in {@code SELECT} statement with
+	 * corresponding parameter values.  Called internally by {@link QueryManager}
 	 * during {@link QueryManager#prepQueryForExecution} processing.
 	 * @param yq
    *          the query being processed
    * @param row
    *          the index of the list of value lists in the query containing the
    *          data to evaluate
- 	 * @return the {@code SQL} string with transformed {@code VALUES} clause 
+ 	 * @return the {@code SQL} string with transformed {@code VALUES} clause
 	 * @throws YADAParserException when statement parsing fails
 	 */
   public String processValuesList(YADAQuery yq, int row) throws YADAParserException {
-    
-    // Reparsing happens for each iteration of the data.  This is 
+
+    // Reparsing happens for each iteration of the data.  This is
     // necessary as it's a tradeoff between iterating over the data
     // then or now, and also parsing the query
     Parser parser = new Parser();
-        
+
     /*
      * What are all the different scenarios:
-     * 
+     *
      *  - join (values(?v)) vals(v) = 1 column
      *  - join (values(?v,?v) vals(v,w) = >1 column
      *  - join (values(?v,'x') vals(v,w) = >1 column with literal
      */
-    
+
     if(yq.getValuesList() != null)
-    {     
-      try 
+    {
+      try
       {
         parser.parseDeparse(yq.getYADACode());
-      } 
-      catch (YADAParserException e) 
+      }
+      catch (YADAParserException e)
       {
         String msg = "Unable to reparse statement for VALUES JOIN clause processing.";
         throw new YADAParserException(msg, e);
@@ -1762,7 +1763,7 @@ public class QueryUtils
       String               tabName    = valuesList.getAlias().getName();
       if(colName != null)
       {
-        
+
         if(dataForRow.containsKey(tabName))
         {
           colName = tabName;
@@ -1772,13 +1773,13 @@ public class QueryUtils
           colName = tabName.toUpperCase();
         }
         else if(dataForRow.containsKey(YADA_COLUMN + (colIndex+1)))
-        { 
+        {
           // standard params
           // TODO I think this means data at end of params list
           colName = YADA_COLUMN + (colIndex + 1);
         }
         else if(dataForRow.containsKey(colName.toUpperCase()))
-        { 
+        {
           // json params upper case
           colName = colName.toUpperCase();
         }
@@ -1787,7 +1788,7 @@ public class QueryUtils
           // json params, quoted column nams, e.g., postgres names with spaces or mixed case
           colName = colName.replaceAll("\"", "").toUpperCase();
         }
-        
+
         // length of value array for valColumn.
         // all we want here are the sets of parens
         Matcher m = RX_VALUES_PARAM_STRING.matcher(String.join(",",dataForRow.get(colName)));
@@ -1797,14 +1798,14 @@ public class QueryUtils
           dataLen++;
         }
 //        int dataLen = dataForRow.get(colName).length;
-        
-        // special case of comma-separated strings, e.g., ["A,B,C"] (instead of ["A","B","C"]) 
+
+        // special case of comma-separated strings, e.g., ["A,B,C"] (instead of ["A","B","C"])
         if(dataLen == 1)
         {
           dataForRow.put(colName, dataForRow.get(colName)[0].split(","));
           dataLen = dataForRow.get(colName).length;
         }
-        
+
         // special case of standard params without brackets e.g., p=1,2,3,4
         if(colName.startsWith(YADA_COLUMN)
             && colIndex == (valColumns.size() - 1) // last index
@@ -1818,31 +1819,31 @@ public class QueryUtils
             String name = YADA_COLUMN + i;
             int j=0;
             while(j<dataForRow.get(name).length)
-            { 
+            {
               if(j > 0)
                 valuesVals.append(",");
               valuesVals.append(dataForRow.get(name)[j++]);
             }
-          }            
+          }
           dataForRow.put(colName, valuesVals.toString().split(","));
           dataLen  = dataForRow.get(colName).length;
         }
         //TODO this will limit use cases to YADA queries that contain VALUES clauses containing only a single expression list
-        //   i.e., (VALUES (?v,?v,?v...)) vals(x,y,z...) will work 
+        //   i.e., (VALUES (?v,?v,?v...)) vals(x,y,z...) will work
         //   but   (VALUES (?v,?v,?v...),(?v,?v,?v...)) vals(x,y,z...) wont work
-        
+
         // column list:  [v, w, x]
         // multiExpressionList = (?v, ?v, 'xyz')
-        // I assume the multiexpressionlist is just a container for the "expressionlist list" 
+        // I assume the multiexpressionlist is just a container for the "expressionlist list"
         // and entries would take the form (x1,y1,z1),(xn,yn,zn)
-        // so what we're doing here is creating new expression lists and adding them to the 
+        // so what we're doing here is creating new expression lists and adding them to the
         // multiExpressionList.exprList.expressions: [?v, ?v, 'xyz']
-        
+
         MultiExpressionList mel      = valuesList.getMultiExpressionList();
         ExpressionList      el       = mel.getExprList().get(0);
-        List<Expression>    exprList = el.getExpressions(); 
+        List<Expression>    exprList = el.getExpressions();
         // All we need to do here is create a new expression list for each entry in the data row.
-        // TODO BUT, there is a complication with how to pass the data and handle the parameter value mapping 
+        // TODO BUT, there is a complication with how to pass the data and handle the parameter value mapping
         for(int i=0; i<dataLen-1; i++)
         {
           List<Expression> neo = new ArrayList<>(exprList);

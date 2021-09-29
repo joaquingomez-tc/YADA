@@ -12,10 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 import com.novartis.opensource.yada.YADARequest;
-import com.novartis.opensource.yada.YADASecurityException;
 
 /**
  * 
@@ -53,4 +52,3 @@ public interface TokenValidator {
    */
   public void obtainToken(YADARequest yadaReq) throws YADASecurityException;
 }
-

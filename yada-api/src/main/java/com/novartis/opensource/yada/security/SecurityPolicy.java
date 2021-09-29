@@ -12,11 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 import java.util.List;
-
-import com.novartis.opensource.yada.YADASecurityException;
 
 /**
  * @author Dave Varon
@@ -148,4 +146,5 @@ public interface SecurityPolicy {
    * @since 8.1.0
    */
   public String getValue(int index);
+
 }

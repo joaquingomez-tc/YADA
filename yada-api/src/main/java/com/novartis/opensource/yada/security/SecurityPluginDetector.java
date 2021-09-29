@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.novartis.opensource.yada.plugin;
+package com.novartis.opensource.yada.security;
 
 import java.lang.annotation.Annotation;
 import java.sql.ResultSet;
@@ -17,7 +17,9 @@ import org.slf4j.LoggerFactory;
 import com.novartis.opensource.yada.Service;
 import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADARequest;
-import com.novartis.opensource.yada.YADASecurityException;
+import com.novartis.opensource.yada.plugin.AbstractPostprocessor;
+import com.novartis.opensource.yada.plugin.Preprocess;
+import com.novartis.opensource.yada.plugin.YADAPluginException;
 
 /**
  * Determines if a default query parameter is a {@code plugin} and if so, 
