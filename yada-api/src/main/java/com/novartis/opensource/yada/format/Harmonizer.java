@@ -20,21 +20,25 @@ package com.novartis.opensource.yada.format;
 
 import com.novartis.opensource.yada.YADAResourceException;
 import com.novartis.opensource.yada.io.YADAIOException;
-import com.novartis.opensource.yada.util.JsRuntimeSupport;
+//import com.novartis.opensource.yada.util.JsRuntimeSupport;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
+//import java.io.IOException;
+//import java.io.InputStreamReader;
+//import java.io.Reader;
+//import java.net.MalformedURLException;
+//
+//import javax.script.ScriptEngine;
+//import javax.script.ScriptEngineManager;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+//import org.mozilla.javascript.Context;
+//import org.mozilla.javascript.EvaluatorException;
+//import org.mozilla.javascript.Function;
+//import org.mozilla.javascript.Scriptable;
+//import org.mozilla.javascript.ScriptableObject;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.EvaluatorException;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.graalvm.polyglot.*;
+//import org.graalvm.polyglot.proxy.*;
+
 /**
  * Class containing utility methods for re-mapping JSON keys, result set columns, 
  * flattening and pruning results, etc. The class hands off processing of these 
@@ -45,20 +49,20 @@ import org.mozilla.javascript.ScriptableObject;
  */
 public class Harmonizer 
 {
-  /**
-   * Rhino factory
-   */
-  private ScriptEngineManager factory;
-  /**
-   * Rhino engine
-   */
-  @SuppressWarnings("unused")
-  private ScriptEngine engine;
-  /**
-   * Scope
-   */
-  private ScriptableObject global;
-  
+//  /**
+//   * Rhino factory
+//   */
+//  private ScriptEngineManager factory;
+//  /**
+//   * Rhino engine
+//   */
+//  @SuppressWarnings("unused")
+//  private ScriptEngine engine;
+//  /**
+//   * Scope
+//   */
+//  private ScriptableObject global;
+//  
   /**
    * A constant with value: {@value}
    */
@@ -73,43 +77,49 @@ public class Harmonizer
    */
   public Harmonizer() throws YADAResourceException, YADAIOException, YADAConverterException 
   {
-    this.factory       = new ScriptEngineManager();
-    this.engine        = this.factory.getEngineByName("JavaScript");
-    Context    ctx     = Context.enter();
-    this.global        = ctx.initStandardObjects(new JsRuntimeSupport(), true);
-    String[]   names   = { "print", "load" };
-    this.global.defineFunctionProperties(names, this.global.getClass(), ScriptableObject.DONTENUM);
-    Scriptable argsObj = ctx.newArray(this.global, new Object[] { });
-    this.global.defineProperty("arguments", argsObj, ScriptableObject.DONTENUM);
-    try(Reader inLo   = new InputStreamReader(getClass().getResourceAsStream("/utils/lodash.min.js"));
-        Reader inJSON = new InputStreamReader(getClass().getResourceAsStream("/utils/json2.js"));
-        Reader inHmap = new InputStreamReader(getClass().getResourceAsStream("/utils/harmony.js")))
-        //Reader inR    = new InputStreamReader(getClass().getResourceAsStream("/utils/r.js")))
+    
+    try(Context context = Context.create()) 
     {
-      //ctx.evaluateReader(this.global, inR , "require", 0, null);
-      ctx.evaluateReader(this.global, inLo, "_", 0, null);
-      ctx.evaluateReader(this.global, inJSON, "JSON", 0, null);
-      ctx.evaluateReader(this.global, inHmap, "harmony", 0, null);
-    } 
-    catch (MalformedURLException e) 
-    {
-      String msg = "One of the required resources could not be loaded from the provided path.";
-      throw new YADAResourceException(msg, e);
-    } 
-    catch (IOException e) 
-    {
-      String msg = "One of the required resources could not be read.";
-      throw new YADAIOException(msg, e);
-    }  
-    catch (EvaluatorException e)
-    {
-      String msg = "There was a problem with the Rhino Javascript engine.";
-      throw new YADAConverterException(msg, e);
+      throw new YADAConverterException("Under construction.  Refactoring to use Jackson instead of Javascript");
     }
-    finally
-    {
-      Context.exit();
-    }
+    
+//    this.factory       = new ScriptEngineManager();
+//    this.engine        = this.factory.getEngineByName("JavaScript");
+//    Context    ctx     = Context.enter();
+//    this.global        = ctx.initStandardObjects(new JsRuntimeSupport(), true);
+//    String[]   names   = { "print", "load" };
+//    this.global.defineFunctionProperties(names, this.global.getClass(), ScriptableObject.DONTENUM);
+//    Scriptable argsObj = ctx.newArray(this.global, new Object[] { });
+//    this.global.defineProperty("arguments", argsObj, ScriptableObject.DONTENUM);
+//    try(Reader inLo   = new InputStreamReader(getClass().getResourceAsStream("/utils/lodash.min.js"));
+//        Reader inJSON = new InputStreamReader(getClass().getResourceAsStream("/utils/json2.js"));
+//        Reader inHmap = new InputStreamReader(getClass().getResourceAsStream("/utils/harmony.js")))
+//        //Reader inR    = new InputStreamReader(getClass().getResourceAsStream("/utils/r.js")))
+//    {
+//      //ctx.evaluateReader(this.global, inR , "require", 0, null);
+//      ctx.evaluateReader(this.global, inLo, "_", 0, null);
+//      ctx.evaluateReader(this.global, inJSON, "JSON", 0, null);
+//      ctx.evaluateReader(this.global, inHmap, "harmony", 0, null);
+//    } 
+//    catch (MalformedURLException e) 
+//    {
+//      String msg = "One of the required resources could not be loaded from the provided path.";
+//      throw new YADAResourceException(msg, e);
+//    } 
+//    catch (IOException e) 
+//    {
+//      String msg = "One of the required resources could not be read.";
+//      throw new YADAIOException(msg, e);
+//    }  
+//    catch (EvaluatorException e)
+//    {
+//      String msg = "There was a problem with the Rhino Javascript engine.";
+//      throw new YADAConverterException(msg, e);
+//    }
+//    finally
+//    {
+//      Context.exit();
+//    }
   }
     
   /**
@@ -126,23 +136,24 @@ public class Harmonizer
    */
   public String call(String func, Object[] o) throws YADAConverterException
   {
-    Function f      = (Function)this.global.get(func,this.global);
-    String   result = "";
-    Context  ctx    = Context.enter();
-    try
-    {
-      result = f.call(ctx, this.global, this.global, o).toString();
-    } 
-    catch (EvaluatorException e)
-    {
-      String msg = "There was a problem with the Rhino Javascript engine.";
-      throw new YADAConverterException(msg, e);
-    }
-    finally
-    {
-      Context.exit();
-    }
-    
-    return result;
+    throw new YADAConverterException("Under construction.  Refactoring to use Jackson instead of Javascript");
+//    Function f      = (Function)this.global.get(func,this.global);
+//    String   result = "";
+//    Context  ctx    = Context.enter();
+//    try
+//    {
+//      result = f.call(ctx, this.global, this.global, o).toString();
+//    } 
+//    catch (EvaluatorException e)
+//    {
+//      String msg = "There was a problem with the Rhino Javascript engine.";
+//      throw new YADAConverterException(msg, e);
+//    }
+//    finally
+//    {
+//      Context.exit();
+//    }
+//    
+//    return result;
   }
 }

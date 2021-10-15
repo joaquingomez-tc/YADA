@@ -2,19 +2,22 @@ package com.novartis.opensource.yada.adaptor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
+//
+//import javax.script.ScriptEngine;
+//import javax.script.ScriptException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.renjin.eval.EvalException;
-import org.renjin.script.RenjinScriptEngineFactory;
-import org.renjin.sexp.SEXP;
+//import org.renjin.eval.EvalException;
+//import org.renjin.script.RenjinScriptEngineFactory;
+//import org.renjin.sexp.SEXP;
 
 import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADAQueryResult;
 import com.novartis.opensource.yada.YADARequest;
+
+import org.graalvm.polyglot.*;
+//import org.graalvm.polyglot.proxy.*;
 
 /**
  * @author dvaron
@@ -104,44 +107,52 @@ public class RdsAdaptor extends FileSystemAdaptor {
       }
       
       path = path.replace(PROTOCOL, "");
-            
-      RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
-      ScriptEngine engine = factory.getScriptEngine();
-      try
-      {
-        SEXP jobj = null;
-        // read command
-        String rcmd = String.format("robj <- readRDS('%s')%s",path,args);
-        engine.eval(rcmd);
-        
-        // prefer jsonlite library
-        String pkg = "jsonlite";
-        String fn  = "toJSON";
-        String lcmd = String.format("library('org.renjin.cran:%s')", pkg);
-        engine.eval(lcmd);
-        
-        // convert to json
-        String jcmd = String.format("%s(robj)",fn);
-        try 
-        {          
-          jobj = (SEXP)engine.eval(jcmd);
-        }
-        catch(EvalException e)
-        {
-          l.warn("RDS file was not parsable with current arguments by jsonlite. Trying rjson.");
-          // jsonlite failed.  use 'rjson'
-          pkg  = "rjson";
-          lcmd = String.format("library('org.renjin.cran:%s')", pkg);
-          engine.eval(lcmd);
-          jobj = (SEXP)engine.eval(jcmd);
-        }        
-        result = jobj.toString();
-      }
       
-      catch (ScriptException e)
+      try (Context context = Context.newBuilder().allowAllAccess(true).build())      
       {
-        e.printStackTrace();
+        
+        String rcmd = String.format("library(jsonlite);toJSON(readRDS('%s')%s)",path,args);
+        Value val = context.eval("R",rcmd);
+        result = val.toString();
       }
+            
+//      RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
+//      ScriptEngine engine = factory.getScriptEngine();
+//      try
+//      {
+//        SEXP jobj = null;
+//        // read command
+//        String rcmd = String.format("robj <- readRDS('%s')%s",path,args);
+//        engine.eval(rcmd);
+//        
+//        // prefer jsonlite library
+//        String pkg = "jsonlite";
+//        String fn  = "toJSON";
+//        String lcmd = String.format("library('org.renjin.cran:%s')", pkg);
+//        engine.eval(lcmd);
+//        
+//        // convert to json
+//        String jcmd = String.format("%s(robj)",fn);
+//        try 
+//        {          
+//          jobj = (SEXP)engine.eval(jcmd);
+//        }
+//        catch(EvalException e)
+//        {
+//          l.warn("RDS file was not parsable with current arguments by jsonlite. Trying rjson.");
+//          // jsonlite failed.  use 'rjson'
+//          pkg  = "rjson";
+//          lcmd = String.format("library('org.renjin.cran:%s')", pkg);
+//          engine.eval(lcmd);
+//          jobj = (SEXP)engine.eval(jcmd);
+//        }        
+//        result = jobj.toString();
+//      }
+//      
+//      catch (ScriptException e)
+//      {
+//        e.printStackTrace();
+//      }
       
 // Working forked process code -- keep this here for a stretch 2020-09-27 
 //      try
