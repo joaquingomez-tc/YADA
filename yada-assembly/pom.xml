@@ -1,5 +1,6 @@
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.novartis.opensource</groupId>
@@ -117,7 +118,8 @@
                   <waitForInterrupt>false</waitForInterrupt>
                   <!-- <healthcheckUrl></healthcheckUrl> -->
                   <waitAfterLaunch>5</waitAfterLaunch>
-                  <!-- java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-api-10.0.0-SNAPSHOT.jar-->
+                  <!-- java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006
+                    -Xnoagent -Djava.compiler=NONE -jar yada-api-10.0.0-SNAPSHOT.jar -->
                   <arguments>
                     <argument>java</argument>
                     <argument>-Xdebug</argument>
@@ -125,8 +127,9 @@
                     <argument>-Xnoagent</argument>
                     <argument>-Djava.compiler=NONE</argument>
                     <argument>${env.YADA_PROPS}</argument>
-                    <argument>-jar</argument>
-                    <argument>yada-api-${project.version}.jar</argument>
+                    <argument>-cp</argument>
+                    <argument>yada-api-${project.version}.jar:.:lib/*</argument>
+                    <argument>com.novartis.opensource.yada.server.YADAServer</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -171,7 +174,7 @@
                   </resources>
                 </configuration>
               </execution>
-               <execution>
+              <execution>
                 <id>process-resources</id>
                 <phase>package</phase>
                 <goals>
@@ -211,32 +214,30 @@
         </resources>
         <plugins>
           <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>make-release</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-              <configuration>
-                <finalName>YADA-${project.version}</finalName>
-                <appendAssemblyId>false</appendAssemblyId>
-                <descriptors>
-                  <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
-                </descriptors>
-                <filters>
-                  <filter>src/main/resources/conf/build-release.properties</filter>
-                </filters>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-release</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>YADA-${project.version}</finalName>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <descriptors>
+                    <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
+                  </descriptors>
+                  <filters>
+                    <filter>src/main/resources/conf/build-release.properties</filter>
+                  </filters>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
-
-
   </profiles>
   <build>
     <filters>
@@ -282,7 +283,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>com.bazaarvoice.maven.plugins</groupId>
         <artifactId>process-exec-maven-plugin</artifactId>
@@ -302,9 +302,10 @@
               <waitAfterLaunch>5</waitAfterLaunch>
               <arguments>
                 <argument>java</argument>
-                <argument>-jar</argument>
                 <argument>${env.YADA_PROPS}</argument>
-                <argument>yada-api-${project.version}.jar</argument>
+                <argument>-cp</argument>
+                <argument>yada-api-${project.version}.jar:.:lib/*</argument>
+                <argument>com.novartis.opensource.yada.server.YADAServer</argument>
               </arguments>
             </configuration>
           </execution>
@@ -317,6 +318,23 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includeScope>compile</includeScope>
+          <outputDirectory>${basedir}/target/${project.parent.name}-${project.version}/${project.parent.name}-${project.version}/lib</outputDirectory>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -358,7 +376,7 @@
               </resources>
             </configuration>
           </execution>
-           <execution>
+          <execution>
             <id>process-resources</id>
             <phase>package</phase>
             <goals>
@@ -373,6 +391,83 @@
             </goals>
             <configuration>
               <skip>${skip.test.resources}</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <!-- Remove existing image from local repo -->
+          <execution>
+            <id>docker-clean</id>
+            <phase>install</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <workingDirectory>${project.parent.name}-${project.version}/${project.parent.name}-${project.version}/</workingDirectory>
+              <arguments>
+                <argument>rmi</argument>
+                <argument>${project.groupId}/${project.artifactId}:${project.version}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <!-- Create new docker image using Dockerfile which must be present
+            in current working directory. Tag the image using maven project version information. -->
+          <execution>
+            <id>docker-build</id>
+            <phase>install</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <workingDirectory>${project.basedir}/target</workingDirectory>
+              <arguments>
+                <argument>build</argument>
+                <argument>-t</argument>
+                <argument>${project.groupId}/${project.artifactId}:${project.version}</argument>
+                <argument>.</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <!-- Login and Push the image to a docker repo. -->
+          <execution>
+            <id>docker-login</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>login</argument>
+                <argument>-u</argument>
+                <argument>${docker.user}</argument>
+                <argument>-p</argument>
+                <argument>${docker.password}</argument>
+                <argument>${docker.url}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>docker-push</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>push</argument>
+                <argument>${project.groupId}/${project.artifactId}:${project.version}</argument>
+              </arguments>
             </configuration>
           </execution>
         </executions>
@@ -401,6 +496,21 @@
       <groupId>nl.javadude.assumeng</groupId>
       <artifactId>assumeng</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amazon.redshift</groupId>
+      <artifactId>redshift-jdbc42</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

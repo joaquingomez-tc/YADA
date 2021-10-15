@@ -181,7 +181,9 @@ then
   then
     DEBUG="'-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE'"
   fi
-  CMD="java ${YADA_PROPS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-${YADA_VERSION}.jar"
+  CP="yada-${YADA_VERSION}.jar:log4j.properties:lib/*"
+  MAIN="com.novartis.opensource.yada.server.YADAServer"
+  CMD="java ${YADA_PROPS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -cp ${CP} ${MAIN}"
 else
   CMD="$MAVEN $MAVEN_DEBUG clean verify -P${PROFILE} $DEBUG -Dsuspend.debugger=$SUSPEND $COMMON_VARS"
 fi
