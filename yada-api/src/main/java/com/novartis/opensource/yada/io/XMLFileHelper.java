@@ -37,7 +37,7 @@ public class XMLFileHelper {
 	/** 
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(XMLFileHelper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XMLFileHelper.class);
 	/**
 	 * Constant equal to: {@value}
 	 */
@@ -150,7 +150,7 @@ public class XMLFileHelper {
 			setTransformerParameters(getArgs(), trans);
 			trans.transform(new StreamSource(getXmlSrc()), new StreamResult(getOutput()));
 			setXslResult(getOutput().getBuffer().toString());
-			l.debug("\n"+getXslResult());
+			LOG.debug("\n{}", getXslResult());
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
 		} catch (TransformerException e) {

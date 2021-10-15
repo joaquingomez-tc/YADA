@@ -87,7 +87,7 @@ public class JSONResponse extends AbstractResponse {
    * Local logger handle
    */
 	@SuppressWarnings("unused")
-	private static Logger l = LoggerFactory.getLogger(JSONResponse.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JSONResponse.class);
 	/**
 	 * The result to be returned by this class's {@link #toString()} method
 	 */

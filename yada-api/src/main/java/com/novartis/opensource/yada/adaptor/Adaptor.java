@@ -48,7 +48,7 @@ public abstract class Adaptor
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = LoggerFactory.getLogger(Adaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Adaptor.class);
 	/**
 	 * Local request configuration (i.e., {@link YADARequest}) object
 	 */

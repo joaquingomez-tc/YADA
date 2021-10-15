@@ -49,7 +49,7 @@ public class XMLResponse extends AbstractResponse {
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = LoggerFactory.getLogger(XMLResponse.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XMLResponse.class);
 	/**
 	 * Component of Java XML API
 	 */

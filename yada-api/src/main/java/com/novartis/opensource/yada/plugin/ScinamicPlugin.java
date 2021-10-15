@@ -1,6 +1,7 @@
 package com.novartis.opensource.yada.plugin;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +31,7 @@ public class ScinamicPlugin implements Preprocess, Postprocess {
   /**
    * Local logger handle
    */
-  private static final Logger LOG = Logger.getLogger(ScinamicPlugin.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ScinamicPlugin.class);
 	
 	/**
 	 * {@link QueryManager} object to enable inline API calls

@@ -28,7 +28,7 @@ public class RdsAdaptor extends FileSystemAdaptor {
   /**
    * Local logger instance
    */
-  private static Logger l = LoggerFactory.getLogger(RdsAdaptor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RdsAdaptor.class);
   
   /**
    * Delimeter separating file name and references to objects in file
@@ -139,7 +139,7 @@ public class RdsAdaptor extends FileSystemAdaptor {
 //        }
 //        catch(EvalException e)
 //        {
-//          l.warn("RDS file was not parsable with current arguments by jsonlite. Trying rjson.");
+//          LOG.warn("RDS file was not parsable with current arguments by jsonlite. Trying rjson.");
 //          // jsonlite failed.  use 'rjson'
 //          pkg  = "rjson";
 //          lcmd = String.format("library('org.renjin.cran:%s')", pkg);
@@ -167,7 +167,6 @@ public class RdsAdaptor extends FileSystemAdaptor {
 //        {
 //          while ((s = si.readLine()) != null)
 //          {
-////            l.debug("  LINE: "+s);
 //            result += s;
 //          }
 //        }

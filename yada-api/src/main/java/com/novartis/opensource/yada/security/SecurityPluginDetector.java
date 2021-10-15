@@ -33,7 +33,7 @@ public class SecurityPluginDetector extends AbstractPostprocessor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(Service.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Service.class);
 	/**
 	 * The {@code NAME} column
 	 */
@@ -122,8 +122,7 @@ public class SecurityPluginDetector extends AbstractPostprocessor {
 	  			} 
 	  			catch (ClassNotFoundException e) 
 	  			{
-	  				String msg = "Could not find any plugin with the classname ["+plugin+"]"; 
-						l.error(msg,e);
+						LOG.error("Could not find any plugin with the classname [{}]: {}", plugin, e);
 	  			}		
 			  }
 			}

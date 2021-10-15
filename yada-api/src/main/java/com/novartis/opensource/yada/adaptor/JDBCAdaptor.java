@@ -54,7 +54,7 @@ public abstract class JDBCAdaptor extends Adaptor{
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(JDBCAdaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JDBCAdaptor.class);
 	/**
 	 * Constant equal to: {@code d}
 	 */
@@ -381,7 +381,7 @@ public abstract class JDBCAdaptor extends Adaptor{
 	 * Default constructor for adaptors, includes debug-level logging, but nothing else.
 	 */
 	public JDBCAdaptor() {
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**
@@ -404,7 +404,7 @@ public abstract class JDBCAdaptor extends Adaptor{
 	@Override
 	public void execute(YADAQuery yq) throws YADAAdaptorExecutionException
 	{	
-		l.debug("Executing query ["+yq.getQname()+"]");
+		LOG.debug("Executing query [{}]",yq.getQname());
 		boolean     count       = Boolean.parseBoolean(yq.getYADAQueryParamValue(YADARequest.PS_COUNT)[0]);
 		boolean     countOnly   = Boolean.parseBoolean(yq.getYADAQueryParamValue(YADARequest.PS_COUNTONLY)[0]);
 		int         countResult = -1;
@@ -945,7 +945,7 @@ public abstract class JDBCAdaptor extends Adaptor{
 	protected void setQueryParameter(PreparedStatement pstmt, int index, char type, String val) throws YADASQLException
 	{
 		String idx = (index < 10) ? " "+String.valueOf(index) : String.valueOf(index);
-		l.debug("Setting param [" + idx + "] of type [" + String.valueOf(type) + "] to: " + val);
+		LOG.debug("Setting param [{}] of type [{}] to: {}",idx,String.valueOf(type),val);
 		try
 		{
 			switch(type)
@@ -1062,14 +1062,14 @@ public abstract class JDBCAdaptor extends Adaptor{
     }
     catch(NumberFormatException e)
     {
-      l.warn("Error: " + e.getMessage() + " caused by " + e.getClass());
-      l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
+      LOG.warn("Error: {} caused by {}",e.getMessage(),e.getClass());
+      LOG.debug("Setting param [{}] of type [{}] to: null",String.valueOf(index),String.valueOf(type));
       pstmt.setNull(index, java.sql.Types.INTEGER);
     }
     catch(NullPointerException e)
     {
-      l.warn("Error: " + e.getMessage() + " caused by " + e.getClass());
-      l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
+      LOG.warn("Error: {} caused by {}",e.getMessage(),e.getClass());
+      LOG.debug("Setting param [{}] of type [{}] to: null",String.valueOf(index),String.valueOf(type));
       pstmt.setNull(index, java.sql.Types.INTEGER);
     }
 	}
@@ -1092,8 +1092,8 @@ public abstract class JDBCAdaptor extends Adaptor{
     }
     catch(NumberFormatException | NullPointerException e)
     {
-      l.warn("Error: " + e.getMessage() + " caused by " + e.getClass());
-      l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
+      LOG.warn("Error: {} caused by {}",e.getMessage(), e.getClass());
+      LOG.debug("Setting param [{}] of type [{}] to: null",String.valueOf(index),String.valueOf(type));
       pstmt.setNull(index, java.sql.Types.INTEGER);
     }
 	}

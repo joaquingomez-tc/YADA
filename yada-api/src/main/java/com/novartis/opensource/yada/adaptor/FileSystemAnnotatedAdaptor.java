@@ -24,7 +24,7 @@ public class FileSystemAnnotatedAdaptor extends FileSystemAdaptor {
   /**
    * Local instance of logger
    */
-  static Logger l = LoggerFactory.getLogger(FileSystemAnnotatedAdaptor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FileSystemAnnotatedAdaptor.class);
   
   /**
    * Default constructor.
@@ -32,7 +32,7 @@ public class FileSystemAnnotatedAdaptor extends FileSystemAdaptor {
   public FileSystemAnnotatedAdaptor()
   {
     super();
-    l.debug("Initializing FileSystemAnnotatedAdaptor");
+    LOG.debug("Initializing FileSystemAnnotatedAdaptor");
   }
 
   /**

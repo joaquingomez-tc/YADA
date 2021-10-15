@@ -48,7 +48,7 @@ public class Joiner {
   /**
    * Local logger handle
    */
-  private static Logger     l     = LoggerFactory.getLogger(Joiner.class);
+  private static final Logger LOG     = LoggerFactory.getLogger(Joiner.class);
   
   /**
    * The array of {@link YADAQueryResult} objects currently processed by the {@link Response}
@@ -103,7 +103,7 @@ public class Joiner {
              sql.append(",");
          }
          sql.append(")");
-         l.debug(sql.toString());
+         LOG.debug("{}", sql.toString());
          try(PreparedStatement create = c.prepareStatement(sql.toString());)
          {
            create.executeUpdate();
@@ -135,7 +135,7 @@ public class Joiner {
          sql.append(") VALUES (");
          sql.append(params);
          sql.append(")");
-         l.debug(sql.toString());
+         LOG.debug("{}", sql.toString());
          try(PreparedStatement insert = c.prepareStatement(sql.toString());)
          {
            
@@ -219,8 +219,8 @@ public class Joiner {
         {
           specSet = new HashSet<>(Arrays.asList(specStr.split(",")));
         }
-        l.debug("specStr = "+specStr);
-        l.debug("specSet = "+specSet.toString());
+        LOG.debug("specStr = {}", specStr);
+        LOG.debug("specSet = {}", specSet.toString());
       }
       
       
@@ -352,7 +352,7 @@ public class Joiner {
       }
       sql.append(" GROUP BY");
       sql.append(gh);
-      l.debug(sql.toString());
+      LOG.debug("{}", sql.toString());
       String colsep  = getYADAQueryParamValue(YADARequest.PS_DELIMITER);
       String recsep  = getYADAQueryParamValue(YADARequest.PS_ROW_DELIMITER);
       try(PreparedStatement select = c.prepareStatement(sql.toString());ResultSet rs = select.executeQuery();)

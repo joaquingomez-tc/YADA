@@ -31,7 +31,7 @@ public abstract class FileHelper
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(FileHelper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(FileHelper.class);
 	
 	/**
 	 * Constant equal to: {@value} 
@@ -98,7 +98,7 @@ public abstract class FileHelper
 	/**
 	 * Method stub for mutator.  Requires subclass implementation.
 	 */
-	protected void               setHeaderLineNumber()          { l.debug("Nothing to do."); }
+	protected void               setHeaderLineNumber()          { LOG.debug("Nothing to do."); }
 	/**
 	 * Standard accessor for variable
 	 * @return {@code int} value of {@link #headerLineNumber}
@@ -108,7 +108,7 @@ public abstract class FileHelper
 	/**
 	 * Method stub for mutator.  Requires subclass implementation.
 	 */
-	protected void               setHeaderByteOffset()          { l.debug("Nothing to do."); }
+	protected void               setHeaderByteOffset()          { LOG.debug("Nothing to do."); }
 	/**
 	 * Standard accessor for variable
 	 * @return the {@code int} value of the offset, set to {@link #DEFAULT_BYTE_OFFSET} by default
@@ -141,7 +141,7 @@ public abstract class FileHelper
 	/**
 	 * Method stub for mutator.  Requires subclass implementation.
 	 */
-	protected void               setFileHeaderMap()                      { l.debug("Nothing to do."); }
+	protected void               setFileHeaderMap()                      { LOG.debug("Nothing to do."); }
 	/**
 	 * Standard mutator for variable
 	 * @param fileHeaderMap map containing file header key/value pairs
@@ -168,7 +168,7 @@ public abstract class FileHelper
 	 * Method stub for mutator.  Requires subclass implementation.
 	 * @throws YADAIOException  when the column header can't be parsed into an array
 	 */
-	protected void               setColHeaderArray() throws YADAIOException  { l.debug("Nothing to do."); }
+	protected void               setColHeaderArray() throws YADAIOException  { LOG.debug("Nothing to do."); }
 	/**
 	 * Standard mutator for variable
 	 * @param colHeaderArray the array of values constituting column headers
@@ -194,6 +194,6 @@ public abstract class FileHelper
 	/**
 	 * @throws YADAIOException  when the file headers can't be read successfully
 	 */
-	protected void				 			 setHeaders() throws YADAIOException { l.debug("Nothing to do."); }
+	protected void				 			 setHeaders() throws YADAIOException { LOG.debug("Nothing to do."); }
 	
 }

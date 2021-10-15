@@ -116,7 +116,7 @@ public class ServiceTest
   /**
    * Local logger handle
    */
-  private static Logger l = LoggerFactory.getLogger(ServiceTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ServiceTest.class);
   /**
    * Constant ref to <code>log.stdout</code> system property.  When present or true, prints qname and result to console during testing.  This is useful for troubleshooting but otherwise a pain.
    */
@@ -605,7 +605,7 @@ public class ServiceTest
   @BeforeMethod(groups = { "sec" })
   public void login() throws YADAException
   {
-    l.debug("Logging in...");
+    LOG.debug("Logging in...");
     YADARequest yadaReq = new YADARequest();
     yadaReq.setUpdateStats(new String[] { "false" });
 
@@ -620,7 +620,7 @@ public class ServiceTest
       yadaReq.setHTTPHeaders(new String[] { hdrs.toString() });
       Service svc = new Service(yadaReq);
       this.secData = new JSONObject(svc.execute());
-      l.debug(secData.toString(2));
+      LOG.debug("{}", secData.toString(2));
     }
     catch (JSONException e)
     {
@@ -850,7 +850,7 @@ public class ServiceTest
         {
           result.append(line);
         }
-        l.debug(result.toString());
+        LOG.debug("{}", result.toString());
         this.secData = new JSONObject(result.toString());
       }
     }
@@ -1059,7 +1059,7 @@ public class ServiceTest
             method = param[1];
         }
       }
-      l.debug(target);
+      LOG.debug("{}", target);
       URL url = new URL(target);
       connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("GET");
@@ -1091,7 +1091,7 @@ public class ServiceTest
             else
             {
               Assert.assertTrue(validateJSONResult(result.toString()) ,  "Data invalid for query: "+query);
-              l.debug("YADA version header: "+ connection.getHeaderField("X-YADA-VERSION"));
+              LOG.debug("YADA version header: {}", connection.getHeaderField("X-YADA-VERSION"));
               Assert.assertTrue(connection.getHeaderField("X-YADA-VERSION") != null , "X-YADA-VERSION Header not found");
             }
           }
@@ -1525,7 +1525,7 @@ public class ServiceTest
   @QueryFile(list = {})
   public void testFileSystemContentRead(String query) throws UnsupportedEncodingException, YADAException
   {
-    l.debug(query);
+    LOG.debug("{}", query);
     Service svc = prepareTest(query);
     String result = svc.execute();
     JSONObject jRes = new JSONObject(result);
@@ -1571,7 +1571,7 @@ public class ServiceTest
   @QueryFile(list = {})
   public void testFileSystemRm(String query) throws UnsupportedEncodingException, YADAException
   {
-    l.debug(query);
+    LOG.debug("{}", query);
     Service svc = prepareTest(query);
     String result = svc.execute();
     JSONObject jRes = new JSONObject(result);
@@ -1592,7 +1592,7 @@ public class ServiceTest
   @QueryFile(list = {})
   public void testFileSystemMkdir(String query) throws UnsupportedEncodingException, YADAException
   {
-    l.debug(query);
+    LOG.debug("{}", query);
     Service svc = prepareTest(query);
     String result = svc.execute();
     JSONObject jRes = new JSONObject(result);

@@ -42,7 +42,7 @@ public class JSONParamsEntry {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(JSONParamsEntry.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JSONParamsEntry.class);
 	/**
 	 * Internal structure to hold column names/data values passed in request config 
 	 */
@@ -149,7 +149,7 @@ public class JSONParamsEntry {
 						{
 							value[k]  = valIsArray.getString(k);
 						}
-						l.debug("JSONArray passed in is now ["+value+"]");
+						LOG.debug("JSONArray passed in is now [{}]", value);
 					}
 					catch(JSONException e)
 					{

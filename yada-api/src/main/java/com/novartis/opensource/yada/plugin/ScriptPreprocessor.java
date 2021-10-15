@@ -42,7 +42,7 @@ public class ScriptPreprocessor extends AbstractPreprocessor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(ScriptPreprocessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ScriptPreprocessor.class);
 	
 	/**
 	 * Enables the execution of a script stored in the {@code yada.bin} directory.
@@ -82,7 +82,7 @@ public class ScriptPreprocessor extends AbstractPreprocessor {
 		}
 		// add yadaReq json
 		cmds.add(yadaReq.toString());
-		l.debug("Executing script plugin: "+cmds);
+		LOG.debug("Executing script plugin: {}", cmds);
 		String scriptResult = "";
 		String s            = null;
 		try
@@ -94,7 +94,7 @@ public class ScriptPreprocessor extends AbstractPreprocessor {
 			{
   			while ((s = si.readLine()) != null)
   			{
-  				l.debug("  LINE: "+s);
+  				LOG.debug("  LINE: {}", s);
   				scriptResult += s;
   			}
 			}
@@ -103,12 +103,12 @@ public class ScriptPreprocessor extends AbstractPreprocessor {
 			for ( String param : JSONObject.getNames(params))
 			{
 				JSONArray ja     = (JSONArray) params.get(param);
-				l.debug("JSON array "+ja.toString());
+				LOG.debug("JSON array {}", ja.toString());
 				// remove square brackets and leading/trailing quotes
 				String    values = ja.toString().substring(2, ja.toString().length()-2);
 				// remove "," between values and stuff in array
 				String[]  value  = values.split("\",\"");
-				l.debug("Value has " + value.length + " elements");
+				LOG.debug("Value has {} elements", value.length);
 				yadaReq.invokeSetter(param, value);
 			}
 		}

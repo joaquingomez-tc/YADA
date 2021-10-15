@@ -82,7 +82,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
   /**
    * Local logger handle
    */
-  private static Logger l = LoggerFactory.getLogger(RESTAdaptor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RESTAdaptor.class);
 
   /**
    * Constant equal to: {@value}. The character set name.
@@ -292,7 +292,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
    */
   public RESTAdaptor() {
     super();
-    l.debug("Initializing RESTAdaptor");
+    LOG.debug("Initializing RESTAdaptor");
   }
 
   /**
@@ -409,7 +409,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
     }
     m.appendTail(sb);
     urlStr = sb.toString();
-    l.debug("REST url w/params: [" + urlStr + "]");
+    LOG.debug("REST url w/params: [{}]",urlStr);
     return urlStr;
   }
 
@@ -731,14 +731,14 @@ public class RESTAdaptor extends Adaptor implements Authorization {
     {
       HttpHeaders headers = request.getHeaders();
 
-      l.debug("Processing custom headers...");
+      LOG.debug("Processing custom headers...");
       @SuppressWarnings("unchecked")
       Iterator<String> keys = yq.getHttpHeaders().keys();
       while (keys.hasNext())
       {
         String name  = keys.next();
         String value = yq.getHttpHeaders().getString(name);
-        l.debug("Custom header: " + name + " : " + value);
+        LOG.debug("Custom header: {} : {}",name,value);
 
         String method = "set" + name.replace("-", "");
         try
@@ -752,13 +752,13 @@ public class RESTAdaptor extends Adaptor implements Authorization {
           String msg = "There is no method named [" + method + "]. It could be a case issue."
               + "Method names are camel-cased, and header names should have initial "
               + " caps, and hyphens instead of spaces.";
-          l.warn(msg);
-          l.warn("Trying to use generic setter");
+          LOG.warn(msg);
+          LOG.warn("Trying to use generic setter");
           headers.set(name, value);
         }
         catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
         {
-          String msg = "The [" + name + "] header could not be set.";
+          String msg = "The ["+name+"] header could not be set.";
           throw new YADAQueryConfigurationException(msg, e);
         }
         request.setHeaders(headers);
@@ -818,7 +818,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
     }
     catch (HttpResponseException e)
     {
-      l.error(e.getStatusCode() + ": " + e.getMessage());
+      LOG.error("{}: {}", e.getStatusCode(), e.getMessage());
       int code = e.getStatusCode();
       if (code == HTTP_STATUS_401 || code == HTTP_STATUS_403)
       {
@@ -873,7 +873,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
         throw new YADAAdaptorExecutionException(msg, e);
       }
     }
-    l.debug(result);
+    LOG.debug(result);
     return result;
   }
 
@@ -887,7 +887,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
     Map<String, Object> map = request.getHeaders();
     for (Entry<String, Object> entry: map.entrySet())
     {
-      l.debug("Key : " + entry.getKey() + " ,Value : " + entry.getValue());
+      LOG.debug("Key : {} ,Value : {}", entry.getKey(), entry.getValue());
     }
   }
 
@@ -955,7 +955,7 @@ public class RESTAdaptor extends Adaptor implements Authorization {
     if (yq.getHttpHeaders().has(H_X_HTTP_METHOD_OVERRIDE))
     {
       this.method = yq.getHttpHeaders().getString(H_X_HTTP_METHOD_OVERRIDE);
-      l.debug("Resetting method to [" + this.method + "]");
+      LOG.debug("Resetting method to [{}]", this.method);
     }
 
     // 2) set 'count' to false until the algo for counting rest response rows is

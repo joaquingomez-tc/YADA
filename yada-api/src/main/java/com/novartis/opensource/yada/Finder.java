@@ -56,7 +56,7 @@ public class Finder {
   /**
    * Local logger handle
    */
-  static Logger              l           = LoggerFactory.getLogger(Finder.class);
+  private static final Logger LOG        = LoggerFactory.getLogger(Finder.class);
   /**
    * Hardcoded to the stardard value: {@value}. Used to identify mapped sources in
    * the YADA Index.
@@ -366,8 +366,7 @@ public class Finder {
         String     confBranch   = YADA_PROPERTIES.getProperty(YADA_BRANCH);
         String     currBranch   = repo.getBranch();
         Boolean    switchBranch = Boolean.valueOf(YADA_PROPERTIES.getProperty(YADA_SWITCH_BRANCH));
-        l.debug("\nconf branch:" + confBranch + ", \ncurrent branch: " + currBranch + ", \nconf switch branch:"
-            + switchBranch + ", \nHEAD:" + id);
+        LOG.debug("\nconf branch: {}, \ncurrent branch: {}, \nconf switch branch: {}, \nHEAD: {}", confBranch, currBranch, switchBranch, id);
         if (!confBranch.contentEquals(currBranch) && switchBranch)
         {
           try (Git git = new Git(repo))
@@ -535,7 +534,7 @@ public class Finder {
               + ") was mistyped or doesn't exist in the YADA Index";
           throw new YADAFinderException(msg, e);
         }
-        l.debug("Query package: " + yq.toString());
+        LOG.debug("Query package: {}", yq.toString());
       }
       catch (SQLException e)
       {
@@ -685,14 +684,14 @@ public class Finder {
       if (cachedYq != null)
       {
         yq = new YADAQuery(cachedYq);
-        l.debug("YADAQuery [" + qname + "] retrieved from cache");
+        LOG.debug("YADAQuery [{}] retrieved from cache", qname);
       }
       else
       {
         try
         {
           String lib = getEnv(YADA_LIB);
-          l.debug("YADA_LIB=" + lib);
+          LOG.debug("YADA_LIB={}", lib);
           yq = getQueryFromLib(q);
         }
         catch (YADAResourceException e)
@@ -702,7 +701,7 @@ public class Finder {
         // update cache
         yadaIndex.put(qname,yq);
         yq.setCached(true);
-        l.debug("YADAQuery [" + qname + "] stored in cache.");
+        LOG.debug("YADAQuery [{}] stored in cache.", qname);
       }
 
       yq.setAccessCount(yq.getAccessCount() + 1);
@@ -720,11 +719,11 @@ public class Finder {
             }
             catch (YADAConnectionException e)
             {
-              l.error(e.getMessage(), e);
+              LOG.error("{}, {}", e.getMessage(), e);
             }
             catch (YADAFinderException e)
             {
-              l.error(e.getMessage(), e);
+              LOG.error("{}, {}", e.getMessage(), e);
             }
             finally
             {
@@ -822,7 +821,7 @@ public class Finder {
   @Deprecated
   void updateQueryStatistics(String qname, int accessCount) throws YADAConnectionException, YADAFinderException {
 
-    l.debug("Updating Query Stats for [" + qname + "]");
+    LOG.debug("Updating Query Stats for [{}]", qname);
     PreparedStatement pstmt    = null;
     String            querySql = SQL_STATS_WCOUNT;
     try
@@ -880,7 +879,7 @@ public class Finder {
   @Deprecated
   void updateQueryStatistics(String qname) throws YADAConnectionException, YADAFinderException {
 
-    l.debug("Updating Query Stats for [" + qname + "]");
+    LOG.debug("Updating Query Stats for [{}]", qname);
     PreparedStatement pstmt    = null;
     String            querySql = SQL_STATS;
     try

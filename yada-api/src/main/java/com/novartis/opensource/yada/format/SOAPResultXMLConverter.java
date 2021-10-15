@@ -46,7 +46,7 @@ public class SOAPResultXMLConverter extends AbstractConverter
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = LoggerFactory.getLogger(RESTResultJSONConverter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RESTResultJSONConverter.class);
 
   /**
    * Java XML API component

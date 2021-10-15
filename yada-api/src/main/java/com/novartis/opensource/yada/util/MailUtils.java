@@ -40,14 +40,14 @@ public class MailUtils {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(MailUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MailUtils.class);
 	
 	/**
 	 * Retrieves the current mail session object from the application context
 	 * @return the current mail session object from the application context
 	 */
 	public Session getSession() {
-		l.debug("Creating session");
+		LOG.debug("Creating session");
 		Context initCtx;
 		Context envCtx;
 		Session session = null;
@@ -79,7 +79,7 @@ public class MailUtils {
 	 * @return int 0 for exceptions, 1 if message sent successfully
 	 */
 	public static int sendMessage(Session session, String from, String to, String cc, String subject, String content) {
-		l.debug("Creating message...");
+		LOG.debug("Creating message...");
 		Message message = null;
 		try {
 			message = new MimeMessage(session);
@@ -90,7 +90,7 @@ public class MailUtils {
 			message.setRecipients(Message.RecipientType.CC, ccList);
 			message.setSubject(subject);
 			message.setContent(content, "text/plain");
-			l.debug("Sending message...");
+			LOG.debug("Sending message...");
 			Transport.send(message);
 		} catch (AddressException e) {
 			e.printStackTrace();

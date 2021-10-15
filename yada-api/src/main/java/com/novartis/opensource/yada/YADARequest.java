@@ -68,7 +68,7 @@ public class YADARequest {
   /**
    * Local logger hangle
    */
-  private static Logger l = LoggerFactory.getLogger(YADARequest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(YADARequest.class);
   // constants
   /**
    * A constant equal to: {@value}. This is the default value for the
@@ -1592,7 +1592,7 @@ public class YADARequest {
    */
   public void setReferer(String referer) {
     this.referer = referer;
-    l.debug(getFormattedDebugString("referer", referer));
+    LOG.debug("{}",getFormattedDebugString("referer", referer));
   }
 
   /**
@@ -1612,7 +1612,7 @@ public class YADARequest {
    */
   public void setPath(String path) {
     this.path = path;
-    l.debug(getFormattedDebugString("path", path));
+    LOG.debug("{}",getFormattedDebugString("path", path));
   }
 
   /**
@@ -1632,7 +1632,7 @@ public class YADARequest {
    */
   @Override
   public String toString() {
-    l.debug(getParameterMap().toString());
+    LOG.debug("{}", getParameterMap().toString());
     return new JSONObject(getParameterMap()).toString();
   }
 
@@ -1670,7 +1670,7 @@ public class YADARequest {
       String methName = methods[i].getName();
       if (methName.equals(mName))
       {
-        l.debug("methName:" + methName + ":" + mName);
+        LOG.debug("methName: {}: {}", methName, mName);
         try
         {
           o = methods[i].invoke(this, new Object[] {});
@@ -1712,7 +1712,7 @@ public class YADARequest {
 
       if (methName.equals(mName) && methods[i].getParameterTypes()[0].isArray())
       {
-        l.debug("methName:" + methName + ":" + mName);
+        LOG.debug("methName: {}: {}", methName, mName);
         try
         {
           methods[i].invoke(this, new Object[] { value });
@@ -1753,7 +1753,7 @@ public class YADARequest {
 
       if (methName.equals(mName))
       {
-        l.debug("methName:" + methName + ":" + mName);
+        LOG.debug("methName: {}: {}", methName, mName);
         arglist[0] = value;
         try
         {
@@ -1761,7 +1761,6 @@ public class YADARequest {
           {
             methods[i].invoke(this, (Object) arglist);
           }
-          // l.debug("qname: " + getQname());
         }
         catch (InvocationTargetException e)
         {
@@ -1858,7 +1857,7 @@ public class YADARequest {
   void setArgs(List<String> args) {
     this.args = args;
     if (args != null)
-      l.debug(getFormattedDebugString("args", args.toString()));
+      LOG.debug("{}",getFormattedDebugString("args", args.toString()));
   }
 
   /**
@@ -1893,7 +1892,7 @@ public class YADARequest {
         lArgArr = lArgArr[0].split(PARAM_DELIMITER);
       addPluginArgs(new LinkedList<>(Arrays.asList(lArgArr)));
     }
-    l.debug(getFormattedDebugString("args", lArgArr.toString()));
+    LOG.debug("{}",getFormattedDebugString("args", lArgArr.toString()));
   }
 
   /**
@@ -1947,7 +1946,7 @@ public class YADARequest {
     {
       this.colhead = b;
     }
-    l.debug(getFormattedDebugString("colhead", String.valueOf(this.colhead)));
+    LOG.debug("{}",getFormattedDebugString("colhead", String.valueOf(this.colhead)));
   }
 
   /**
@@ -1960,7 +1959,7 @@ public class YADARequest {
   @Deprecated
   public void setCompact(boolean compact) {
     this.compact = compact;
-    l.debug(getFormattedDebugString("compact", String.valueOf(compact)));
+    LOG.debug("{}",getFormattedDebugString("compact", String.valueOf(compact)));
   }
 
   /**
@@ -1977,7 +1976,7 @@ public class YADARequest {
     {
       this.compact = b;
     }
-    l.debug(getFormattedDebugString("compact", String.valueOf(this.compact)));
+    LOG.debug("{}",getFormattedDebugString("compact", String.valueOf(this.compact)));
   }
 
   /**
@@ -1996,7 +1995,7 @@ public class YADARequest {
         this.addCookie(cook);
       }
     }
-    l.debug(getFormattedDebugString("args", lCook.toString()));
+    LOG.debug("{}",getFormattedDebugString("args", lCook.toString()));
   }
 
   /**
@@ -2025,7 +2024,7 @@ public class YADARequest {
     {
       this.count = b;
     }
-    l.debug(getFormattedDebugString("count", String.valueOf(this.count)));
+    LOG.debug("{}",getFormattedDebugString("count", String.valueOf(this.count)));
   }
 
   /**
@@ -2038,7 +2037,7 @@ public class YADARequest {
   @Deprecated
   public void setCountOnly(boolean countOnly) {
     this.countOnly = countOnly;
-    l.debug(getFormattedDebugString("countOnly", String.valueOf(countOnly)));
+    LOG.debug("{}",getFormattedDebugString("countOnly", String.valueOf(countOnly)));
   }
 
   /**
@@ -2056,7 +2055,7 @@ public class YADARequest {
     {
       this.countOnly = b;
     }
-    l.debug(getFormattedDebugString("countOnly", String.valueOf(this.countOnly)));
+    LOG.debug("{}",getFormattedDebugString("countOnly", String.valueOf(this.countOnly)));
   }
 
   /**
@@ -2074,7 +2073,7 @@ public class YADARequest {
     {
       this.commitQuery = b;
     }
-    l.debug(getFormattedDebugString("commitQuery", String.valueOf(this.commitQuery)));
+    LOG.debug("{}",getFormattedDebugString("commitQuery", String.valueOf(this.commitQuery)));
   }
 
   /**
@@ -2087,7 +2086,7 @@ public class YADARequest {
   @Deprecated
   public void setExport(boolean export) {
     this.export = export;
-    l.debug(getFormattedDebugString("export", String.valueOf(export)));
+    LOG.debug("{}",getFormattedDebugString("export", String.valueOf(export)));
   }
 
   /**
@@ -2104,7 +2103,7 @@ public class YADARequest {
     {
       this.export = b;
     }
-    l.debug(getFormattedDebugString("export", String.valueOf(this.export)));
+    LOG.debug("{}",getFormattedDebugString("export", String.valueOf(this.export)));
   }
 
   /**
@@ -2116,7 +2115,7 @@ public class YADARequest {
   @Deprecated
   public void setExportLimit(int exportLimit) {
     this.exportLimit = exportLimit;
-    l.debug(getFormattedDebugString("exportLimit", String.valueOf(this.exportLimit)));
+    LOG.debug("{}",getFormattedDebugString("exportLimit", String.valueOf(this.exportLimit)));
   }
 
   /**
@@ -2132,7 +2131,7 @@ public class YADARequest {
     {
       this.exportLimit = i;
     }
-    l.debug(getFormattedDebugString("exportLimit", String.valueOf(this.exportLimit)));
+    LOG.debug("{}",getFormattedDebugString("exportLimit", String.valueOf(this.exportLimit)));
   }
 
   /**
@@ -2144,7 +2143,7 @@ public class YADARequest {
   @Deprecated
   public void setFilters(JSONObject filters) {
     this.filters = filters;
-    l.debug(getFormattedDebugString("filters", this.filters.toString()));
+    LOG.debug("{}",getFormattedDebugString("filters", this.filters.toString()));
   }
 
   /**
@@ -2307,7 +2306,7 @@ public class YADARequest {
       this.delimiter = FORMAT_TSV_STRING;
     else if (this.format.equals(FORMAT_PIPE) || this.format.equals(FORMAT_PSV))
       this.delimiter = FORMAT_PIPE_STRING;
-    l.debug(getFormattedDebugString("format", this.format));
+    LOG.debug("{}",getFormattedDebugString("format", this.format));
   }
 
   /**
@@ -2320,8 +2319,8 @@ public class YADARequest {
   public void setDelimiter(String[] delimiter) {
     this.delimiter = delimiter[0];
     setFormat(new String[] { FORMAT_DELIMITED });
-    l.debug(getFormattedDebugString("delimiter", this.delimiter));
-    l.debug(getFormattedDebugString("format", this.format));
+    LOG.debug("{}",getFormattedDebugString("delimiter", this.delimiter));
+    LOG.debug("{}",getFormattedDebugString("format", this.format));
   }
 
   /**
@@ -2333,7 +2332,7 @@ public class YADARequest {
    */
   public void setRowDelimiter(String[] rowDelimiter) {
     this.rowDelimiter = rowDelimiter[0];
-    l.debug(getFormattedDebugString("rowDelimiter", this.rowDelimiter));
+    LOG.debug("{}",getFormattedDebugString("rowDelimiter", this.rowDelimiter));
   }
 
   /**
@@ -2412,7 +2411,7 @@ public class YADARequest {
                   value += ",";
                 }
               }
-              l.debug("JSONArray passed in is now [" + value + "]");
+              LOG.debug("JSONArray passed in is now [{}]", value);
             }
             catch (JSONException e)
             {
@@ -2424,7 +2423,7 @@ public class YADARequest {
           this.JSONParams.get(lQname).add(dataForRow);
         }
       }
-      l.debug(getFormattedDebugString("JSONParams", jsonArray.toString()));
+      LOG.debug("{}",getFormattedDebugString("JSONParams", jsonArray.toString()));
     }
     catch (JSONException e)
     {
@@ -2495,7 +2494,7 @@ public class YADARequest {
   @Deprecated
   public void setLabels(boolean labels) {
     this.labels = labels;
-    l.debug(getFormattedDebugString("labels", String.valueOf(labels)));
+    LOG.debug("{}",getFormattedDebugString("labels", String.valueOf(labels)));
   }
 
   /**
@@ -2508,7 +2507,7 @@ public class YADARequest {
     {
       this.labels = b;
     }
-    l.debug(getFormattedDebugString("labels", String.valueOf(this.labels)));
+    LOG.debug("{}",getFormattedDebugString("labels", String.valueOf(this.labels)));
   }
 
   /**
@@ -2518,7 +2517,7 @@ public class YADARequest {
   @Deprecated
   public void setMail(String mail) {
     this.mail = mail;
-    l.debug(getFormattedDebugString("mail", mail));
+    LOG.debug("{}",getFormattedDebugString("mail", mail));
   }
 
   /**
@@ -2527,7 +2526,7 @@ public class YADARequest {
    */
   public void setMail(String[] mail) {
     this.mail = mail[0];
-    l.debug(getFormattedDebugString("mail", this.mail));
+    LOG.debug("{}",getFormattedDebugString("mail", this.mail));
   }
 
   /**
@@ -2545,7 +2544,7 @@ public class YADARequest {
    */
   public void setMethod(String[] method) {
     this.method = method[0];
-    l.debug(getFormattedDebugString("method", this.method));
+    LOG.debug("{}",getFormattedDebugString("method", this.method));
   }
 
   /**
@@ -2601,7 +2600,7 @@ public class YADARequest {
         this.addBypassArg(arg);
       }
     }
-    l.debug(getFormattedDebugString("bypassargs", lArgs.toString()));
+    LOG.debug("{}",getFormattedDebugString("bypassargs", lArgs.toString()));
   }
 
   /**
@@ -2611,7 +2610,7 @@ public class YADARequest {
   @Deprecated
   public void setPretty(boolean pretty) {
     this.pretty = pretty;
-    l.debug(getFormattedDebugString("pretty", String.valueOf(pretty)));
+    LOG.debug("{}",getFormattedDebugString("pretty", String.valueOf(pretty)));
   }
 
   /**
@@ -2620,7 +2619,7 @@ public class YADARequest {
    */
   public void setProtocol(String[] protocol) {
     this.protocol = protocol[0];
-    l.debug(getFormattedDebugString("protocol", this.protocol));
+    LOG.debug("{}",getFormattedDebugString("protocol", this.protocol));
   }
 
   /**
@@ -2629,7 +2628,7 @@ public class YADARequest {
    */
   public void setProxy(String[] proxy) {
     this.proxy = proxy[0];
-    l.debug(getFormattedDebugString("proxy", this.proxy));
+    LOG.debug("{}",getFormattedDebugString("proxy", this.proxy));
   }
 
   /**
@@ -2642,7 +2641,7 @@ public class YADARequest {
     {
       this.pretty = b;
     }
-    l.debug(getFormattedDebugString("pretty", String.valueOf(this.pretty)));
+    LOG.debug("{}",getFormattedDebugString("pretty", String.valueOf(this.pretty)));
   }
 
   /**
@@ -2681,7 +2680,7 @@ public class YADARequest {
         this.pageSize = i;
       }
     }
-    l.debug(getFormattedDebugString("pageSize", String.valueOf(this.pageSize)));
+    LOG.debug("{}",getFormattedDebugString("pageSize", String.valueOf(this.pageSize)));
   }
 
   /**
@@ -2700,7 +2699,7 @@ public class YADARequest {
   @Deprecated
   public void setPageStart(int pageStart) {
     this.pageStart = pageStart;
-    l.debug(getFormattedDebugString("pageStart", String.valueOf(pageStart)));
+    LOG.debug("{}",getFormattedDebugString("pageStart", String.valueOf(pageStart)));
   }
 
   /**
@@ -2710,7 +2709,7 @@ public class YADARequest {
   public void setPageStart(String[] pageStart) {
     int i = Integer.valueOf(pageStart[0]);
     this.pageStart = i;
-    l.debug(getFormattedDebugString("pageStart", String.valueOf(this.pageStart)));
+    LOG.debug("{}",getFormattedDebugString("pageStart", String.valueOf(this.pageStart)));
   }
 
   /**
@@ -2730,7 +2729,7 @@ public class YADARequest {
   @Deprecated
   public void setParallel(boolean parallel) {
     this.parallel = parallel;
-    l.debug(getFormattedDebugString("parallel", String.valueOf(parallel)));
+    LOG.debug("{}",getFormattedDebugString("parallel", String.valueOf(parallel)));
   }
 
   /**
@@ -2747,7 +2746,7 @@ public class YADARequest {
       this.parallel = b;
     }
 
-    l.debug(getFormattedDebugString("parallel", String.valueOf(parallel)));
+    LOG.debug("{}",getFormattedDebugString("parallel", String.valueOf(parallel)));
   }
 
   /**
@@ -2834,7 +2833,7 @@ public class YADARequest {
       this.params[j] = paramList.get(j);
     }
 //		Pattern ARRAY_RX = Pattern.compile("([^\\[\\]],[^\\[\\]]+)+"); // this pattern matches the contents inside brackets
-    l.debug(getFormattedDebugString("params", Arrays.toString(params)));
+    LOG.debug("{}",getFormattedDebugString("params", Arrays.toString(params)));
   }
 
   /**
@@ -2842,9 +2841,9 @@ public class YADARequest {
    * @param paramset a stored set of parameters
    */
   public void setParamset(String[] paramset) {
-    l.debug(paramset[0]);
+    LOG.debug("{}", paramset[0]);
     this.paramset = paramset[0];
-    l.debug(getFormattedDebugString("paramset", this.paramset));
+    LOG.debug("{}",getFormattedDebugString("paramset", this.paramset));
   }
 
   /**
@@ -2868,7 +2867,7 @@ public class YADARequest {
 //	public void setPlugin(String[] plugin) {
 //
 //		this.plugin = plugin;
-//		l.debug(getFormattedDebugString("plugin", ArrayUtils.toString(plugin)));
+//		LOG.debug("{}",getFormattedDebugString("plugin", ArrayUtils.toString(plugin)));
 //	}
 
   /**
@@ -2937,9 +2936,9 @@ public class YADARequest {
    * @param response the class name or fully-qualified class name of the response
    */
   public void setResponse(String[] response) {
-    l.debug(response[0]);
+    LOG.debug("{}", response[0]);
     this.response = response[0];
-    l.debug(getFormattedDebugString("response", response));
+    LOG.debug("{}",getFormattedDebugString("response", response));
   }
 
   /**
@@ -2952,9 +2951,9 @@ public class YADARequest {
    *                  converter
    */
   public void setConverter(String[] converter) {
-    l.debug(converter[0]);
+    LOG.debug("{}", converter[0]);
     this.converter = converter[0];
-    l.debug(getFormattedDebugString("converter", converter));
+    LOG.debug("{}",getFormattedDebugString("converter", converter));
   }
 
   /**
@@ -2984,7 +2983,7 @@ public class YADARequest {
     {
       this.pluginType = pluginType;
     }
-    l.debug(getFormattedDebugString("pluginType", pluginType));
+    LOG.debug("{}",getFormattedDebugString("pluginType", pluginType));
   }
 
   /**
@@ -3016,7 +3015,7 @@ public class YADARequest {
         this.addPostArg(arg);
       }
     }
-    l.debug(getFormattedDebugString("postargs", lArgs.toString()));
+    LOG.debug("{}",getFormattedDebugString("postargs", lArgs.toString()));
   }
 
   /**
@@ -3040,7 +3039,7 @@ public class YADARequest {
   @Deprecated
   public void setPreArgs(List<String> preArgs) {
     this.preArgs = preArgs;
-    l.debug(getFormattedDebugString("preArgs", preArgs.toString()));
+    LOG.debug("{}",getFormattedDebugString("preArgs", preArgs.toString()));
   }
 
   /**
@@ -3078,7 +3077,7 @@ public class YADARequest {
         this.addPreArg(arg);
       }
     }
-    l.debug(getFormattedDebugString("preargs", lArgs.toString()));
+    LOG.debug("{}",getFormattedDebugString("preargs", lArgs.toString()));
   }
 
   /**
@@ -3100,9 +3099,9 @@ public class YADARequest {
    * @param qname the query name
    */
   public void setQname(String[] qname) {
-    l.debug(qname[0]);
+    LOG.debug("{}", qname[0]);
     this.qname = qname[0];
-    l.debug(getFormattedDebugString("qname", this.qname));
+    LOG.debug("{}",getFormattedDebugString("qname", this.qname));
   }
 
   /**
@@ -3125,7 +3124,7 @@ public class YADARequest {
    */
   public void setSortKey(String[] sortKey) {
     this.sortKey = sortKey[0];
-    l.debug(getFormattedDebugString("sortKey", this.sortKey));
+    LOG.debug("{}",getFormattedDebugString("sortKey", this.sortKey));
   }
 
   /**
@@ -3150,7 +3149,7 @@ public class YADARequest {
   @Deprecated
   public void setSortOrder(String[] sortOrder) {
     this.sortOrder = sortOrder[0];
-    l.debug(getFormattedDebugString("sortOrder", this.sortOrder));
+    LOG.debug("{}",getFormattedDebugString("sortOrder", this.sortOrder));
   }
 
   /**
@@ -3167,7 +3166,7 @@ public class YADARequest {
     {
       this.updateStats = b;
     }
-    l.debug(getFormattedDebugString("updateStats", String.valueOf(this.updateStats)));
+    LOG.debug("{}",getFormattedDebugString("updateStats", String.valueOf(this.updateStats)));
   }
 
   /**
@@ -3192,7 +3191,7 @@ public class YADARequest {
    */
   public void setUser(String[] user) {
     this.user = user[0];
-    l.debug(getFormattedDebugString("user", this.user));
+    LOG.debug("{}",getFormattedDebugString("user", this.user));
   }
 
   /**
@@ -3205,7 +3204,7 @@ public class YADARequest {
   @Deprecated
   public void setViewLimit(int viewLimit) {
     this.viewLimit = viewLimit;
-    l.debug(getFormattedDebugString("viewLimit", String.valueOf(this.viewLimit)));
+    LOG.debug("{}",getFormattedDebugString("viewLimit", String.valueOf(this.viewLimit)));
   }
 
   /**
@@ -3222,7 +3221,7 @@ public class YADARequest {
     {
       this.viewLimit = i;
     }
-    l.debug(getFormattedDebugString("viewLimit", String.valueOf(this.viewLimit)));
+    LOG.debug("{}",getFormattedDebugString("viewLimit", String.valueOf(this.viewLimit)));
   }
 
   /**
@@ -3839,13 +3838,13 @@ public class YADARequest {
     while (iter.hasNext())
     {
       DiskFileItem fi = (DiskFileItem) iter.next();
-      l.debug(fi.toString());
+      LOG.debug("{}", fi.toString());
       // set parameters from form fields
       if (fi.isFormField())
       {
         String field = fi.getFieldName();
         String value = fi.getString();
-        l.debug("field is [" + field + "], value is [" + value + "]");
+        LOG.debug("field is [{}], value is [{}]", field, value);
         invokeSetter(field, new String[] { value });
         addToMap(field, new String[] { value });
       }
@@ -3869,7 +3868,7 @@ public class YADARequest {
         addArg(fName);
       }
     }
-    l.debug(getFormattedDebugString("uploadItems", uploadItems.toString()));
+    LOG.debug("{}",getFormattedDebugString("uploadItems", uploadItems.toString()));
   }
 
   /**
@@ -3894,7 +3893,7 @@ public class YADARequest {
    */
   public void setParameterMap(Map<String, String[]> paraMap) {
     this.getParameterMap().putAll(paraMap);
-    l.debug(getFormattedDebugString("parameterMap", paraMap.toString()));
+    LOG.debug("{}",getFormattedDebugString("parameterMap", paraMap.toString()));
   }
 
   /**

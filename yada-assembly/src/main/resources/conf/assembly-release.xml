@@ -32,7 +32,7 @@
       <directory>src/main/resources/conf</directory>
       <includes>
         <include>YADA.properties</include>
-        <include>log4j.properties</include>
+        <include>logback.xml</include>
       </includes>
     </fileSet>
   </fileSets>

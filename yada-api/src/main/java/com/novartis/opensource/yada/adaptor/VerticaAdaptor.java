@@ -32,14 +32,14 @@ public class VerticaAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(VerticaAdaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(VerticaAdaptor.class);
 	
 	/**
 	 * Default subclass constructor (calls {@code super()}
 	 */
 	public VerticaAdaptor() {
 		super();
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**

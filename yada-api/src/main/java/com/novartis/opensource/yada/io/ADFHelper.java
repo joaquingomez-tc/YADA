@@ -50,7 +50,7 @@ public class ADFHelper extends TabHelper {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(ADFHelper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ADFHelper.class);
 	
 	//  header regex basic matches this:  __(header): (value)
 	/**
@@ -69,7 +69,7 @@ public class ADFHelper extends TabHelper {
 	@Override
 	protected void setHeaders() throws YADAIOException 
 	{
-		l.debug("Setting headers dynamically...");
+		LOG.debug("Setting headers dynamically...");
 		String line       = "";
 		StringBuffer fh   = new StringBuffer();
 		
@@ -115,7 +115,7 @@ public class ADFHelper extends TabHelper {
 	@Override
 	protected void setFileHeaderMap() 
 	{
-		l.debug("Setting ADF file header...");
+		LOG.debug("Setting ADF file header...");
 		try(Scanner s = new Scanner(getFileHeader()))
 		{
   		String  h = "";

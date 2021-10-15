@@ -43,7 +43,7 @@ public class SqlldrUtil {
 	/**
 	 * Local logging handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(SqlldrUtil.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SqlldrUtil.class);
 
 //  sqlldr procs
 	/**
@@ -446,12 +446,12 @@ public class SqlldrUtil {
 			String          log = ", log="+logFile;		
 			String[]        cmd = {SQLLDR, uid, ctl, log};
 			Runtime         r   = Runtime.getRuntime();
-			l.info("Invoking sqlldr with cmd line ["+SQLLDR+uid+ctl+log+"]");
+			LOG.info("Invoking sqlldr with cmd line [{}}]", SQLLDR+uid+ctl+log);
 			Process         p   = r.exec(cmd);
 			copy(p.getInputStream(), System.out);
 			copy(p.getErrorStream(), System.out);
 			int exit = p.waitFor();
-			l.info("Finished loading ["+this.ctlFilePath+"] with exit code ["+String.valueOf(exit)+"]");
+			LOG.info("Finished loading [{}] with exit code [{}]", this.ctlFilePath, String.valueOf(exit));
 			if (this.feedback.equals(TRUE))
 			{
 				printFeedback(logFile);

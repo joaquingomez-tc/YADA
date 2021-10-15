@@ -26,7 +26,7 @@ public class JSONResponseFilter extends AbstractPostprocessor {
   /**
    * local logger
    */
-  private final static Logger l = LoggerFactory.getLogger(JSONResponseFilter.class);
+  private final static Logger LOG = LoggerFactory.getLogger(JSONResponseFilter.class);
 
   /**
    * Null constructor 
@@ -58,8 +58,7 @@ public class JSONResponseFilter extends AbstractPostprocessor {
     }
     catch (IOException e)
     {
-      String msg = "Unable to process the filter string. Returning original result.";
-      l.error(msg);
+      LOG.error("Unable to process the filter string. Returning original result.");
       e.printStackTrace();
       return result;
     }

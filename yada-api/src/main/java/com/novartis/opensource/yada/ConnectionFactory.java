@@ -57,7 +57,7 @@ public class ConnectionFactory {
   /**
    * Local logger handle
    */
-  private final static Logger l = LoggerFactory.getLogger(ConnectionFactory.class);
+  private final static Logger LOG = LoggerFactory.getLogger(ConnectionFactory.class);
 
   /**
    * Constant equal to {@value}
@@ -249,9 +249,8 @@ public class ConnectionFactory {
       System.out.println("datasources created successfully");
     }
     catch (YADAConnectionException e)
-    {
-      String msg = "Could not connect to YADA index.";
-      l.error(msg);
+    {      
+      LOG.error("Could not connect to YADA index.");
       System.exit(1);
     }
   }
@@ -417,7 +416,7 @@ public class ConnectionFactory {
           }
           catch (JSONException e)
           {
-            l.debug("No props object expressed in param.");
+            LOG.debug("No props object expressed in param.");
           }
            conf.put(YADA_CONF_APP, app);
           
@@ -521,7 +520,7 @@ public class ConnectionFactory {
             }
           }
           this.getWsSourceMap().put(app, props);
-          l.debug(app + " : " + conf.get(YADA_CONF_SOURCE));
+          LOG.debug("{} : {}", app, conf.get(YADA_CONF_SOURCE));
         }
       } 
     }
@@ -537,7 +536,7 @@ public class ConnectionFactory {
             url = (String) conf.get(YADA_DS_SOURCE);
           props.put(YADA_CONF_SOURCE, url);
           this.getWsSourceMap().put(app, props);
-          l.debug(app + " : " + url);
+          LOG.debug("{} : {}", app, url);
         }
       } 
     }
@@ -616,7 +615,7 @@ public class ConnectionFactory {
     catch (Exception e)
     {
       String msg = "Could not create connection pool for " + app;
-      l.warn(msg);
+      LOG.warn("{}", msg);
     }   
   }
 
@@ -700,8 +699,7 @@ public class ConnectionFactory {
         }
       }
       connection = ds.getConnection();
-      l.debug("app: [" + app + "], product: [" + connection.getMetaData().getDatabaseProductName() + "], driver: ["
-          + connection.getMetaData().getDriverName() + "]");
+      LOG.debug("app: [{}], product: [{}], driver: [{}]", app, connection.getMetaData().getDatabaseProductName(), connection.getMetaData().getDriverName());
 //    } catch (NamingException e) {
 //      String msg = "There was a problem locating the resource identified by the supplied JNDI path ["
 //          + Finder.getYADAJndi() + "] in the initial context.";
@@ -788,8 +786,7 @@ public class ConnectionFactory {
       }
       catch (SQLException e)
       {
-        String msg = "There was a problem closing the ResultSet.";
-        l.warn(msg);
+        LOG.warn("There was a problem closing the ResultSet.");
       }
     }
     if (stmt != null)
@@ -818,8 +815,7 @@ public class ConnectionFactory {
       }
       catch (SQLException e)
       {
-        // String msg = "There was a problem closing the Statement.";
-        // l.warn(msg);
+        // LOG.warn("There was a problem closing the Statement.");
       }
     }
     if (conn != null)
@@ -851,7 +847,7 @@ public class ConnectionFactory {
       {
         // getConnectionFactory().connectionMap.remove(conn);
       }
-//      l.debug("Database connection to [" + source + "] closed successfully.");
+//      LOG.debug("Database connection to [{}] closed successfully.", source);
     }
   }
 
@@ -874,7 +870,7 @@ public class ConnectionFactory {
         String msg = "There was a problem closing the SOAPConnection. It may have already been closed.";
         throw new YADAConnectionException(msg, e);
       }
-      l.debug("SOAPconnection to [" + source + "] closed successfully.");
+      LOG.debug("SOAPconnection to [source] closed successfully.", source);
     }
   }
 }

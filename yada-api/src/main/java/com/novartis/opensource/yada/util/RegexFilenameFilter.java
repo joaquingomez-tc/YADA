@@ -31,7 +31,7 @@ public class RegexFilenameFilter implements FilenameFilter {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(RegexFilenameFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RegexFilenameFilter.class);
 	
 	/**
 	 * Default regular expression (any string): {@code "^.*$"}
@@ -48,7 +48,7 @@ public class RegexFilenameFilter implements FilenameFilter {
 		{
 			this.regex = regex;
 		}
-		l.debug("Regex: ["+this.regex+"]");
+		LOG.debug("Regex: [{}]", this.regex);
 	}
 	
 	/**

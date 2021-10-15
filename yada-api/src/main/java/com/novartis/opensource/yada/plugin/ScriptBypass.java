@@ -37,7 +37,7 @@ public class ScriptBypass extends AbstractBypass {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(ScriptBypass.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ScriptBypass.class);
 	
 	/**
 	 * Enables the execution of a script stored in the {@code yada.bin} directory.
@@ -75,7 +75,7 @@ public class ScriptBypass extends AbstractBypass {
 		}
 		// add yadaReq json
 		cmds.add(yadaReq.toString());
-		l.debug("Executing script plugin: "+cmds);
+		LOG.debug("Executing script plugin: {}", cmds);
 		String scriptResult = "";
 		String s            = null;
 		try
@@ -87,7 +87,7 @@ public class ScriptBypass extends AbstractBypass {
 			{
   			while ((s = si.readLine()) != null)
   			{
-  				l.debug("  LINE: "+s);
+  				LOG.debug("  LINE: {}", s);
   				scriptResult += s;
   			}
 			}

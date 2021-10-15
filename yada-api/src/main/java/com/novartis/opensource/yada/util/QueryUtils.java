@@ -84,7 +84,7 @@ public class QueryUtils
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(QueryUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(QueryUtils.class);
 	/**
 	 * A constant equal to: {@value}
 	 * @since 9.1.0
@@ -296,7 +296,7 @@ public class QueryUtils
 	{
 		String driverName = "";
 		String className = REST_ADAPTOR_CLASS_NAME;
-		l.debug("JNDI source is [" + source + "]");
+		LOG.debug("JNDI source is [{}]", source);
 		if (source.matches(RX_JDBC_JNDI))
 		{
 			Context ctx;
@@ -323,7 +323,7 @@ public class QueryUtils
 			//TODO add integration tests for multiple containers after breaking tomcat dbcp dependency
 			//     http://docs.oracle.com/javase/1.5.0/docs/api/java/sql/DriverManager.html?is-external=true
 			driverName = ((HikariDataSource)ds).getDriverClassName();
-			l.debug("JDBC driver is [" + driverName + "]");
+			LOG.debug("JDBC driver is [{}]", driverName);
 			className = Finder.getEnv("adaptor/" + driverName + version);
 		}
 		else if (source.matches(RX_SOAP))
@@ -334,7 +334,7 @@ public class QueryUtils
 		{
 			className = FILESYSTEM_ADAPTOR_CLASS_NAME;
 		}
-		l.debug("JDBCAdaptor class is [" + className + "]");
+		LOG.debug("JDBCAdaptor class is [{}]", className);
 
 		Class<Adaptor> adaptorClass;
 		try
@@ -409,7 +409,7 @@ public class QueryUtils
       // else default is REST, set up top
     }
 
-    l.debug("JDBCAdaptor class is [" + className + "]");
+    LOG.debug("JDBCAdaptor class is [{}]", className);
 
     Class<Adaptor> adaptorClass;
     try
@@ -627,7 +627,7 @@ public class QueryUtils
 			}
 			catch (YADAParserException e)
 			{
-				l.warn("Attempting to qualify previously unparsable statement");
+				LOG.warn("Attempting to qualify previously unparsable statement");
 				if (isCallable(code))
 					yq.setType(Parser.CALL);
 				else if (isSelect(code))
@@ -980,7 +980,7 @@ public class QueryUtils
 		catch (MalformedURLException e)
 		{
 			e.printStackTrace();
-			l.error(e.getMessage());
+			LOG.error("{}", e.getMessage());
 		}
 		return url;
 	}
@@ -1008,7 +1008,7 @@ public class QueryUtils
 		}
 		catch (SQLException e)
 		{
-			l.error(e.getMessage());
+			LOG.error("{}", e.getMessage());
 		}
 		return c;
 	}
@@ -1069,7 +1069,7 @@ public class QueryUtils
 			if(String.valueOf(sql.charAt(idx)).matches("[vindt]"))
 			{
   			dataTypes[i] = sql.charAt(idx);
-  			l.debug("data type of param [" + String.valueOf(i + 1) + "] = " + dataTypes[i]);
+  			LOG.debug("data type of param [{}] = {}",String.valueOf(i + 1), dataTypes[i]);
 			}
 		}
 		return dataTypes;
@@ -1217,7 +1217,7 @@ public class QueryUtils
             // add the values in the correct order
             for (String val : valsForColumn)
             {
-              l.debug("Column [" + String.valueOf(paramColIndex + 1) + ": " + paramColumns.get(paramColIndex) + "] has value [" + val + "]");
+              LOG.debug("Column [{}: {}] has value [{}]", String.valueOf(paramColIndex + 1), paramColumns.get(paramColIndex), val);
               valsInPosition.add(val);
             }
           }
@@ -1262,7 +1262,7 @@ public class QueryUtils
 
 				for (String val : valsForColumn)
 				{
-					l.debug("Column [" + String.valueOf(j + 1) + ": " + columns[j] + "] has value [" + val + "]");
+					LOG.debug("Column [{}: {}] has value [{}]", String.valueOf(j + 1), columns[j], val);
 					valsInPosition.add(val);
 				}
 			}
@@ -1316,7 +1316,7 @@ public class QueryUtils
 		String idx = (index < 10)
 															? " " + String.valueOf(index)
 															: String.valueOf(index);
-		l.debug("Setting param [" + idx + "] of type [" + String.valueOf(type) + "] to: " + val);
+		LOG.debug("Setting param [{}] of type [{}] to: {}", idx, String.valueOf(type), val);
 		try
 		{
 			switch (type)
@@ -1349,7 +1349,7 @@ public class QueryUtils
 					}
 					catch (Exception e)
 					{
-						l.error("Error: " + e.getMessage());
+						LOG.error("Error: " + e.getMessage());
 					}
 					break;
 				case INTEGER :
@@ -1360,20 +1360,20 @@ public class QueryUtils
 					}
 					catch (NumberFormatException nfe)
 					{
-						l.error("Error: " + nfe.getMessage());
-						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
+						LOG.error("Error: {}", nfe.getMessage());
+						LOG.debug("Setting param [{}] of type [{}] to: null", String.valueOf(index), String.valueOf(type));
 						pstmt.setNull(index, java.sql.Types.INTEGER);
 					}
 					catch (NullPointerException npe)
 					{
-						l.error("Error: " + npe.getMessage());
-						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
+						LOG.error("Error: {}", npe.getMessage());
+						LOG.debug("Setting param [{}] of type [{}] to: null", String.valueOf(index), String.valueOf(type));
 						pstmt.setNull(index, java.sql.Types.INTEGER);
 					}
 					catch (Exception sqle)
 					{
-						l.error("Error: " + sqle.getMessage());
-						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: 0");
+						LOG.error("Error: {}", sqle.getMessage());
+						LOG.debug("Setting param [{}] of type [{}] to: 0", String.valueOf(index), String.valueOf(type));
 						pstmt.setNull(index, java.sql.Types.INTEGER);
 					}
 					break;
@@ -1385,20 +1385,20 @@ public class QueryUtils
 					}
 					catch (NumberFormatException nfe)
 					{
-						l.error("Error: " + nfe.getMessage());
-						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
+						LOG.error("Error: {}", nfe.getMessage());
+						LOG.debug("Setting param [{}] of type [{}] to: null", String.valueOf(index), String.valueOf(type));
 						pstmt.setNull(index, java.sql.Types.INTEGER);
 					}
 					catch (NullPointerException npe)
 					{
-						l.error("Error: " + npe.getMessage());
-						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
+						LOG.error("Error: {}", npe.getMessage());
+						LOG.debug("Setting param [{}] of type [{}] to: null", String.valueOf(index), String.valueOf(type));
 						pstmt.setNull(index, java.sql.Types.INTEGER);
 					}
 					catch (Exception sqle)
 					{
-						l.error("Error: " + sqle.getMessage());
-						l.debug("Setting param [" + String.valueOf(index) + "] of type [" + String.valueOf(type) + "] to: null");
+						LOG.error("Error: {}", sqle.getMessage());
+						LOG.debug("Setting param [{}] of type [{}] to: null", String.valueOf(index), String.valueOf(type));
 						pstmt.setNull(index, java.sql.Types.INTEGER);
 					}
 					break;
@@ -1426,7 +1426,7 @@ public class QueryUtils
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			l.error(e.getMessage());
+			LOG.error("{}", e.getMessage());
 		}
 	}
 
@@ -1571,20 +1571,20 @@ public class QueryUtils
 			char[]               dataTypes = yq.getDataTypes(row);
 			Matcher matcher;
 
-			l.debug("Processing inColumns [" + String.join(",",inColumns) + "]");
+			LOG.debug("Processing inColumns [{}]", String.join(",",inColumns));
 			for (String in : inColumns)
 			{
 				int colIndex = -1, j = 0;
 				String inCol = in.toUpperCase();
 
 				// get the index of the 'incolumn' in the 'JDBCcolumns' array
-				l.debug("Looking for column [" + inCol + "] in columns array " + "{"+String.join(",", columns)+"}");
+				LOG.debug("Looking for column [{}] in columns array {{}}", inCol, String.join(",", columns));
 				while (j < columns.length && colIndex != j)
 				{
 					if (inCol.contains(columns[j]))
 					{
 						colIndex = j;
-						l.debug("Found column [" + inCol + "] at index [" + String.valueOf(colIndex) + "] of columns array.");
+						LOG.debug("Found column [{}] at index [{}] of columns array.", inCol, String.valueOf(colIndex));
 						break;
 					}
 					j++;
@@ -1619,7 +1619,7 @@ public class QueryUtils
 					}
 					else
 						inData = data.get(colName);
-					l.debug("Splitting in args [" + data.get(colName) + "]");
+					LOG.debug("Splitting in args [{}]", data.get(colName));
 				}
 				else
 				// Standard Params
@@ -1673,7 +1673,7 @@ public class QueryUtils
 							yq.getData().set(row, newData);
 						}
 					}
-					l.debug("Setting IN args [{" + String.join(",", inData) + "}]");
+					LOG.debug("Setting IN args [{" + String.join(",", inData) + "}]");
 				}
 				if (inData != null)
 				{
@@ -1682,8 +1682,8 @@ public class QueryUtils
 
 				if (inLen > 1) // there's an aggregate of multiple values
 				{
-					l.debug("Length of value list [" + String.valueOf(inLen) + "]");
-					l.debug("Getting data type of [" + columns[colIndex] + "]");
+					LOG.debug("Length of value list [{}]", String.valueOf(inLen));
+					LOG.debug("Getting data type of [{}]", columns[colIndex]);
 					char dt = dataTypes[colIndex];
 					String dtStr = "?" + String.valueOf(dt);
 
@@ -1694,19 +1694,19 @@ public class QueryUtils
 						pList[k] = dtStr;
 					}
 					String pListStr = String.join(",",pList);
-					l.debug("New parameter list [" + pListStr + "]");
+					LOG.debug("New parameter list [{}]", pListStr);
 
 					// add additional parameters to coreSql
 					String rx = "(.+)(" + inCol + "\\s+in\\s+\\(\\" + dtStr + "\\))(.*)";
 					String repl = inCol + " IN (" + pListStr + ")";
 					String sql = coreSql.replaceAll(NEWLINE, " ");
-					l.debug("Attempting to replace part of [" + sql + "] with [" + repl + "]");
+					LOG.debug("Attempting to replace part of [{}] with [{}]", sql, repl);
 					matcher = Pattern.compile(rx, Pattern.CASE_INSENSITIVE).matcher(sql);
 					if (matcher.matches())
 					{
 						coreSql = matcher.group(1) + repl + matcher.group(3);
 					}
-					l.debug("Matched clause in coreSql [" + matcher.toString() + "]");
+					LOG.debug("Matched clause in coreSql [{}]", matcher.toString());
 				} // end current incolumn processing
 			} // end all incolumn processing
 		}

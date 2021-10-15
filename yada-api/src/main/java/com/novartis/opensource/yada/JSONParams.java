@@ -45,7 +45,7 @@ public class JSONParams extends LinkedHashMap<String, JSONParamsEntry> {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(JSONParams.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JSONParams.class);
 	
 	/** 
 	 * Default constructor, provides no additional functionality.
@@ -169,7 +169,7 @@ public class JSONParams extends LinkedHashMap<String, JSONParamsEntry> {
 				JSONParamsEntry entry = new JSONParamsEntry(jobj);
 				put(qname,entry);
 			}
-			l.debug(this.toString());
+			LOG.debug("{}", this.toString());
 		}
 		catch (JSONException e) 
 		{

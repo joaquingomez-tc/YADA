@@ -37,7 +37,7 @@ public class CountResponse extends AbstractResponse
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = LoggerFactory.getLogger(CountResponse.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CountResponse.class);
 	/**
 	 * Ivar containing the result to be returned by this class's {@link #toString()} method
 	 */

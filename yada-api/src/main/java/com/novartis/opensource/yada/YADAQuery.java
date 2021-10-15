@@ -63,7 +63,7 @@ import com.novartis.opensource.yada.util.QueryUtils;
  *  <li>List of cookie names, for REST queries, where specified</li>
  *  <li>Array of parameterized columns</li>
  *  <li>Array of columns referenced by SQL {@code IN} clauses</li>
- *  <li>SQL transactional info</li>
+ *  <li>SQL transactionaLOG.info</li>
  *  <li>{@link java.sql.Connection}</li>
  *  <li>{@link javax.xml.soap.SOAPConnection}</li>
  *  <li>List of list of values to be processed</li>
@@ -78,7 +78,7 @@ public class YADAQuery {
   /**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(YADAQuery.class);
+	private static final Logger LOG = LoggerFactory.getLogger(YADAQuery.class);
 	/**
 	 * Constant equal to {@value}
 	 */
@@ -381,7 +381,7 @@ public class YADAQuery {
           }
           catch(JSONException e)
           {
-            l.debug("No sec spec object expressed in param.");
+            LOG.debug("No sec spec object expressed in param.");
           }
           catch (YADAQueryConfigurationException e)
           {
@@ -414,7 +414,7 @@ public class YADAQuery {
         }
         catch(JSONException e)
         {
-          l.debug("No sec spec object expressed in param.");
+          LOG.debug("No sec spec object expressed in param.");
         }
         catch (YADAQueryConfigurationException e)
         {
@@ -426,7 +426,7 @@ public class YADAQuery {
     }
     catch(JSONException e1)
     {
-      l.debug("No params array expressed in query.");
+      LOG.debug("No params array expressed in query.");
     }
 
 
@@ -441,7 +441,7 @@ public class YADAQuery {
     }
     catch(JSONException e)
     {
-      l.debug("No props object expressed in param.");
+      LOG.debug("No props object expressed in param.");
     }
 	}
 
@@ -1000,9 +1000,7 @@ public class YADAQuery {
     {
 	    if(hasImmutableParam(key))
       {
-	      String msg = String.format("An attempt was made to override an immutable default parameter."
-	          +" The original contract was honored. [%s = %s]", key, value);
-        l.warn(msg);
+        LOG.warn("An attempt was made to override an immutable default parameter. The original contract was honored. [{} = {}]", key, value);
       }
       else if(hasParam(key))
       {
@@ -1310,8 +1308,7 @@ public class YADAQuery {
 					}
 					catch(SQLException e)
 					{
-						String msg = "This JDBC driver does not support savepoints.";
-						l.warn(msg);
+						LOG.warn("This JDBC driver does not support savepoints.");
 					}
 				}
 			}
@@ -1353,8 +1350,7 @@ public class YADAQuery {
 					}
 					catch(SQLException e)
 					{
-						String msg = "This JDBC driver does not support savepoints.";
-						l.warn(msg);
+						LOG.warn("This JDBC driver does not support savepoints.");
 					}
 				}
 				catch (SQLException e)
@@ -1714,8 +1710,7 @@ public class YADAQuery {
     }
     catch(JSONException e)
     {
-      String msg = "Key ["+key+"] already exists in global harmony map.";
-      l.warn(msg);
+      LOG.warn("Key [{}] already exists in global harmony map.", key);
     }
   }
 

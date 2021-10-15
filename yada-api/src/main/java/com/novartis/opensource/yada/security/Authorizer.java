@@ -52,7 +52,7 @@ public class Authorizer extends AbstractPostprocessor implements Authorization {
   /**
    * @since 9.0.0
    */
-  private static Logger l = LoggerFactory.getLogger(Authorizer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Authorizer.class);
   
   /**
    * Contains resource and allowList
@@ -452,7 +452,7 @@ public class Authorizer extends AbstractPostprocessor implements Authorization {
       }
       catch (YADAResourceException e)
       {
-        l.info("[YADA.shadow] property not set. Using default.");
+        LOG.info("[YADA.shadow] property not set. Using default.");
         shadowFile = YADA_SHADOW;
       }      
         

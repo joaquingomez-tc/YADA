@@ -42,7 +42,7 @@ public class ScriptPostprocessor extends AbstractPostprocessor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(ScriptPostprocessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ScriptPostprocessor.class);
 	/**
 	 * Constant equal to: {@value}
 	 */
@@ -144,7 +144,7 @@ public class ScriptPostprocessor extends AbstractPostprocessor {
 		
 		// add yadaReq json
 		cmds.add(yadaReq.toString());
-		l.debug("Executing script plugin: "+cmds);
+		LOG.debug("Executing script plugin: {}", cmds);
 		String scriptResult = "";
 		String s            = null;
 		try
@@ -156,7 +156,7 @@ public class ScriptPostprocessor extends AbstractPostprocessor {
 			{
   			while ((s = si.readLine()) != null)
   			{
-  				l.debug("  LINE: "+s);
+  				LOG.debug("  LINE: {}", s);
   				scriptResult += s;
   			}
 			}

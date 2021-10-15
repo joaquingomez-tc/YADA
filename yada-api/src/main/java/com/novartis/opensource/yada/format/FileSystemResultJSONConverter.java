@@ -40,7 +40,7 @@ public class FileSystemResultJSONConverter extends AbstractConverter
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = LoggerFactory.getLogger(FileSystemResultJSONConverter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(FileSystemResultJSONConverter.class);
 	/**
 	 * Constant equal to: {@value}
 	 */

@@ -42,7 +42,7 @@ public abstract class AbstractResponse implements Response
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(AbstractResponse.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractResponse.class);
 	/**
 	 * Constant with value equal to: {@value}
 	 */
@@ -228,7 +228,7 @@ public abstract class AbstractResponse implements Response
 			} 
 			catch (Exception e)
 			{
-				l.warn("The specified class ["+converterClass+"], as provided, could not be instantiated.  Trying FQCN."); 
+				LOG.warn("The specified class [{}], as provided, could not be instantiated.  Trying FQCN.", converterClass); 
 				try
 				{
 				  converterClass = FORMAT_PKG+converterClass;
@@ -239,7 +239,7 @@ public abstract class AbstractResponse implements Response
 				}
 				catch(Exception e1)
 				{
-					l.warn("The specified class ["+converterClass+"], as provided, could not be instantiated.  Trying default classes.",e1);
+					LOG.warn("The specified class [{}], as provided, could not be instantiated.  Trying default classes. {}", converterClass, e1);
 					converter = getDefaultConverter(yqr);
 				}
 			} 

@@ -63,7 +63,7 @@ public class SOAPAdaptor extends Adaptor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(SOAPAdaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SOAPAdaptor.class);
 	/**
 	 * Constant equal to {@value}
 	 */
@@ -220,7 +220,7 @@ public class SOAPAdaptor extends Adaptor {
 	 */
 	public SOAPAdaptor() {
 		super();
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**
@@ -311,7 +311,7 @@ public class SOAPAdaptor extends Adaptor {
 					SOAPBody       body = message.getSOAPBody(); 
 					header.detachNode(); 
 					
-					l.debug("query:\n"+this.queryString);
+					LOG.debug("query:\n {}", this.queryString);
 					
 					try
 					{
@@ -337,7 +337,7 @@ public class SOAPAdaptor extends Adaptor {
 						String msg = "Unable to process input or output stream for SOAP message with Basic Authentication. This is an I/O problem, not an authentication issue.";
 						throw new YADAAdaptorExecutionException(msg,e);
 					}
-					l.debug("SOAP Body:\n"+result);
+					LOG.debug("SOAP Body:\n{}", result);
 				}
 				else if (AUTH_NTLM.equals(this.soapAuth.toLowerCase()) 
 						    || "negotiate".equals(this.soapAuth.toLowerCase()))
@@ -358,19 +358,19 @@ public class SOAPAdaptor extends Adaptor {
 					args.add("-t");
 					args.add(this.soapAction);
 					String[] cmds = args.toArray(new String[0]);
-					l.debug("Executing soap request via script: "+Arrays.toString(cmds));
+					LOG.debug("Executing soap request via script: {}", Arrays.toString(cmds));
 					String s = null;
 					try
 					{
 						ProcessBuilder pb = new ProcessBuilder(args);
-						l.debug(pb.environment().toString());
+						LOG.debug("{}", pb.environment().toString());
 						pb.redirectErrorStream(true);
 						Process p = pb.start();
 						try(BufferedReader si = new BufferedReader(new InputStreamReader(p.getInputStream())))
 						{
   						while ((s = si.readLine()) != null)
   						{
-  							l.debug(s);
+  							LOG.debug("{}", s);
   							if(null == result)
   							{
   								result = "";
@@ -419,7 +419,7 @@ public class SOAPAdaptor extends Adaptor {
 				} 
 				catch (YADAConnectionException e)
 				{
-					l.error(e.getMessage());
+					LOG.error("{}", e.getMessage());
 				}
 			}
 			
@@ -437,7 +437,7 @@ public class SOAPAdaptor extends Adaptor {
 		try
 		{
 			String soapResponse = getSOAPResponse();
-			l.debug("Fixing Micro$oft's W3C spec non-compliance issue");
+			LOG.debug("Fixing Micro$oft's W3C spec non-compliance issue");
 			soapResponse = soapResponse.replace("#RowsetSchema", "http://www.microsoft.com/RowsetSchema");
 		
 			JSONObject jsonResponse = new JSONObject();
@@ -448,13 +448,13 @@ public class SOAPAdaptor extends Adaptor {
 		}
 		catch (JSONException e)
 		{
-			l.error(e.getMessage());
+			LOG.error("{}", e.getMessage());
 			e.printStackTrace();
 			throw new YADAAdaptorException();
 		} 
 		catch (YADAFinderException e) 
 		{
-			l.error(e.getMessage());
+			LOG.error("{}", e.getMessage());
 			e.printStackTrace();
 			throw new YADAAdaptorException();
 		}
@@ -463,17 +463,17 @@ public class SOAPAdaptor extends Adaptor {
 	
 	public String getXML() throws YADAAdaptorException, SQLException 
 	{
-		l.debug("Getting XML in SOAPAdaptor");
+		LOG.debug("Getting XML in SOAPAdaptor");
 		String xml = null;
 		try 
 		{
 			xml = getSOAPResponse();
-			l.debug("Fixing Micro$oft's W3C spec non-compliance issue");
+			LOG.debug("Fixing Micro$oft's W3C spec non-compliance issue");
 			xml = xml.replace("#RowsetSchema", "http://www.microsoft.com/RowsetSchema");
 		} 
 		catch (YADAFinderException e) 
 		{
-			l.error(e.getMessage());
+			LOG.error("{}", e.getMessage());
 			e.printStackTrace();
 			throw new YADAAdaptorException();
 		}
