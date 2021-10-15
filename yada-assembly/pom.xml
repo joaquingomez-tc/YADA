@@ -29,7 +29,7 @@
             <directory>${basedir}/src/test/resources/conf</directory>
             <targetPath>conf</targetPath>
             <excludes>
-              <exclude>log4j.properties</exclude>
+              <exclude>logback.xml</exclude>
               <exclude>YADA*.properties</exclude>
             </excludes>
           </testResource>
@@ -37,7 +37,7 @@
             <directory>${basedir}/src/test/resources/conf</directory>
             <filtering>true</filtering>
             <includes>
-              <include>log4j.properties</include>
+              <include>logback.xml</include>
               <include>YADA*.properties</include>
             </includes>
           </testResource>
@@ -200,8 +200,7 @@
             <directory>${basedir}/src/main/resources/conf</directory>
             <filtering>${filtering}</filtering>
             <includes>
-              <!-- <include>ehcache.xml</include> -->
-              <include>log4j.properties</include>
+              <include>logback.xml</include>
               <include>YADA.properties</include>
             </includes>
           </resource>
@@ -248,8 +247,7 @@
         <directory>${basedir}/src/main/resources/conf</directory>
         <filtering>${filtering}</filtering>
         <includes>
-          <!-- <include>ehcache.xml</include> -->
-          <include>log4j.properties</include>
+          <include>logback.xml</include>
           <include>YADA.properties</include>
         </includes>
       </resource>

@@ -103,8 +103,7 @@
         <directory>${basedir}/src/main/resources/conf</directory>
         <filtering>true</filtering>
         <includes>
-          <!-- <include>ehcache.xml</include> -->
-          <include>log4j.properties</include>
+          <include>logback.xml</include>
           <include>YADA.properties</include>
         </includes>
       </resource>
@@ -121,7 +120,7 @@
         <filtering>true</filtering>
         <targetPath>conf</targetPath>
         <excludes>
-          <exclude>log4j.properties</exclude>
+          <exclude>logback.xml</exclude>
           <exclude>YADA*.properties</exclude>
         </excludes>
       </testResource>
@@ -129,7 +128,7 @@
         <directory>${basedir}/src/test/resources/conf</directory>
         <filtering>true</filtering>
         <includes>
-          <include>log4j.properties</include>
+          <include>logback.xml</include>
           <include>YADA*.properties</include>
         </includes>
       </testResource>
@@ -157,22 +156,15 @@
         <version>2.3.2</version>
         <configuration>
           <finalName>yada-${project.version}</finalName>
-          <!--  do this on command line:  java -cp yada-api-<version>.jar:log4j.properties:lib/* com.novartis.opensource.yada.server.YADAServer -->
-          <archive>            
-            <!-- <manifest>
-              <addClasspath>true</addClasspath>
-              <classpathPrefix>lib</classpathPrefix><classpathLayoutType>custom</classpathLayoutType>
-              <customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
-              <mainClass>com.novartis.opensource.yada.server.YADAServer</mainClass>
-            </manifest> -->
+          <!--  do this on command line:  java -cp yada-api-<version>.jar:logback.xml:lib/* com.novartis.opensource.yada.server.YADAServer -->
+          <archive>
             <manifestEntries>
               <yada-api-version>${project.parent.version}</yada-api-version>
-              <!-- <Class-Path>log4j.properties</Class-Path> -->
             </manifestEntries>
           </archive>
           <excludes>
             <exclude>**/YADA.properties</exclude>
-            <exclude>**/log4j.properties</exclude>
+            <exclude>**/logback.xml</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -305,7 +297,7 @@
           <detectLinks>true</detectLinks>
           <detectOfflineLinks>true</detectOfflineLinks>
           <links>
-            
+
           </links>
         </configuration>
       </plugin>
@@ -367,11 +359,6 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.9.10.5</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>2.9.2</version>
-    </dependency> -->
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
@@ -385,10 +372,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -424,7 +407,7 @@
       <version>2.1.1</version> </dependency> -->
     <dependency>
       <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>      
+      <artifactId>postgresql</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -447,12 +430,6 @@
       <artifactId>assumeng</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- <dependency>
-      <groupId>org.mozilla</groupId>
-      <artifactId>rhino</artifactId>
-      <version>1.7R5</version>
-    </dependency> -->
-
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
@@ -478,40 +455,6 @@
       <version>1.1.1</version>
       <scope>runtime</scope>
     </dependency>
-    <!-- <dependency>
-      <groupId>org.renjin</groupId>
-      <artifactId>renjin-script-engine</artifactId>
-      <version>3.5-beta76</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.renjin.cran</groupId>
-      <artifactId>jsonlite</artifactId>
-      <version>1.6-b1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.renjin.cran</groupId>
-      <artifactId>rjson</artifactId>
-      <version>0.2.15-renjin-21</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency> -->
     <dependency>
       <groupId>org.graalvm.sdk</groupId>
       <artifactId>graal-sdk</artifactId>
@@ -543,16 +486,12 @@
       <version>10.0.3</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-    <dependency>
         <groupId>com.sun.xml.messaging.saaj</groupId>
         <artifactId>saaj-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
   </dependencies>
 </project>
