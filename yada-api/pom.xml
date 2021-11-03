@@ -421,6 +421,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <scope>test</scope>
@@ -485,10 +490,10 @@
       <artifactId>jetty-rewrite</artifactId>
       <version>10.0.3</version>
     </dependency>
-    <dependency>
+<!--     <dependency>
         <groupId>com.sun.xml.messaging.saaj</groupId>
         <artifactId>saaj-impl</artifactId>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>

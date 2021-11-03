@@ -310,11 +310,11 @@
     			<artifactId>javax.xml.soap-api</artifactId>
     			<version>1.4.0</version>
     		</dependency>
-            <dependency>
+<!--             <dependency>
               <groupId>com.sun.xml.messaging.saaj</groupId>
               <artifactId>saaj-impl</artifactId>
               <version>1.4.0</version>
-            </dependency>
+            </dependency> -->
     	    <dependency>
               <groupId>org.slf4j</groupId>
               <artifactId>slf4j-api</artifactId>
@@ -343,6 +343,13 @@
               <version>2.3.4</version>
               <scope>provided</scope>
             </dependency>
+						<dependency>
+					    <groupId>com.microsoft.sqlserver</groupId>
+					    <artifactId>mssql-jdbc</artifactId>
+					    <version>9.4.0.jre11</version>
+							<scope>provided</scope>
+					</dependency>
+
 	   </dependencies>
 	</dependencyManagement>
 </project>
