@@ -33,7 +33,7 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.xml.soap.SOAPConnection;
 
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1066,7 +1066,8 @@ public class QueryManager {
           {
             if (cookie.getName().equals(cookieName))
             {
-              yq.addCookie(cookieName, Base64.encodeBase64String(Base64.decodeBase64(cookie.getValue().getBytes())));
+              String cookieVal = Base64.getEncoder().encodeToString(Base64.getDecoder().decode(cookie.getValue().getBytes()));
+              yq.addCookie(cookieName, cookieVal);
             }
           }
         }
