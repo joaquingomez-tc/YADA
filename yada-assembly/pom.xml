@@ -331,6 +331,9 @@
         </executions>
         <configuration>
           <includeScope>compile</includeScope>
+          <excludeArtifactIds>
+            yada-api-${project.version},yada-api-${project.version}-test
+          </excludeArtifactIds>
           <outputDirectory>${basedir}/target/${project.parent.name}-${project.version}/${project.parent.name}-${project.version}/lib</outputDirectory>
         </configuration>
       </plugin>
