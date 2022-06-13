@@ -1,14 +1,16 @@
 .DS_Store
 .RData
+.RHistory
 .classpath
+.externalToolBuilders
 .project
 .svn
 .settings
+.vscode
 target
 /site.log
 /YADA.pdf
 /bin
-/.settings
 /build
 Release*
 YADA.db
