@@ -30,14 +30,14 @@ public class PostgreSQLAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(PostgreSQLAdaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PostgreSQLAdaptor.class);
 	
 	/**
 	 * Default subclass constructor (calls {@code super()}
 	 */
 	public PostgreSQLAdaptor() {
 		super();
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**

@@ -39,7 +39,7 @@ public class CacheUpdater extends AbstractBypass
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(CacheUpdater.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CacheUpdater.class);
 
 	/** 
 	 * @see com.novartis.opensource.yada.plugin.Bypass#engage(com.novartis.opensource.yada.YADARequest)
@@ -50,7 +50,7 @@ public class CacheUpdater extends AbstractBypass
 		Map<String,YADAQuery> yadaIndex = ConnectionFactory.getConnectionFactory().getCache();
 		for(String q : yadaIndex.keySet().toArray(new String[yadaIndex.keySet().size()]))
 		{
-			l.debug("Refreshing verson of [" + q + "] in cache.");
+			LOG.debug("Refreshing verson of [{}] in cache.",q);
       YADAQuery yq = null;
       try 
       {
@@ -58,7 +58,7 @@ public class CacheUpdater extends AbstractBypass
       }
       catch(YADAFinderException e)
       {
-        l.warn("Attempted to update cached version non-existent query. This usually means someone changed the qname directly in the index. The old query was removed from the cache.");
+        LOG.warn("Attempted to update cached version non-existent query. This usually means someone changed the qname directly in the index. The old query was removed from the cache.");
         yadaIndex.remove(q);
       } 
       if(yq != null)

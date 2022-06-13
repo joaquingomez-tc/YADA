@@ -1,10 +1,9 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.novartis.opensource</groupId>
     <artifactId>YADA</artifactId>
-    <version>10.2.0-SNAPSHOT</version>
+    <version>10.1.4-SNAPSHOT</version>
   </parent>
   <artifactId>yada-assembly</artifactId>
   <packaging>pom</packaging>
@@ -171,7 +170,7 @@
                   </resources>
                 </configuration>
               </execution>
-               <execution>
+              <execution>
                 <id>process-resources</id>
                 <phase>package</phase>
                 <goals>
@@ -197,7 +196,6 @@
             <directory>${basedir}/src/main/resources/conf</directory>
             <filtering>${filtering}</filtering>
             <includes>
-              <!-- <include>ehcache.xml</include> -->
               <include>log4j.properties</include>
               <include>YADA.properties</include>
             </includes>
@@ -211,28 +209,28 @@
         </resources>
         <plugins>
           <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>make-release</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-              <configuration>
-                <finalName>YADA-${project.version}</finalName>
-                <appendAssemblyId>false</appendAssemblyId>
-                <descriptors>
-                  <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
-                </descriptors>
-                <filters>
-                  <filter>src/main/resources/conf/build-release.properties</filter>
-                </filters>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-release</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>YADA-${project.version}</finalName>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <descriptors>
+                    <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
+                  </descriptors>
+                  <filters>
+                    <filter>src/main/resources/conf/build-release.properties</filter>
+                  </filters>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
 
@@ -247,7 +245,6 @@
         <directory>${basedir}/src/main/resources/conf</directory>
         <filtering>${filtering}</filtering>
         <includes>
-          <!-- <include>ehcache.xml</include> -->
           <include>log4j.properties</include>
           <include>YADA.properties</include>
         </includes>
@@ -358,7 +355,7 @@
               </resources>
             </configuration>
           </execution>
-           <execution>
+          <execution>
             <id>process-resources</id>
             <phase>package</phase>
             <goals>

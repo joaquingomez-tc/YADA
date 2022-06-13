@@ -35,7 +35,7 @@ public class VCFHelper extends TabHelper{
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(VCFHelper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(VCFHelper.class);
 	/**
 	 * Constant equal to: {@code "##(.*)=(.*)"}
 	 */
@@ -144,7 +144,7 @@ public class VCFHelper extends TabHelper{
 	@Override
 	protected void setFileHeaderMap()
 	{
-		l.info("Setting VCF file header...");
+		LOG.info("Setting VCF file header...");
 		try(Scanner s    = new Scanner(getFileHeader()))
 		{
   		String  line = "";

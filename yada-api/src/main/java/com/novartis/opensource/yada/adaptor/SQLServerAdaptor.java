@@ -30,13 +30,13 @@ public class SQLServerAdaptor extends JDBCAdaptor {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(SQLServerAdaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SQLServerAdaptor.class);
 	/**
 	 * Default constructor
 	 */
 	public SQLServerAdaptor() {
 		super();
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class SQLServerAdaptor extends JDBCAdaptor {
 	 */
 	public SQLServerAdaptor(YADARequest yadaReq) {
 		super(yadaReq);
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**

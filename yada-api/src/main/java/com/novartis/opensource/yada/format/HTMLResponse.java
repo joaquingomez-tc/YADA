@@ -34,7 +34,7 @@ public class HTMLResponse extends AbstractResponse {
 	 * Local logger handle
 	 */
 	@SuppressWarnings("unused")
-	private static Logger l = LoggerFactory.getLogger(HTMLResponse.class);
+	private static final Logger LOG = LoggerFactory.getLogger(HTMLResponse.class);
 	/**
    * Ivar containing the result to be returned by this class's {@link #toString()} method
    */

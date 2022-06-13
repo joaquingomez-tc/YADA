@@ -34,7 +34,7 @@ public class YADABufferedReader extends BufferedReader {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(YADABufferedReader.class);
+	private static final Logger LOG = LoggerFactory.getLogger(YADABufferedReader.class);
 	
 	/**
 	 * Instance variable.  The {@link FileHelper} enables functionality essential to {@link #readLine2JSON()} 
@@ -93,7 +93,7 @@ public class YADABufferedReader extends BufferedReader {
 		try 
 		{
 			String   orig = this.readLine();
-			l.debug(orig);
+			LOG.debug("{}", orig);
 			if (null != orig)
 			{
 				String[] line = orig.split(this.helper.getDelimiter());
@@ -105,7 +105,7 @@ public class YADABufferedReader extends BufferedReader {
 					{
 						result.put(head[i],line[i]);
 					}
-					l.debug(result.toString(2));
+					LOG.debug("{}", result.toString(2));
 				}
 				else
 				{
@@ -116,13 +116,13 @@ public class YADABufferedReader extends BufferedReader {
 		} 
 		catch (IOException e) 
 		{
-			l.error(e.getMessage());
+			LOG.error("{}", e.getMessage());
 			e.printStackTrace();
 			throw new YADAIOException(e.getMessage(),e);
 		} 
 		catch (JSONException e) 
 		{
-			l.error(e.getMessage());
+			LOG.error(e.getMessage());
 			e.printStackTrace();
 			throw new YADAIOException(e.getMessage(),e);
 		}

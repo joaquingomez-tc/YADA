@@ -42,7 +42,7 @@ public class XSLPostprocessor extends AbstractPostprocessor {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(XSLPostprocessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XSLPostprocessor.class);
 	/**
 	 * Constant equal to: {@value}
 	 */
@@ -54,6 +54,7 @@ public class XSLPostprocessor extends AbstractPostprocessor {
 	 * @see com.novartis.opensource.yada.plugin.Postprocess#engage(com.novartis.opensource.yada.YADARequest, java.lang.String)
 	 */
   @Override
+  @SuppressWarnings("deprecation")
 	public String engage(YADARequest yadaReq, String result) throws YADAPluginException {
 		String xmlInput  = result;
 		String xslResult = "";
@@ -111,10 +112,10 @@ public class XSLPostprocessor extends AbstractPostprocessor {
 		{
 			if(arg.startsWith("param="))
 			{
-				l.debug("arg is ["+arg+"]");
+				LOG.debug("arg is [{}]", arg);
 				String[] temp = arg.split(RX_EQL);
 				transformer.setParameter(temp[1], temp[2]);
-				l.debug("param ["+temp[1]+"] is ["+transformer.getParameter(temp[1])+"]");
+				LOG.debug("param [{}] is [{}]", temp[1], transformer.getParameter(temp[1]));
 			}
 		}
 		
@@ -131,7 +132,7 @@ public class XSLPostprocessor extends AbstractPostprocessor {
 		{
 			if (arg.startsWith("format="))
 			{
-				l.debug("arg is ["+arg+"]");
+				LOG.debug("arg is [{}]", arg);
 				yadaReq.setFormat(new String[] {arg.substring(arg.indexOf("=")+1)});
 			}
 		}

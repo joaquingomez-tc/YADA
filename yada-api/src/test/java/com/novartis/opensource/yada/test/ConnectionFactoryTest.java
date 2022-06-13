@@ -51,6 +51,7 @@ public class ConnectionFactoryTest {
 	 * In memory query store
 	 * @since 10.1.1
 	 */
+	@SuppressWarnings("unused")
 	private Map<String,YADAQuery> YADAIndex = new ConcurrentHashMap<>();
 	
 	/**
@@ -77,6 +78,7 @@ public class ConnectionFactoryTest {
    * Tests {@link ConnectionFactory#getConnection(String)} by attempting to connect to the YADA Index.
    * @throws YADAConnectionException when the connection can't be opened
    */
+  @SuppressWarnings("deprecation")
   @Test (groups = {"core"}, enabled = false)
   public void getConnection() throws YADAConnectionException {
     this.connection = ConnectionFactory.getConnectionFactory().getConnection(ConnectionFactory.YADA_APP);

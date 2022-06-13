@@ -31,6 +31,6 @@ public class SOAPPassThruResponse extends AbstractResponse
    * Local logger handle
    */
 	@SuppressWarnings("unused")
-	private static Logger l = LoggerFactory.getLogger(SOAPPassThruResponse.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SOAPPassThruResponse.class);
 	//TODO implement this class
 }

@@ -207,6 +207,7 @@ public abstract class AbstractPreprocessor
    * @see com.novartis.opensource.yada.plugin.Preprocess#engage(com.novartis.opensource.yada.YADARequest)
    */
   @Override
+  @SuppressWarnings("deprecation")
   public YADARequest engage(YADARequest yadaReq) throws YADAPluginException {
     setYADARequest(yadaReq);
     setRequest(yadaReq.getRequest());
@@ -233,6 +234,7 @@ public abstract class AbstractPreprocessor
    *      com.novartis.opensource.yada.YADAQuery)
    */
   @Override
+  @SuppressWarnings("deprecation")
   public void engage(YADARequest yadaReq, YADAQuery yq) throws YADAPluginException, YADASecurityException {
     setYADARequest(yadaReq);
     setRequest(yadaReq.getRequest());
@@ -273,7 +275,7 @@ public abstract class AbstractPreprocessor
         {
           setArgs(Arrays.asList(args[0].split(",")));
         }
-        else
+        else        	
         {
           args = getYADAQuery().getYADAQueryParamValue(YADARequest.PS_ARGS);
           if (args != null && args.length > 0)

@@ -38,13 +38,13 @@ public class OracleAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(OracleAdaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OracleAdaptor.class);
 	/**
 	 * Default constructor
 	 */
 	public OracleAdaptor() {
 		super();
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**

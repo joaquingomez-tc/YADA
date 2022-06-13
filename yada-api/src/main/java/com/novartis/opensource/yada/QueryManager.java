@@ -33,7 +33,7 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.xml.soap.SOAPConnection;
 
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,7 @@ public class QueryManager {
   /**
    * Local logger handle
    */
-  private static Logger           l               = LoggerFactory.getLogger(QueryManager.class);
+  private static final Logger LOG               = LoggerFactory.getLogger(QueryManager.class);
   /**
    * Local handle to configuration object
    */
@@ -341,8 +341,7 @@ public class QueryManager {
       }
       catch (JSONException e)
       {
-        String msg = "Key [" + key + "] already exists in global harmony map.";
-        l.warn(msg);
+        LOG.warn("Key [{}] already exists in global harmony map.", key);
       }
     }
     return global;
@@ -442,10 +441,9 @@ public class QueryManager {
           connection.commit();
           int    count = yq.getResult().getTotalResultCount();
           String rows  = count == 1 ? "row" : "rows";
-          String msg   = "\n------------------------------------------------------------\n";
-          msg += "   Commit successful on connection to [" + yq.getApp() + "] (" + count + " " + rows + ")\n";
-          msg += "------------------------------------------------------------\n";
-          l.debug(msg);
+          LOG.debug("\n------------------------------------------------------------\n");
+          LOG.debug("   Commit successful on connection to [{}] ({} {})", yq.getApp(), count, rows);
+          LOG.debug("\n------------------------------------------------------------\n");
         }
         else if(!connection.getAutoCommit())
         {
@@ -460,8 +458,7 @@ public class QueryManager {
     }
     catch (ClassCastException e)
     {
-      l.info("Connection to [" + yq.getApp()
-          + "] is not a JDBC connection (it's probably SOAP.) No commit was attempted.");
+      LOG.info("Connection to [{}] is not a JDBC connection (it's probably SOAP.) No commit was attempted.", yq.getApp());
     }
   }
 
@@ -484,11 +481,10 @@ public class QueryManager {
           Connection connection = (Connection) this.connectionMap.get(source);
           if (connection.getHoldability() == ResultSet.HOLD_CURSORS_OVER_COMMIT)
           {
-            connection.commit();
-            String msg = "\n------------------------------------------------------------\n";
-            msg += "   Commit successful on [" + source + "].\n";
-            msg += "------------------------------------------------------------\n";
-            l.info(msg);
+            connection.commit();            
+            LOG.info("\n------------------------------------------------------------\n");
+            LOG.info("   Commit successful on [{}].\n", source);
+            LOG.info("\n------------------------------------------------------------\n");
           }
           else if(!connection.getAutoCommit())
           {
@@ -502,8 +498,7 @@ public class QueryManager {
         }
         catch (ClassCastException e)
         {
-          l.info("Connection to [" + source
-              + "] is not a JDBC connection (it's probably SOAP.)  No commit was attempted.");
+          LOG.info("Connection to [{}] is not a JDBC connection (it's probably SOAP.)  No commit was attempted.", source);
         }
       }
     }
@@ -518,9 +513,7 @@ public class QueryManager {
    */
   private void deferCommit(String app) {
     this.deferredCommits.add(app);
-    String msg = "Commit deferred on [" + app
-        + "]. This is done, most likely, because the JDBC driver for this source does not support holdability.";
-    l.info(msg);
+    LOG.info("Commit deferred on [{}]. This is done, most likely, because the JDBC driver for this source does not support holdability.", app);
   }
 
   /**
@@ -543,24 +536,22 @@ public class QueryManager {
         Connection connection = (Connection) this.connectionMap.get(app);
         if(connection.getAutoCommit())
         {
-          String msg = "Auto-commited";
-          l.info(msg);
+          LOG.info("Auto-commited");
         }
         else
         {
           connection.commit();
-          String msg = "\n------------------------------------------------------------\n";
-          msg += "   Commit successful on [" + app + "].\n";
-          msg += "------------------------------------------------------------\n";
-          l.info(msg);
+          LOG.info("\n------------------------------------------------------------\n");
+          LOG.info("   Commit successful on [{}].\n", app);
+          LOG.info("\n------------------------------------------------------------\n");
         }
       }
       catch (SQLException e)
       {
-        String msg = "\n------------------------------------------------------------\n";
-        msg += "   Unable to commit transaction on [" + app + "].\n";
-        msg += "------------------------------------------------------------\n";
-        l.error(msg); // TODO should there be a rollback message here?
+        // TODO should there be a rollback message here?
+        LOG.error("\n------------------------------------------------------------\n");
+        LOG.error("\"   Unable to commit transaction on [{}].\n", app);
+        LOG.error("\n------------------------------------------------------------\n");
       }
     }
     for (YADAQuery yq: this.getQueries())
@@ -572,7 +563,7 @@ public class QueryManager {
         {
           if (result instanceof ResultSet)
           {
-            l.debug("Closing ResultSet");
+            LOG.debug("Closing ResultSet");
             ConnectionFactory.releaseResources((ResultSet) result);
           }
         }
@@ -581,16 +572,16 @@ public class QueryManager {
       {
         for (PreparedStatement p: yq.getPstmt())
         {
-          l.debug("Closing PreparedStatement");
+          LOG.debug("Closing PreparedStatement");
           ConnectionFactory.releaseResources(p);
-          l.debug("PreparedStatement removed from map.");
+          LOG.debug("PreparedStatement removed from map.");
         }
       }
       if (yq.getPstmtForCount() != null && yq.getPstmtForCount().values().size() > 0)
       {
         for (PreparedStatement p: yq.getPstmtForCount().values())
         {
-          l.debug("Closing PreparedStatement for count query");
+          LOG.debug("Closing PreparedStatement for count query");
           ConnectionFactory.releaseResources(p);
         }
       }
@@ -598,18 +589,18 @@ public class QueryManager {
       {
         for (CallableStatement c: yq.getCstmt())
         {
-          l.debug("Closing CallableStatement");
+          LOG.debug("Closing CallableStatement");
           ConnectionFactory.releaseResources(c);
         }
       }
       if (yq.getConnection() != null)
       {
-        l.debug("Closing Connection");
+        LOG.debug("Closing Connection");
         ConnectionFactory.releaseResources((Connection) yq.getConnection());
       }
     }
     this.connectionMap.clear();
-    l.debug("QueryManager connection map has been cleared.");
+    LOG.debug("QueryManager connection map has been cleared.");
   }
 
   /**
@@ -752,11 +743,11 @@ public class QueryManager {
         for (int row = 0; row < dataSize; row++)
         {
           wrappedCode = ((JDBCAdaptor) yq.getAdaptor()).buildCall(conformedCode).toString();
-          String msg = "\n------------------------------------------------------------";
-          msg += "\n   Callable statement to execute:";
-          msg += "\n------------------------------------------------------------\n";
-          msg += wrappedCode.toString() + "\n";
-          l.debug(msg);
+          LOG.debug("\n------------------------------------------------------------");
+          LOG.debug("\n   Callable statement to execute:");
+          LOG.debug("\n------------------------------------------------------------");
+          LOG.debug("\n{}", wrappedCode.toString());
+          LOG.debug("\n------------------------------------------------------------");
           storeCallableStatement(yq, wrappedCode);
         }
         this.requiredCommits.add(yq.getApp());
@@ -770,6 +761,7 @@ public class QueryManager {
         if (pageSize == -1)
           pageSize = YADAUtils.ONE_BILLION;
         int        firstRow  = 1 + (pageStart * pageSize) - pageSize;
+        @SuppressWarnings("deprecation")
         String     sortOrder = yq.getYADAQueryParamValue(YADARequest.PS_SORTORDER)[0];
         String     sortKey   = "";
         JSONObject filters   = null;
@@ -811,24 +803,22 @@ public class QueryManager {
 //            conformedCode = qutils.getConformedCode(yq.getCoreCode(row));
             wrappedCode = ((JDBCAdaptor) yq.getAdaptor())
                 .buildSelect(conformedCode, sortKey, sortOrder, firstRow, pageSize, filters).toString();
-            String msg = "\n------------------------------------------------------------";
-            msg += "\n   SELECT statement to execute:";
-            msg += "\n------------------------------------------------------------\n";
-            msg += wrappedCode.toString() + "";
-            msg += "\n------------------------------------------------------------\n";
-            l.debug(msg);
+            LOG.debug("\n------------------------------------------------------------");
+            LOG.debug("\n   SELECT statement to execute:");
+            LOG.debug("\n------------------------------------------------------------");
+            LOG.debug("\n{}", wrappedCode.toString());
+            LOG.debug("\n------------------------------------------------------------");
           }
           else // INSERT, UPDATE, DELETE
           {
 //            conformedCode = qutils.getConformedCode(yq.getCoreCode(row));
             wrappedCode = conformedCode;
-            this.requiredCommits.add(yq.getApp());
-            String msg = "\n------------------------------------------------------------";
-            msg += "\n   INSERT/UPDATE/DELETE statement to execute:";
-            msg += "\n------------------------------------------------------------\n";
-            msg += wrappedCode.toString() + "";
-            msg += "\n------------------------------------------------------------\n";
-            l.debug(msg);
+            this.requiredCommits.add(yq.getApp());            
+            LOG.debug("\n------------------------------------------------------------");
+            LOG.debug("\n   INSERT/UPDATE/DELETE statement to execute:");
+            LOG.debug("\n------------------------------------------------------------");
+            LOG.debug("\n{}", wrappedCode.toString());
+            LOG.debug("\n------------------------------------------------------------");
           }
 
           storePreparedStatement(yq, wrappedCode, row);
@@ -836,12 +826,11 @@ public class QueryManager {
           {
 //            conformedCode = qutils.getConformedCode(yq.getCoreCode(row));
             wrappedCode = ((JDBCAdaptor) yq.getAdaptor()).buildSelectCount(conformedCode, filters).toString();
-            String msg = "\n------------------------------------------------------------";
-            msg += "\n   SELECT COUNT statement to execute:";
-            msg += "\n------------------------------------------------------------\n";
-            msg += wrappedCode.toString() + "";
-            msg += "\n------------------------------------------------------------\n";
-            l.debug(msg);
+            LOG.debug("\n------------------------------------------------------------");
+            LOG.debug("\n   SELECT COUNT statement to execute:");
+            LOG.debug("\n------------------------------------------------------------");
+            LOG.debug("\n{}", wrappedCode.toString());
+            LOG.debug("\n------------------------------------------------------------");
             storePreparedStatementForCount(yq, yq.getPstmt(row), wrappedCode);
           }
 
@@ -1078,7 +1067,8 @@ public class QueryManager {
           {
             if (cookie.getName().equals(cookieName))
             {
-              yq.addCookie(cookieName, Base64.encodeBase64String(Base64.decodeBase64(cookie.getValue().getBytes())));
+              String cookieVal = Base64.getEncoder().encodeToString(Base64.getDecoder().decode(cookie.getValue().getBytes()));
+              yq.addCookie(cookieName, cookieVal);
             }
           }
         }

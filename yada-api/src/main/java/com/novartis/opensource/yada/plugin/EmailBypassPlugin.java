@@ -33,7 +33,7 @@ public class EmailBypassPlugin extends AbstractBypass {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(EmailBypassPlugin.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EmailBypassPlugin.class);
 	
 	/**
 	 * Extracts parameters from {@link YADARequest#getMail()} spec and 
@@ -53,11 +53,11 @@ public class EmailBypassPlugin extends AbstractBypass {
 			String 	   content = json.getString("content");
 			
 			Session session = new MailUtils().getSession();
-			l.debug("Sending mail...");
-			l.debug("  From ["+from+"]");
-			l.debug("  To   ["+to+"]");
-			l.debug("  CC   ["+cc+"]");
-			l.debug("  Subj ["+subject+"]");
+			LOG.debug("Sending mail...");
+			LOG.debug("  From [{}]", from);
+			LOG.debug("  To   [{}]", to);
+			LOG.debug("  CC   [{}]", cc);
+			LOG.debug("  Subj [{}]", subject);
 			result = String.valueOf(MailUtils.sendMessage(session, from, to, cc, subject, content));
 		} 
 		catch (JSONException e) 

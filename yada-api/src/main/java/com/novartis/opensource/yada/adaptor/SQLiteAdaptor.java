@@ -36,14 +36,14 @@ public class SQLiteAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(SQLiteAdaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SQLiteAdaptor.class);
 	
 	/**
 	 * Default subclass constructor (calls {@code super()}
 	 */
 	public SQLiteAdaptor() {
 		super();
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**

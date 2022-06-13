@@ -30,7 +30,7 @@ public class TabHelper extends FileHelper {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(TabHelper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TabHelper.class);
 	
 	/**
 	 * Splits the column header into an array on {@link FileHelper#TAB}
@@ -39,7 +39,7 @@ public class TabHelper extends FileHelper {
 	@Override
 	protected void setColHeaderArray() throws YADAIOException
 	{
-		l.debug("Setting tab column headers...");
+		LOG.debug("Setting tab column headers...");
 		String[] ch = getColumnHeader().split(TAB);
 		super.setColHeaderArray(ch);
 	}
@@ -51,7 +51,7 @@ public class TabHelper extends FileHelper {
 	@Override
 	protected void setHeaders() throws YADAIOException
 	{ 
-		l.debug("Setting headers...");
+		LOG.debug("Setting headers...");
 		try 
 		{
 			setHeaderLineNumber(); // this does nothing here but could be overridden in a subclass
@@ -62,25 +62,25 @@ public class TabHelper extends FileHelper {
 			{
 				int    lineNum = 0;
 				String line    = "";
-				l.debug("Header line number is ["+getHeaderLineNumber()+"]");  // defaults to 0
+				LOG.debug("Header line number is [{}]", getHeaderLineNumber());  // defaults to 0
 				// build fileheader, line by line
 				while(lineNum <= getHeaderLineNumber() && (line = ((BufferedReader)this.reader).readLine()) != null)
 				{
-					l.debug("Header line ["+line+"] @ lineNum ["+lineNum+"]");
+					LOG.debug("Header line [{}] @ lineNum [{}]", line, lineNum);
 					// fileheader
 					if (getHeaderLineNumber() > 0)
 					{
 						head.append(line);
 					}
 					lineNum++;
-					l.debug("Line num ["+lineNum+"]");
+					LOG.debug("Line num [{}]", lineNum);
 				}
 				// fileheader
 				if (getHeaderLineNumber() > 0)
 				{
 					setFileHeader(head.toString());
 				}
-				l.debug(line);
+				LOG.debug("{}", line);
 				setColumnHeader(line);
 			}
 			else if(getHeaderLineNumber() == 0 && getHeaderByteOffset() > 0) // bytes and not line num

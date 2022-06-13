@@ -52,7 +52,7 @@ public class YADAExpressionDeParser extends
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(YADAExpressionDeParser.class);
+	private static final Logger LOG = LoggerFactory.getLogger(YADAExpressionDeParser.class);
 	/**
 	 * A java.util.ArrayList to store instances of {@link Column} found in the WHERE clause
 	 */
@@ -191,7 +191,7 @@ public class YADAExpressionDeParser extends
 	public void visit(ExpressionList expressionList)
 	{
 		super.visit(expressionList);
-		l.debug("processing expression list");
+		LOG.debug("processing expression list");
 		this.hasExpressionList = true;
 		this.expressions = expressionList.getExpressions();
 	}
@@ -236,11 +236,11 @@ public class YADAExpressionDeParser extends
 	{
 		if(this.inFunction && this.hasJdbcParameter)
 		{
-			l.debug("Function contains jdbc parameter");	
+			LOG.debug("Function contains jdbc parameter");	
 		}
 		else if(this.insideExpression && this.hasJdbcParameter)
 		{
-			l.debug("Function contains jdbc parameter");
+			LOG.debug("Function contains jdbc parameter");
 			this.jdbcColumns.add(this.pendingLeftColumn);
 		}
 	}

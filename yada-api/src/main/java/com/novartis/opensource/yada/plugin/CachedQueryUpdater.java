@@ -44,7 +44,7 @@ public class CachedQueryUpdater extends AbstractPostprocessor
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(CachedQueryUpdater.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CachedQueryUpdater.class);
 	/**
 	 * Constant with value equal to: {@value}
 	 */
@@ -69,14 +69,13 @@ public class CachedQueryUpdater extends AbstractPostprocessor
 		Map<String,YADAQuery> yadaIndex = ConnectionFactory.getConnectionFactory().getCache();
 		try
 		{
-			l.debug("Refreshing verson of [" + q + "] in cache.");			
+			LOG.debug("Refreshing verson of [{}] in cache.", q);			
 			yadaIndex.put(q, new Finder().getQueryFromLib(q)); // automatically overwrites, or writes anew
 			yq.getResult().getResults().add(0, "{\"cache_status\":\"UPDATED\",\"timestamp\":\""+new java.util.Date().toString()+"\"}");
 		} 		
 		catch (YADAFinderException e)
-		{
-		  String msg = "An attempt was made to update the query ["+q+"] in the cache. This query does not exist in the index. This is not uncommon updating default-parameter-related properties";
-		  l.debug(msg);
+		{		  
+		  LOG.debug("An attempt was made to update the query [{}] in the cache. This query does not exist in the index. This is not uncommon updating default-parameter-related properties",q);
 		} 		
 	}
 }

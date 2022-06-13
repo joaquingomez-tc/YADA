@@ -72,7 +72,7 @@ public class Service {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(Service.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Service.class);
 	/**
 	 * Constant equal to: {@value}
 	 */
@@ -172,19 +172,18 @@ public class Service {
 		else if(null != request.getHeader("Content-Type") 
         && request.getHeader("Content-Type").startsWith("multipart/form-data"))
 		{
-		    l.info("multipart/form-data");
+		    LOG.info("multipart/form-data");
 		    try
-        {
-          for(Part p : request.getParts())
-          {
-            
-          }
-        }
-        catch (IOException | ServletException e)
-        {
-          throw new YADARequestException(e);
-        }
-		    
+	        {
+	          for(@SuppressWarnings("unused") Part p : request.getParts())
+	          {
+	            
+	          }
+	        }
+	        catch (IOException | ServletException e)
+	        {
+	          throw new YADARequestException(e);
+	        }		    
 		}
 		// could have "Content-Type: application/x-www-form-urlencoded"
 		else if(null != request.getParameterMap() && request.getParameterMap().size() > 0)
@@ -586,7 +585,7 @@ public class Service {
       }
   		getYADARequest().setParameterMap(paraMap);
   		
-  		l.debug("current settings:\n"+getYADARequest().toString());
+  		LOG.debug("current settings:\n{}", getYADARequest().toString());
 	  }
 	  else
 	  {
@@ -685,7 +684,7 @@ public class Service {
 				engagePreprocess(yq);
 				
 				// execute query
-				l.debug("YADA.lib:"+Finder.getYADALib()+", hasYADALib() = "+Finder.hasYADALib());
+				LOG.debug("YADA.lib: {}, hasYADALib() = {}", Finder.getYADALib(), Finder.hasYADALib());
 				if(!Finder.hasYADALib() // in all pre 9.0.0 cases
 				    || (Finder.hasYADALib() && yq.getApp() != "YADA") // all 9.0.0+ with oldschool queries with APP values
 				    || (Finder.hasYADALib() && !yq.getQname().startsWith("YADA/"))) // all 9.0.0+ cases with matching qnames
@@ -773,7 +772,7 @@ public class Service {
 	{
 		//TODO move upload item processing to this method from YADARequest
 		String result = engageBypass(this.getYADARequest());
-		l.debug("Select bypass [result] is ["+result+"]");
+		LOG.debug("Select bypass [result] is [{}]", result);
 		if (result != null)
 		{
 			return result;
@@ -815,7 +814,7 @@ public class Service {
 		    else
 		    {
 		      DiskFileItem item = (DiskFileItem)fItem;
-  				l.debug(item.toString());
+  				LOG.debug("{}", item.toString());
   				f.put("name",item.getName());
   				f.put("size",item.getSize());
   				f.put("path",item.getStoreLocation().getAbsolutePath());
@@ -830,13 +829,13 @@ public class Service {
 		}
 		catch (JSONException e)
 		{
-			l.error(e.getMessage());
+			LOG.error("{}", e.getMessage());
 			e.printStackTrace();
 			throw new YADAExecutionException(e.getMessage());
 		}
 
 		result = engagePostprocess(result);
-		l.debug("result:" + result);
+		LOG.debug("result: {}", result);
 		return result;
 	}
 	
@@ -904,14 +903,14 @@ public class Service {
 			} 
 			catch (Exception e)
 			{
-				l.warn("The specified class ["+responseClass+"], as provided, could not be instantiated.  Trying FQCN."); 
+				LOG.warn("The specified class [{}], as provided, could not be instantiated.  Trying FQCN.", responseClass); 
 				try
 				{
 					response = (Response) Class.forName(FORMAT_PKG+responseClass).getDeclaredConstructor().newInstance();
 				}
 				catch(Exception e1)
 				{
-					l.warn("The specified class ["+responseClass+"], as provided, could not be instantiated.  Trying default classes.");
+					LOG.warn("The specified class [{}], as provided, could not be instantiated.  Trying default classes.", responseClass);
 					//TODO send messages like this back to the client, in the default response to indicate what happened with more specificity
 					response = getDefaultResponse(format);
 				}
@@ -1001,7 +1000,7 @@ public class Service {
             yp = new YADAParam(YADARequest.PS_ARGLIST, args, plugin, YADAParam.IMMUTABLE, true); 
             yq.addParam(yp);
           }
-					l.debug("possible bypass plugin is["+plugin+"]");
+					LOG.debug("possible bypass plugin is[{}]", plugin);
 					if (null != plugin && !"".equals(plugin))
 					{
 						try
@@ -1028,7 +1027,7 @@ public class Service {
 							{
 								if(bypass.isAssignableFrom(pluginClass)) // this checks plugin type
 								{
-									l.info("Found a QUERY_BYPASS plugin with the classname ["+plugin+"]");
+									LOG.info("Found a QUERY_BYPASS plugin with the classname [{}]", plugin);
 									try
 									{
 										Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
@@ -1059,14 +1058,13 @@ public class Service {
 								}
 								else
 								{
-									l.debug("Could not find an BYPASS plugin with the classname ["+plugin+"]");
+									LOG.debug("Could not find an BYPASS plugin with the classname [{}]", plugin);
 								}
 							}
 						}
 						catch(ClassNotFoundException e)
 						{
-							String msg = "Could not find any plugin with the classname ["+plugin+"]";
-							l.error(msg);
+							LOG.error("Could not find any plugin with the classname [{}]", plugin);
 						}
 					}
 				}
@@ -1108,7 +1106,7 @@ public class Service {
 			      yq.addParam(yp);
           }
 			    // get the plugin class, instantiate it and engage it
-					l.debug("possible preprocess plugin is ["+plugin+"]");
+					LOG.debug("possible preprocess plugin is [{}]", plugin);
 					if (null != plugin && !"".equals(plugin))
 					{
 						try
@@ -1134,7 +1132,7 @@ public class Service {
 							
 							if(preproc.isAssignableFrom(pluginClass)) 
 							{
-								l.info("Found a query-level PREPROCESS plugin with the classname ["+plugin+"]");
+								LOG.info("Found a query-level PREPROCESS plugin with the classname [{}]", plugin);
 								try
 								{
 									Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
@@ -1170,13 +1168,12 @@ public class Service {
 							}
 							else
 							{
-								l.debug("Could not find a PREPROCESS plugin with the classname ["+plugin+"]");
+								LOG.debug("Could not find a PREPROCESS plugin with the classname [{}]", plugin);
 							}
 						}
 						catch(ClassNotFoundException e)
 						{
-							String msg = "Could not find any plugin with the classname ["+plugin+"]"; 
-							l.error(msg,e);
+							LOG.error("Could not find any plugin with the classname [{}], {}", plugin, e);
 						}
 					}
 				}
@@ -1229,7 +1226,7 @@ public class Service {
             yp = new YADAParam(YADARequest.PS_ARGLIST, args, plugin, YADAParam.IMMUTABLE, true); 
             yq.addParam(yp);
           }
-					l.debug("possible postprocess plugin is["+plugin+"]");
+					LOG.debug("possible postprocess plugin is[{}]", plugin);
 					if (null != plugin && !"".equals(plugin))
 					{
 						try
@@ -1254,7 +1251,7 @@ public class Service {
 	            postproc = Class.forName(YADARequest.PLUGIN_PKG+"."+YADARequest.POSTPROCESS);
 							if(postproc.isAssignableFrom(pluginClass)) 
 							{
-								l.info("Found a POSTPROCESS plugin with the classname ["+plugin+"]");
+								LOG.info("Found a POSTPROCESS plugin with the classname [{}}", plugin);
 								try
 								{
 									Object            plugObj     = pluginClass.getDeclaredConstructor().newInstance();
@@ -1281,13 +1278,12 @@ public class Service {
 							}
 							else
 							{
-								l.debug("Could not find a POSTPROCESS plugin with the classname ["+plugin+"]");
+								LOG.debug("Could not find a POSTPROCESS plugin with the classname [{}]", plugin);
 							}
 						}
 						catch(ClassNotFoundException e)
 						{
-							String msg = "Could not find any plugin with the classname ["+plugin+"]";
-							l.error(msg);
+							LOG.error("Could not find any plugin with the classname [{}]", plugin);
 						}
 					}
 				}
@@ -1311,7 +1307,7 @@ public class Service {
 		  for (int i=0; i < plugins.length; i++)
       {
         String plugin = plugins[i];
-				l.debug("possible Bypass plugin is["+plugin+"]");
+				LOG.debug("possible Bypass plugin is [{}]", plugin);
 				if (null != plugin && !"".equals(plugin))
 				{
 					try
@@ -1338,7 +1334,7 @@ public class Service {
 						{
 							if(bypass.isAssignableFrom(pluginClass)) // this checks plugin type
 							{
-								l.info("Found an BYPASS plugin with the classname ["+plugin+"]");
+								LOG.info("Found an BYPASS plugin with the classname [{}]", plugin);
 								try
 								{
 									Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
@@ -1364,14 +1360,13 @@ public class Service {
 							}
 							else
 							{
-								l.debug("Could not find a BYPASS plugin with the classname ["+plugin+"]");
+								LOG.debug("Could not find a BYPASS plugin with the classname [{}]", plugin);
 							}
 						}
 					}
 					catch(ClassNotFoundException e)
 					{
-						String msg = "Could not find any plugin with the classname ["+plugin+"]";
-						l.error(msg);
+						LOG.error("Could not find any plugin with the classname [{}]", plugin);
 //						throw new YADAPluginException(msg,e);
 					}
 				}
@@ -1394,7 +1389,7 @@ public class Service {
 			for (int i=0; i < plugins.length; i++)
 			{
 			  String plugin = plugins[i];
-				l.debug("possible preprocess plugin is["+plugin+"]");
+				LOG.debug("possible preprocess plugin is [{}]", plugin);
 				if (null != plugin && !"".equals(plugin))
 				{
 					try
@@ -1420,7 +1415,7 @@ public class Service {
 						
 						if(preproc.isAssignableFrom(pluginClass)) 
 						{
-							l.info("Found a request-level PREPROCESS plugin with the classname ["+plugin+"]");
+							LOG.info("Found a request-level PREPROCESS plugin with the classname [{}]", plugin);
 							try
 							{
 								Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
@@ -1451,13 +1446,12 @@ public class Service {
 						}
 						else
 						{
-							l.debug("Could not find a PREPROCESS plugin with the classname ["+plugin+"]");
+							LOG.debug("Could not find a PREPROCESS plugin with the classname [{}]", plugin);
 						}
 					}
 					catch(ClassNotFoundException e)
-					{
-						String msg = "Could not find any plugin with the classname ["+plugin+"]"; 
-						l.error(msg,e);
+					{ 
+						LOG.error("Could not find any plugin with the classname [{}], {}", plugin, e);
 					}
 				}
 			}
@@ -1479,7 +1473,7 @@ public class Service {
 		  for (int i=0; i < plugins.length; i++)
       {
         String plugin = plugins[i];
-				l.debug("possible postprocess plugin is["+plugin+"]");
+				LOG.debug("possible postprocess plugin is [{}]", plugin);
 				if (null != plugin && !"".equals(plugin))
 				{
 				  try
@@ -1505,7 +1499,7 @@ public class Service {
 
 						if(postproc.isAssignableFrom(pluginClass)) 
 						{
-							l.info("Found a POSTPROCESS plugin with the classname ["+plugin+"]");
+							LOG.info("Found a POSTPROCESS plugin with the classname [{}]", plugin);
 							try
 							{
 								Object plugObj = pluginClass.getDeclaredConstructor().newInstance();
@@ -1522,13 +1516,12 @@ public class Service {
 						}
 						else
 						{
-							l.debug("Could not find a POSTPROCESS plugin with the classname ["+plugin+"]");
+							LOG.debug("Could not find a POSTPROCESS plugin with the classname [{}]", plugin);
 						}
 					}
 					catch(ClassNotFoundException e)
 					{
-						String msg = "Could not find any plugin with the classname ["+plugin+"]";
-						l.error(msg);
+						LOG.error("Could not find any plugin with the classname [{}]", plugin);
 					}
 				}
 			}

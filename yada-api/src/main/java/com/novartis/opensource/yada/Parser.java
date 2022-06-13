@@ -71,7 +71,7 @@ public class Parser implements StatementVisitor {
   /**
    * Local logger handle
    */
-  private static Logger l = LoggerFactory.getLogger(Parser.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Parser.class);
   /**
    * Constant equal to: {@value}
    */
@@ -311,7 +311,7 @@ public class Parser implements StatementVisitor {
     if (insert.getItemsList() != null) {
       insert.getItemsList().accept(getExpressionDeParser());
       if (getExpressionDeParser().hasExpressionList) {
-        l.debug("insert has expression list");
+        LOG.debug("insert has expression list");
         getExpressionDeParser().hasExpressionList = false;
         // this insert has a 'VALUES' statement and an expressionList (?,?,?)
         // so add all the columns from the INSERT column list
@@ -320,7 +320,7 @@ public class Parser implements StatementVisitor {
         getColumnList().addAll(columns);
         for (int i = 0; i < columns.size(); i++) {
           if (expressions.get(i) instanceof YADAMarkupParameter) {
-            l.debug("Adding JDBC column [" + columns.get(i) + "] to list");
+            LOG.debug("Adding JDBC column [{}] to list", columns.get(i));
             getJdbcColumnList().add(columns.get(i));
           } else if (expressions.get(i) instanceof Function) {
             Function function = (Function) expressions.get(i);
@@ -334,7 +334,7 @@ public class Parser implements StatementVisitor {
         }
       }
     } else {
-      l.debug("insert has subselect");
+      LOG.debug("insert has subselect");
       // this insert has subselect, i.e., INSERT into table [(..)] SELECT...
       // so all jdbc action will be handled by the ExpressionDeParser
       insert.getSelect().getSelectBody()
@@ -352,7 +352,7 @@ public class Parser implements StatementVisitor {
     try {
       throw new YADASQLException("REPLACE statements are not yet supported.");
     } catch (YADASQLException e) {
-      l.error(e.getMessage(), e);
+      LOG.error("{}, {}", e.getMessage(), e);
     }
   }
 
@@ -364,7 +364,7 @@ public class Parser implements StatementVisitor {
     try {
       throw new YADASQLException("DROP statements are not yet supported.");
     } catch (YADASQLException e) {
-      l.error(e.getMessage(), e);
+      LOG.error("{}, {}", e.getMessage(), e);
     }
   }
 
@@ -376,7 +376,7 @@ public class Parser implements StatementVisitor {
     try {
       throw new YADASQLException("TRUNCATE statements are not yet supported.");
     } catch (YADASQLException e) {
-      l.error(e.getMessage(), e);
+      LOG.error("{}, {}", e.getMessage(), e);
     }
   }
 
@@ -388,7 +388,7 @@ public class Parser implements StatementVisitor {
     try {
       throw new YADASQLException("CREATE statements are not yet supported.");
     } catch (YADASQLException e) {
-      l.error(e.getMessage(), e);
+      LOG.error("{}, {}", e.getMessage(), e);
     }
   }
 
@@ -406,9 +406,9 @@ public class Parser implements StatementVisitor {
       this.setStatement(this.parserManager.parse(new StringReader(code)));
       this.deparse(this.getStatement());
     } catch (JSQLParserException e) {
-      l.error(e.getCause().toString());
+      LOG.error("{}", e.getCause().toString());
       String msg = "The query was not parsable.  Other than the query being invalid, this could be because it is non-compliant, unsupported, or not SQL";
-      l.error(msg + "\n" + code);
+      LOG.error("{}\n{}", msg, code);
       throw new YADAParserException(msg, e);
     }
   }
@@ -453,14 +453,14 @@ public class Parser implements StatementVisitor {
       colLists.put(IN_COLUMNS, inColumns);
     } catch (JSQLParserException e) {
       String msg = "The query was not parsable.  Other than the query being invalid, this could be because it is non-compliant, unsupported, or not SQL";
-      l.error(msg + "\n" + sql);
+      LOG.error("{}\n{}", msg, sql);
       throw new YADAParserException(msg, e);
     } finally {
-      if (l.isDebugEnabled()) {
+      if (LOG.isDebugEnabled()) {
         for (String list : colLists.keySet()) {
           String[] columns = colLists.get(list);
           for (String col : columns) {
-            l.debug("[" + list + "] contains [" + col + "]");
+            LOG.debug("[{}] contains [{}]", list, col);
           }
         }
       }

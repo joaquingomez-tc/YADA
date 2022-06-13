@@ -48,7 +48,7 @@ public class FileSystemAdaptor extends Adaptor
   /**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(FileSystemAdaptor.class);	
+	private static final Logger LOG = LoggerFactory.getLogger(FileSystemAdaptor.class);	
 	/**
 	 * Constant equal to: {@value}
 	 */
@@ -93,7 +93,7 @@ public class FileSystemAdaptor extends Adaptor
 	public FileSystemAdaptor()
 	{
 		super();
-		l.debug("Initializing FileSystemAdaptor");
+		LOG.debug("Initializing FileSystemAdaptor");
 	}
 
 	/**

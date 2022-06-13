@@ -28,7 +28,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
   /**
    * 
    */
-  private static Logger l = LoggerFactory.getLogger(YADASecuritySpec.class); 
+  private static final Logger LOG = LoggerFactory.getLogger(YADASecuritySpec.class); 
   
   /**
    * 
@@ -177,7 +177,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
         try
         {
           names.add(field.get(null).toString());
-          l.debug("YADASecuritySpec KEY field: "+field.get(null).toString());
+          LOG.debug("YADASecuritySpec KEY field: {}", field.get(null).toString());
         }
         catch (IllegalArgumentException e)
         {

@@ -30,14 +30,14 @@ public class MySQLAdaptor extends JDBCAdaptor {
 	/**
    * Local logger handle
    */
-	private static Logger l = LoggerFactory.getLogger(MySQLAdaptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MySQLAdaptor.class);
 	
 	/**
 	 * Default subclass constructor (calls {@code super()}
 	 */
 	public MySQLAdaptor() {
 		super();
-		l.debug("Initializing");
+		LOG.debug("Initializing");
 	}
 	
 	/**

@@ -35,7 +35,7 @@ public class TestPreprocessor extends AbstractPreprocessor
 	/**
      * Local logger handle
      */
-	private static Logger l = LoggerFactory.getLogger(TestPreprocessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TestPreprocessor.class);
 
 	/**
 	 * Executes the query defined in {@code yadaReq} and analyzes the results.  If the
@@ -68,7 +68,7 @@ public class TestPreprocessor extends AbstractPreprocessor
       e1.printStackTrace();
     }
 		
-		l.debug(result);
+		LOG.debug(result);
 		
 		JSONObject res;
 		

@@ -42,7 +42,7 @@ public class FileUtils {
 	/**
 	 * Local logger handle
 	 */
-	private static Logger l = LoggerFactory.getLogger(FileUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 	
 	/**
 	 * Check if a directory existss
@@ -51,10 +51,10 @@ public class FileUtils {
 	 */
 	public static boolean exists(String dir)
 	{
-		l.debug("Checking existence of directory ["+dir+"]");
+		LOG.debug("Checking existence of directory [{}]", dir);
 		File f = new File(dir);
-		if (f.exists()) { l.debug("["+dir+"] exists."); return true; }
-		l.debug("["+dir+"] does not exist.");
+		if (f.exists()) { LOG.debug("[{}] exists.", dir); return true; }
+		LOG.debug("[{}] does not exist.", dir);
 		return false;
 	}
 	
@@ -176,7 +176,7 @@ public class FileUtils {
    */
   public static JSONArray getAnnotatedFileList(JSONArray jlist, File d, int depth)
   {    
-    l.debug("checking ["+d.getName()+"]");
+    LOG.debug("checking [{}]", d.getName());
     if (d.canRead() && d.isDirectory())
     {
 //      try {
@@ -205,14 +205,14 @@ public class FileUtils {
               file.put("type", "f");
               file.put("name", f.getName());
               sub.put(file);           
-              l.debug("Adding ["+f.getName()+"]");
+              LOG.debug("Adding [{}]", f.getName());
             }
             else 
             { 
               // it's a directory
               if(depth > 0)
               {
-                l.debug("Descending...");
+                LOG.debug("Descending...");
                 getAnnotatedFileList(sub,f,depth-1);
               }
               else if(depth == -1)
@@ -235,7 +235,7 @@ public class FileUtils {
 	public static List<File> getFileList(File d, int depth) 
 	{
 		List<File> fList = new ArrayList<>();
-		l.debug("checking ["+d.getName()+"]");
+		LOG.debug("checking [{}]", d.getName());
 		if (d.canRead() && d.isDirectory())
 		{
 			File[] list = d.listFiles();
@@ -245,13 +245,13 @@ public class FileUtils {
 				if (f.isFile()) 
 				{ 
 					fList.add(f); 
-					l.debug("Adding ["+f.getName()+"]");
+					LOG.debug("Adding [{}]", f.getName());
 				}
 				else 
 				{ 
 					if(depth > 0)
 					{
-						l.debug("Descending...");
+						LOG.debug("Descending...");
 						fList.addAll(getFileList(f,depth-1));
 					}
 					else if(depth == -1)

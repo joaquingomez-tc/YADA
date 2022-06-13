@@ -412,6 +412,7 @@ public class InClausePaginator implements Preprocess, Postprocess {
 			}
 		}
 		
+		@SuppressWarnings("unchecked")
 		Set<String> keys = singleIns.keySet();
 		for(String key : keys) {
 			JSONObject rule = new JSONObject();

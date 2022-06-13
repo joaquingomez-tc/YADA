@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.novartis.opensource</groupId>
     <artifactId>YADA</artifactId>
-    <version>10.2.0-SNAPSHOT</version>
+    <version>10.1.4-SNAPSHOT</version>
   </parent>
   <artifactId>yada-api</artifactId>
   <url>http://github.com/Novartis/YADA</url>
@@ -103,8 +103,7 @@
         <directory>${basedir}/src/main/resources/conf</directory>
         <filtering>true</filtering>
         <includes>
-          <!-- <include>ehcache.xml</include> -->
-          <include>log4j.properties</include>
+          <include>logback.xml</include>
           <include>YADA.properties</include>
         </includes>
       </resource>
@@ -121,7 +120,7 @@
         <filtering>true</filtering>
         <targetPath>conf</targetPath>
         <excludes>
-          <exclude>log4j.properties</exclude>
+          <exclude>logback.xml</exclude>
           <exclude>YADA*.properties</exclude>
         </excludes>
       </testResource>
@@ -129,7 +128,7 @@
         <directory>${basedir}/src/test/resources/conf</directory>
         <filtering>true</filtering>
         <includes>
-          <include>log4j.properties</include>
+          <include>logback.xml</include>
           <include>YADA*.properties</include>
         </includes>
       </testResource>
@@ -157,22 +156,15 @@
         <version>2.3.2</version>
         <configuration>
           <finalName>yada-${project.version}</finalName>
+          <!--  do this on command line:  java -cp yada-api-<version>.jar:logback.xml:lib/* com.novartis.opensource.yada.server.YADAServer -->
           <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <classpathPrefix>lib</classpathPrefix>
-              <classpathLayoutType>custom</classpathLayoutType>
-              <customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
-              <mainClass>com.novartis.opensource.yada.server.YADAServer</mainClass>
-            </manifest>
             <manifestEntries>
               <yada-api-version>${project.parent.version}</yada-api-version>
-              <Class-Path>log4j.properties</Class-Path>
             </manifestEntries>
           </archive>
           <excludes>
             <exclude>**/YADA.properties</exclude>
-            <exclude>**/log4j.properties</exclude>
+            <exclude>**/logback.xml</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -291,6 +283,14 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>3.0.0-M7</version>
+          <configuration>
+            <goal>report-only</goal>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -304,58 +304,7 @@
           <show>private</show>
           <detectLinks>true</detectLinks>
           <detectOfflineLinks>true</detectOfflineLinks>
-          <links>
-            <link>http://docs.oracle.com/javase/7/docs/api</link>
-
-            <link>http://jsqlparser.sourceforge.net/docs</link>
-            <link>http://www.json.org/javadoc</link>
-
-            <link>http://commons.apache.org/proper/commons-codec/archives/1.10/apidocs</link>
-            <link>https://commons.apache.org/proper/commons-fileupload/apidocs</link>
-            <link>https://commons.apache.org/proper/commons-lang/javadocs/api-2.4</link>
-            <link>https://commons.apache.org/proper/commons-logging/javadocs/api-1.1.3</link>
-
-            <!-- <link>http://ehcache.org/apidocs/2.9</link> -->
-            <link>http://www.slf4j.org/api</link>
-            <link>https://xerces.apache.org/xerces2-j/javadocs/api</link>
-            <!-- <link>http://logging.apache.org/log4j/1.2/apidocs</link> -->
-            <link>https://docs.oracle.com/javaee/6/api</link>
-            <link>http://docs.oracle.com/cd/E17802_01/products/products/servlet/2.5/docs/servlet-2_5-mr2</link>
-            <!-- tomcat-dbcp -->
-            <!-- sqlserver -->
-            <link>https://my.vertica.com/docs/6.0.x/JDBC</link>
-            <link>http://javafind.net/library/16/mysql-connector-java-5.1.29/apidocs</link>
-            <link>https://jdbc.postgresql.org/documentation/publicapi</link>
-            <!-- sqlite -->
-            <!-- ojdbc -->
-            <!-- <link>https://tomcat.apache.org/tomcat-6.0-doc/api</link> -->
-            <link>http://testng.org/javadocs</link>
-            <!-- assumeng -->
-
-            <!-- unused -->
-            <!-- <link>https://commons.apache.org/proper/commons-beanutils/javadocs/v1.8.3/apidocs</link> -->
-            <!-- <link>https://commons.apache.org/proper/commons-compress/javadocs/api-1.6</link> -->
-            <!-- <link>https://commons.apache.org/proper/commons-dbcp/api-1.2.2</link> -->
-            <!-- <link>https://commons.apache.org/proper/commons-io/javadocs/api-2.4</link> -->
-            <!-- <link>https://xml.apache.org/xalan-j/apidocs</link> -->
-            <!-- <link>https://poi.apache.org/apidocs</link> -->
-            <!-- <link>https://hc.apache.org/httpclient-3.x/apidocs</link> -->
-            <!-- <link>http://xmlbeans.apache.org/docs/2.4.0/reference</link> -->
-            <!-- <link>http://xerces.apache.org/xerces2-j/javadocs/api</link> -->
-            <!-- <link>http://maven.apache.org/ref/3-LATEST/apidocs</link> -->
-            <!-- <link>http://www.pojava.org/site/pojava-persistence-2.6.0/apidocs</link> -->
-            <!-- <link>http://dom4j.sourceforge.net/dom4j-1.6.1/apidocs</link> -->
-          </links>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.18.1</version>
-        <configuration>
-          <goals>
-            <goal>report-only</goal>
-          </goals>
+          <links></links>
         </configuration>
       </plugin>
       <plugin>
@@ -406,11 +355,6 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.9.10.5</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>2.9.2</version>
-    </dependency> -->
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
@@ -424,10 +368,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -464,11 +404,25 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.amazon.redshift</groupId>
       <artifactId>redshift-jdbc42</artifactId>
-      <version>2.0.0.6</version>
+      <version>2.1.0.8</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>2.6.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>10.2.1.jre11</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -479,17 +433,6 @@
       <groupId>nl.javadude.assumeng</groupId>
       <artifactId>assumeng</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mozilla</groupId>
-      <artifactId>rhino</artifactId>
-      <version>1.7R5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>2.3.4</version>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
@@ -515,6 +458,40 @@
       <artifactId>jargon2-native-ri-backend</artifactId>
       <version>1.1.1</version>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.11.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.burt</groupId>
+      <artifactId>jmespath-jackson</artifactId>
+      <version>0.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>10.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.http2</groupId>
+      <artifactId>http2-server</artifactId>
+      <version>10.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-rewrite</artifactId>
+      <version>10.0.3</version>
+    </dependency>
+    <!--     <dependency>
+        <groupId>com.sun.xml.messaging.saaj</groupId>
+        <artifactId>saaj-impl</artifactId>
+    </dependency> -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.11</version>
     </dependency>
     <dependency>
       <groupId>org.renjin</groupId>
@@ -551,41 +528,9 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.11.2</version>
-    </dependency>
-    <dependency>
-      <groupId>io.burt</groupId>
-      <artifactId>jmespath-jackson</artifactId>
-      <version>0.5.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>10.0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty.http2</groupId>
-      <artifactId>http2-server</artifactId>
-      <version>10.0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-rewrite</artifactId>
-      <version>10.0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.sun.xml.messaging.saaj</groupId>
-        <artifactId>saaj-impl</artifactId>
+      <groupId>org.mozilla</groupId>
+      <artifactId>rhino</artifactId>
+      <version>1.7R5</version>
     </dependency>
   </dependencies>
 </project>

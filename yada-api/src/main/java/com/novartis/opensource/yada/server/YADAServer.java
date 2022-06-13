@@ -47,7 +47,7 @@ public class YADAServer {
   /**
    * Local logger handle
    */
-  static Logger              l           = LoggerFactory.getLogger(YADAServer.class);
+  static Logger             LOG             = LoggerFactory.getLogger(YADAServer.class);
   
   /**
    * Container of configuration data which shouldn't be hardcoded. 
@@ -299,12 +299,11 @@ public class YADAServer {
     try(InputStream is = new FileInputStream(new File(path)))
     {
       props.load(is);
-      l.info(String.format("Loaded %s", path));
+      LOG.info("Loaded {}", path);
     }
     catch (IOException e)
-    {
-      String msg = String.format("Cannot find or load YADA properties file %s", path);
-      l.error(msg);
+    {      
+      LOG.error("Cannot find or load YADA properties file {}", path);
       System.exit(1);
     }
     return props;

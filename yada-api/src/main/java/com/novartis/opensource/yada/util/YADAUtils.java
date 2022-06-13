@@ -287,6 +287,7 @@ public class YADAUtils {
 		ResultSet rs = null;
 		try
 		{
+			@SuppressWarnings("deprecation")
 			Connection        c = ConnectionFactory.getConnectionFactory().getConnection(ConnectionFactory.YADA_APP);
 			PreparedStatement p = c.prepareStatement(sql);
 			for(int i=1;i<=params.length;i++) 
@@ -333,6 +334,7 @@ public class YADAUtils {
 		ResultSet rs = null;
 		try
 		{
+			@SuppressWarnings("deprecation")
 			Connection        c = ConnectionFactory.getConnectionFactory().getConnection(ConnectionFactory.YADA_APP);
 			PreparedStatement p = c.prepareStatement(sql);
 			rs = p.executeQuery();
@@ -351,12 +353,13 @@ public class YADAUtils {
 	 * @throws YADAConnectionException when the datasource is inaccessible
 	 * @throws YADASQLException when the JDBC configuration or execution fails
 	 */
+	@SuppressWarnings("deprecation")
 	public static int executeCallableStatement(String sql) throws YADAConnectionException, YADASQLException
 	{
 		CallableStatement c      = null;
 		int               result = -1;
 		try 
-		{
+		{			
 			c = ConnectionFactory.getConnectionFactory().getConnection(ConnectionFactory.YADA_APP).prepareCall(sql);
 			result = c.executeUpdate();
 		} 
