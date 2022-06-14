@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.novartis.opensource</groupId>
@@ -27,7 +29,7 @@
             <directory>${basedir}/src/test/resources/conf</directory>
             <targetPath>conf</targetPath>
             <excludes>
-              <exclude>log4j.properties</exclude>
+              <exclude>logback.xml</exclude>
               <exclude>YADA*.properties</exclude>
             </excludes>
           </testResource>
@@ -35,7 +37,7 @@
             <directory>${basedir}/src/test/resources/conf</directory>
             <filtering>true</filtering>
             <includes>
-              <include>log4j.properties</include>
+              <include>logback.xml</include>
               <include>YADA*.properties</include>
             </includes>
           </testResource>
@@ -116,7 +118,8 @@
                   <waitForInterrupt>false</waitForInterrupt>
                   <!-- <healthcheckUrl></healthcheckUrl> -->
                   <waitAfterLaunch>5</waitAfterLaunch>
-                  <!-- java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-api-10.0.0-SNAPSHOT.jar-->
+                  <!-- java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006
+                    -Xnoagent -Djava.compiler=NONE -jar yada-api-10.0.0-SNAPSHOT.jar -->
                   <arguments>
                     <argument>java</argument>
                     <argument>-Xdebug</argument>
@@ -124,8 +127,9 @@
                     <argument>-Xnoagent</argument>
                     <argument>-Djava.compiler=NONE</argument>
                     <argument>${env.YADA_PROPS}</argument>
-                    <argument>-jar</argument>
-                    <argument>yada-api-${project.version}.jar</argument>
+                    <argument>-cp</argument>
+                    <argument>yada-api-${project.version}.jar:.:lib/*</argument>
+                    <argument>com.novartis.opensource.yada.server.YADAServer</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -196,7 +200,7 @@
             <directory>${basedir}/src/main/resources/conf</directory>
             <filtering>${filtering}</filtering>
             <includes>
-              <include>log4j.properties</include>
+              <include>logback.xml</include>
               <include>YADA.properties</include>
             </includes>
           </resource>
@@ -245,7 +249,7 @@
         <directory>${basedir}/src/main/resources/conf</directory>
         <filtering>${filtering}</filtering>
         <includes>
-          <include>log4j.properties</include>
+          <include>logback.xml</include>
           <include>YADA.properties</include>
         </includes>
       </resource>
@@ -299,9 +303,10 @@
               <waitAfterLaunch>5</waitAfterLaunch>
               <arguments>
                 <argument>java</argument>
-                <argument>-jar</argument>
                 <argument>${env.YADA_PROPS}</argument>
-                <argument>yada-api-${project.version}.jar</argument>
+                <argument>-cp</argument>
+                <argument>yada-api-${project.version}.jar:.:lib/*</argument>
+                <argument>com.novartis.opensource.yada.server.YADAServer</argument>
               </arguments>
             </configuration>
           </execution>
@@ -314,6 +319,26 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includeScope>compile</includeScope>
+          <excludeArtifactIds>
+            yada-api-${project.version},yada-api-${project.version}-test
+          </excludeArtifactIds>
+          <outputDirectory>${basedir}/target/${project.parent.name}-${project.version}/${project.parent.name}-${project.version}/lib</outputDirectory>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -398,6 +423,21 @@
       <groupId>nl.javadude.assumeng</groupId>
       <artifactId>assumeng</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amazon.redshift</groupId>
+      <artifactId>redshift-jdbc42</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

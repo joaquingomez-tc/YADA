@@ -8,6 +8,7 @@
 .settings
 .vscode
 target
+/doc
 /site.log
 /YADA.pdf
 /bin

@@ -976,8 +976,8 @@ public class Gatekeeper extends AbstractPreprocessor {
    * Modifies the original query by appending a dynamic predicate
    * <p>
    * Recall the {@link Service}{@code .engagePreprocess} method will recall
-   * {@link QueryManager}{@code .endowQuery()} to reconform the code after this
-   * {@link Preprocess} disengages.
+   * {@link QueryManager}{@code .endowQuery()} to re-conform the code after this
+   * {@link com.novartis.opensource.yada.plugin.Preprocess} disengages.
    *
    *
    * @throws YADASecurityException when token retrieval fails

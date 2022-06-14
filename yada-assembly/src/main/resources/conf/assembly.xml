@@ -24,9 +24,6 @@
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>         
       <excludes>
         <exclude>${project.groupId}:yada-api:*</exclude>
-        <exclude>org.hsqldb:hsqldb:*</exclude>
-        <exclude>org.renjin:*:*</exclude>
-        <exclude>org.renjin.cran:*:*</exclude>
         <exclude>org.mozilla:rhino:*</exclude>
       </excludes>
     </dependencySet>
@@ -38,7 +35,7 @@
       <directory>src/main/resources/conf</directory>
       <includes>
         <include>YADA.properties</include>
-        <include>log4j.properties</include>
+        <include>logback.xml</include>
       </includes>
     </fileSet>
   </fileSets>

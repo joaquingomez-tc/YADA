@@ -68,8 +68,8 @@ public class IdentityCache extends ConcurrentHashMap<String, Object> {
   }
 
   /**
-   * @param key
-   * @return
+   * @param key the string to check
+   * @return {@code true} if time is before expiration
    */
   private boolean isActive(String key) {
     Date now = new Date();
@@ -77,8 +77,8 @@ public class IdentityCache extends ConcurrentHashMap<String, Object> {
   }
 
   /**
-   * @param key
-   * @return
+   * @param key the string to check
+   * @return the expiration timestamp
    */
   private long getExpiry(String key) {
     return expiry.get(key);

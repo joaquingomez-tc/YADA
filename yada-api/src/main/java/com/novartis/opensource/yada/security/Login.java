@@ -29,7 +29,8 @@ import com.novartis.opensource.yada.plugin.Preprocess;
 import com.novartis.opensource.yada.plugin.YADAPluginException;
 
 /**
- * This plugin is both a {@link Preprocess} and {@link Postprocess} plugin.
+ * This plugin is both a {@link com.novartis.opensource.yada.plugin.Preprocess} and 
+ * {@link com.novartis.opensource.yada.plugin.Postprocess} plugin.
  * When set as a default on the {@code YADA check credentials} query, the preprocessor will set itself
  * as a postprocessor on the {@link YADARequest}.
  *

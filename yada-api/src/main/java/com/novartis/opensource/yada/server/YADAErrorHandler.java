@@ -37,15 +37,15 @@ public class YADAErrorHandler extends ErrorHandler {
 
   
   /**
-   * Constant equal to {@value}
+   * Constant equal to regular expression {@code ^at com\\.novartis\\.opensource\\.yada\\.([a-zA-Z.]+)\\.[a-zA-Z]+\\([a-zA-Z]+\\.java:(\\d+)\\)$}
    */
   static Pattern RX_LINKS = Pattern.compile("^at com\\.novartis\\.opensource\\.yada\\.([a-zA-Z.]+)\\.[a-zA-Z]+\\([a-zA-Z]+\\.java:(\\d+)\\)$");
   /**
-   * Constant equal to {@value}
+   * Constant equal to {@code ^org\\.eclipse\\.jetty.+}
    */
   final static Pattern RX_JETTY = Pattern.compile("^org\\.eclipse\\.jetty.+");
   /**
-   * Constant equal to {@value}
+   * Constant equal to repository property
    */
   final static String YADA_REPOSITORY = YADAServer.getProperties().getProperty(YADAServer.YADA_REPOSITORY);
   /**
@@ -141,11 +141,11 @@ public class YADAErrorHandler extends ErrorHandler {
    */
   final static String HTTP_SC_INTERNAL_SERVER_ERROR = "Internal Server Error";
   /**
-   * Constant equal to {@value}
+   * Hashtable to store status text
    */
   final static Hashtable<Integer,String> statusText = new Hashtable<>();  
   /**
-   * Constant equal to {@value}
+   * Hashtable to store status codes
    */
   final static Hashtable<String,Integer> statusCodes = new Hashtable<>();
   /**
@@ -193,19 +193,19 @@ public class YADAErrorHandler extends ErrorHandler {
    */
   final static String KEY_URI = "URI";
   /**
-   * Constant equal to {@value}
+   * Constant equal to {@code #other} page in repo
    */
   final static String VAL_HELP = YADA_REPOSITORY+"#other";
   /**
-   * Constant equal to {@value}
+   * Constant equal to YADA_REPOSITORY value
    */
   final static String VAL_SOURCE = YADA_REPOSITORY;
   /**
-   * Constant equal to {@value}
+   * Constant equal to current version
    */
   final static String VAL_VERSION = YADAUtils.getVersion();
   /**
-   * Constant equal to {@value}
+   * Constant equal to path to {@code /blob/master/yada-api/src/main/java/com/novartis/opensource/yada/} in repository
    */
   final static String VAL_REPO_URI = YADA_REPOSITORY+"/blob/master/yada-api/src/main/java/com/novartis/opensource/yada/";
 

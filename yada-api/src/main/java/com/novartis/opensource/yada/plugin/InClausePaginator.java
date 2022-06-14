@@ -16,15 +16,37 @@ import com.novartis.opensource.yada.YADAQuery;
 import com.novartis.opensource.yada.YADARequest;
 import com.novartis.opensource.yada.YADARequestException;
 
+/**
+ * Executes very large in clause statements by breaking down into multiple pages
+ * @author dvaron
+ *
+ */
 public class InClausePaginator implements Preprocess, Postprocess {
 	
-	
+	/**
+	 * offset for page numbers
+	 */
 	private int pageOffset = 0;
+	/**
+	 * page number current processing
+	 */
 	private int page       = 1;
+	/**
+	 * page array
+	 */
 	private ArrayList<Integer> inPages;
+	/**
+	 * in clause array
+	 */
 	private String[][] fullInClauses;
+	/**
+	 * in clause as json
+	 */
 	private JSONArray inClauses;
 	
+	/**
+	 * Null constructor
+	 */
 	public InClausePaginator() {
 		this.inPages = new ArrayList<Integer>();
 		this.inClauses = new JSONArray();
@@ -298,7 +320,12 @@ public class InClausePaginator implements Preprocess, Postprocess {
 		
 	}
 	
-	
+	/**
+	 * Increments page numbers
+	 * @param total number of pages
+	 * @param pz page size
+	 * @return {@code false} unless all in clauses have been processed (??)
+	 */
 	private boolean incrementPages(int total, int pz) {
 		if(total == 0) {
 			this.page = 1;
@@ -329,7 +356,10 @@ public class InClausePaginator implements Preprocess, Postprocess {
 		}
 	}
 	
-	
+	/**
+	 * Updates filters
+	 * @param pz pagesize
+	 */
 	private void updateFilters(int pz) {
 		for(int i=0; i<this.inPages.size(); i++) {
 			String[] subArray = Arrays.copyOfRange(this.fullInClauses[i], Math.min(this.fullInClauses[i].length, this.inPages.get(i)*pz), Math.min(this.fullInClauses[i].length, (1 + this.inPages.get(i))*pz));
@@ -339,7 +369,11 @@ public class InClausePaginator implements Preprocess, Postprocess {
 	}
 	
 	
-	
+	/**
+	 * Retrieves the in clause values
+	 * @param filters filter object
+	 * @return filter object
+	 */
 	private ArrayList<JSONObject> getIns(JSONObject filters) {
 		ArrayList<JSONObject> inFilters = new ArrayList<JSONObject>();
 		
@@ -359,6 +393,13 @@ public class InClausePaginator implements Preprocess, Postprocess {
 		return inFilters;
 	}
 	
+	/**
+	 * Optimizes filters
+	 * @param filters the filter object
+	 * @param include the includes
+	 * @param exclude the excludes
+	 * @return filters
+	 */
 	private JSONObject optimizeFilters(JSONObject filters, JSONObject include, JSONObject exclude) {
 		
 		JSONArray rules = filters.getJSONArray("rules");
@@ -500,7 +541,11 @@ public class InClausePaginator implements Preprocess, Postprocess {
 		return filters;
 	}
 	
-	
+	/**
+	 * Obtains the rules
+	 * @param group the group
+	 * @return the rules
+	 */
 	private ArrayList<JSONObject> getRules(JSONObject group) {
 		ArrayList<JSONObject> rules = new ArrayList<JSONObject>();
 		

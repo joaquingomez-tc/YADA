@@ -40,7 +40,7 @@ public class TestPreprocessor extends AbstractPreprocessor
 	/**
 	 * Executes the query defined in {@code yadaReq} and analyzes the results.  If the
 	 * result count is 0, a new request with an {@code INSERT} is query is created. If
-	 * the result count is >0, a new request with a {@code DELETE} query is created.
+	 * the result count is &gt;0, a new request with a {@code DELETE} query is created.
 	 * The new reqeust is then returned from the method.   
 	 * @see com.novartis.opensource.yada.plugin.Preprocess#engage(com.novartis.opensource.yada.YADARequest)
 	 */

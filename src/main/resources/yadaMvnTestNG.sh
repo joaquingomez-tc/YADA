@@ -1,7 +1,14 @@
 #!/bin/bash
 
+PATH=$(/usr/libexec/java_home "11.0.15")/bin:$PATH
 usage() {
 printf "Usage: $0 [-T [surefire|failsafe|skip|<empty string>]] [-x surefire|failsafe|jetty|all] [-p test] [-Xtdsi] \n \
+  -d  show java debug log output. Default log level is 'info'. \n \
+  -i  print command to test webapp interactively. Combine with  '-x failsafe' to debug as well \n \
+  -p  choose the profile. 'test' is the currently preferred test profile.  \n \
+  -r  local maven repository \n \
+  -s  deploy snapshot to maven central.  Implies '-T skip' \n \
+  -t  use the 'tmp_toggle' file to cherry pick tests. Default is all tests. \n \
   -T  Execute either surefire (api) or failsafe (http) testing. Omit argument or set \n \
       to 'skip' to suppress both. Failsafe suppression will also suppress jetty launch. \n \
       Default (option -T omitted altogether) is to execute both. \n \
@@ -9,17 +16,11 @@ printf "Usage: $0 [-T [surefire|failsafe|skip|<empty string>]] [-x surefire|fail
       Leave argument empty to debug surefire, failsafe, and jetty. \n \
       'jetty' implies 'failsafe' because maven won't wait for tests to execute long enough to \n \
       launch the jetty debugger. \n \
-  -p  choose the profile. 'test' is the currently preferred test profile.  \n \
   -X  show maven debug output. \n \
-  -t  use the 'tmp_toggle' file to cherry pick tests. Default is all tests. \n \
-  -d  show java debug log output. Default log level is 'info'. \n \
-  -s  deloy snapshot to maven central.  Implies '-T skip' \n \
-  -i  print command to test webapp interactively. Combine with  '-x failsafe' to debug as well \n \
-  -r  local maven repository \n \
   -?  show this help \n\n \
 
   NOTES:
-  The YADA_HOME and YADA_LIB environment variables must be set.
+  The YADA_HOME, YADA_LIB, and YADA_SRCDIR environment variables must be set.
 " 1>&2; exit 1; }
 
 # this option not working currently--has something to do with forking
@@ -44,18 +45,27 @@ MVN_REPO=""
 # CONTAINER_OPT="-Dcargo.tomcat.connector.relaxedQueryChars='^&#96;{}[]|&quot;&lt;&gt;'"
 
 OPTERR=0
-while getopts "Xtdisx:p:T:r:" opt; do
+while getopts "dip:r:stT:x:X" opt; do
   case ${opt} in
-    r )
-      MVN_REPO="-Dmaven.repo.local=$OPTARG"
-      ;;
+    d )
+      LOG_LEVEL="-Dlog.level=debug"
+      ;;    
     i )
       INTERACTIVE=1
+      ;;
+    p )
+      PROFILE="$OPTARG"
+      ;;
+    r )
+      MVN_REPO="-Dmaven.repo.local=$OPTARG"
       ;;
     s )
       DEPLOY_SNAPSHOT=1
       SKIP_SUREFIRE=-Dsurefire.skip=true
       SKIP_FAILSAFE="-Dskip.tests=true -Dskip.jetty.launch=true"
+      ;;
+    t )
+      TOGGLE_TESTS=-Dtest.toggle=/conf/tmp_TestNG_toggle.properties
       ;;
     T )
       if [ "surefire" == "$OPTARG" ]
@@ -96,16 +106,7 @@ while getopts "Xtdisx:p:T:r:" opt; do
       ;;
     X )
       MAVEN_DEBUG=-X
-      ;;
-    t )
-      TOGGLE_TESTS=-Dtest.toggle=/conf/tmp_TestNG_toggle.properties
-      ;;
-    d )
-      LOG_LEVEL="-Dlog.level=debug"
-      ;;
-    p )
-      PROFILE="$OPTARG"
-      ;;
+      ;;    
     ? ) usage
       ;;
   esac
@@ -181,7 +182,9 @@ then
   then
     DEBUG="'-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE'"
   fi
-  CMD="java ${YADA_PROPS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -jar yada-${YADA_VERSION}.jar"
+  CP="yada-${YADA_VERSION}.jar:.:lib/*"
+  MAIN="com.novartis.opensource.yada.server.YADAServer"
+  CMD="java ${YADA_PROPS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006 -Xnoagent -Djava.compiler=NONE -cp ${CP} ${MAIN}"
 else
   CMD="$MAVEN $MAVEN_DEBUG clean verify -P${PROFILE} $DEBUG -Dsuspend.debugger=$SUSPEND $COMMON_VARS"
 fi

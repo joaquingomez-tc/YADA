@@ -1385,7 +1385,7 @@ public class ServiceTest
    * @throws YADAException if query prep or execution fails
    */
   @Test(enabled = true, dataProvider = "QueryTests", groups = { "api", "plugins" })
-  @QueryFile(list = { "" })
+  @QueryFile(list = {})
   public void testBypass(String query) throws YADAException
   {
     Service svc = prepareTest(query);
@@ -2189,8 +2189,8 @@ public class ServiceTest
    * Validation method for JSON response. Confirms the following:
    * <ul>
    * <li>Result is well-formed JSON</li>
-   * <li>Result has "RESULTSETS" key, and has "total" key with value > 0, or</li>
-   * <li>Result has "RESULTSET" key, and has "total" key with value > 0, or</li>
+   * <li>Result has "RESULTSETS" key, and has "total" key with value &gt; 0, or</li>
+   * <li>Result has "RESULTSET" key, and has "total" key with value &gt; 0, or</li>
    * <li>Result has "RESULTSET" key (but no "total" key)</li>
    * </ul>
    *

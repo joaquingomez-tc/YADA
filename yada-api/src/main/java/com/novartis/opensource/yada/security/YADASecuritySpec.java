@@ -98,7 +98,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
   /**
    * Constant equal to {@value}
    * 
-   * @since 9.0.0 (moved from {@link com.novartis.opensource.yada.security.Gatekeeperer}
+   * @since 9.0.0 (moved from {@link Gatekeeper}
    */
   public static final String RX_COL_INJECTION = "(?:([a-zA-Z0-9_]+):)?(get[A-Z][a-zA-Z0-9_]+\\(([A-Za-z0-9_]*)\\))";
 
@@ -106,7 +106,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
   /**
    * Constant equal to {@value}
    * 
-   * @since 9.0.0 (moved from {@lincom.novartis.opensource.yada.security.Gatekeepereper}
+   * @since 9.0.0 (moved from {@link Gatekeeper}
    */
   public static final String RX_IDX_INJECTION = "(?:([0-9]+):)?(get[A-Z][a-zA-Z0-9_]+\\(([A-Za-z0-9_]*)\\))";
   
@@ -196,7 +196,7 @@ public class YADASecuritySpec extends HashMap<String, Object> {
   }
   
   /**
-   * @param value the classname of the {@lcom.novartis.opensource.yada.security.TokenValidatoridator}
+   * @param value the classname of the {@link TokenValidator}
    * @throws YADAQueryConfigurationException when {@code value} is {@code null}
    */
   public void setTokenValidator(String value) throws YADAQueryConfigurationException 

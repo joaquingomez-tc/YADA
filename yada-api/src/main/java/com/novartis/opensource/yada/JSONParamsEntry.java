@@ -78,7 +78,7 @@ public class JSONParamsEntry {
 	}
 
 	/**
-	 * Mutator for variable, plus, if {@code params} size > 0, calls {@link #setKeys()} 
+	 * Mutator for variable, plus, if {@code params} size &gt; 0, calls {@link #setKeys()} 
 	 * to populate internal indices.
 	 * @param params list of YADA request parameters
 	 */

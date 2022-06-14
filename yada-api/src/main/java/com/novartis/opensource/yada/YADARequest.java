@@ -1347,7 +1347,7 @@ public class YADARequest {
    * @return a list of parameter objects, all overrideable, and query-level,
    *         derived from request parameter values
    * @throws YADARequestException when there is a mal
-   */
+   */  
   @SuppressWarnings("javadoc")
   public List<YADAParam> getAllParams() throws YADARequestException {
     List<YADAParam> lParams = new ArrayList<>();

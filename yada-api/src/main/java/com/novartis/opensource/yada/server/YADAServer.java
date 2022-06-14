@@ -97,7 +97,8 @@ public class YADAServer {
    */
   private final static IdentityCache YADA_IDENTITY_CACHE = new IdentityCache();
 
-  /* Constant equal to {@value}. Used for request log configuration
+  /** 
+   * Constant equal to {@value}. Used for request log configuration
    * @since 10.1.3
    */
   public final static String YADA_SERVER_REQUEST_LOG_FILE = "YADA.server.request.log.file";
@@ -322,7 +323,7 @@ public class YADAServer {
   }
 
   /**
-   * @return
+   * @return the {@code YADA_INDENTITY_CACHE} value
    */
   public static IdentityCache getIdentityCache() {
     return YADA_IDENTITY_CACHE;
