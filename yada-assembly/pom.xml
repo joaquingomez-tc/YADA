@@ -187,13 +187,13 @@
       </build>
     </profile>
     <profile>
-      <id>release</id>
+      <id>docker</id>
       <properties>
         <assembly.format>tar.gz</assembly.format>
       </properties>
       <build>
         <filters>
-          <filter>${basedir}/../yada-api/src/main/resources/conf/build-release.properties</filter>
+          <filter>${basedir}/../yada-api/src/main/resources/conf/build-docker.properties</filter>
         </filters>
         <resources>
           <resource>
@@ -216,7 +216,7 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <executions>
               <execution>
-                <id>make-release</id>
+                <id>make-docker</id>
                 <phase>package</phase>
                 <goals>
                   <goal>single</goal>
@@ -225,10 +225,10 @@
                   <finalName>YADA-${project.version}</finalName>
                   <appendAssemblyId>false</appendAssemblyId>
                   <descriptors>
-                    <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
+                    <descriptor>src/main/resources/conf/assembly-docker.xml</descriptor>
                   </descriptors>
                   <filters>
-                    <filter>src/main/resources/conf/build-release.properties</filter>
+                    <filter>src/main/resources/conf/build-docker.properties</filter>
                   </filters>
                 </configuration>
               </execution>
@@ -237,8 +237,6 @@
         </plugins>
       </build>
     </profile>
-
-
   </profiles>
   <build>
     <filters>
