@@ -150,36 +150,98 @@
       <id>production</id>
       <properties>
         <assembly.format>tar.gz</assembly.format>
-        <filtering>true</filtering>
       </properties>
       <build>
+        <filters>
+          <filter>${basedir}/../yada-api/src/main/resources/conf/build-production.properties</filter>
+        </filters>
+        <resources>
+          <resource>
+            <directory>${basedir}/src/main/resources/conf</directory>
+            <filtering>${filtering}</filtering>
+            <includes>
+              <include>logback.xml</include>
+              <include>YADA.properties</include>
+            </includes>
+          </resource>
+          <resource>
+            <directory>${basedir}/src/main/resources</directory>
+            <includes>
+              <include>utils/**</include>
+            </includes>
+          </resource>
+        </resources>
         <plugins>
           <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>3.2.0</version>
+            <artifactId>maven-assembly-plugin</artifactId>
             <executions>
               <execution>
-                <id>copy-bulid-resources</id>
+                <id>make-release</id>
                 <phase>package</phase>
                 <goals>
-                  <goal>copy-resources</goal>
+                  <goal>single</goal>
                 </goals>
                 <configuration>
-                  <outputDirectory>${basedir}/src/main/resources</outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>${basedir}/../yada-api/src/main/resources</directory>
-                      <filtering>true</filtering>
-                    </resource>
-                  </resources>
+                  <finalName>YADA-${project.version}</finalName>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <descriptors>
+                    <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
+                  </descriptors>
+                  <filters>
+                    <filter>src/main/resources/conf/build-production.properties</filter>
+                  </filters>
                 </configuration>
               </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>release</id>
+      <properties>
+        <assembly.format>tar.gz</assembly.format>
+      </properties>
+      <build>
+        <filters>
+          <filter>${basedir}/../yada-api/src/main/resources/conf/build-release.properties</filter>
+        </filters>
+        <resources>
+          <resource>
+            <directory>${basedir}/src/main/resources/conf</directory>
+            <filtering>${filtering}</filtering>
+            <includes>
+              <include>logback.xml</include>
+              <include>YADA.properties</include>
+            </includes>
+          </resource>
+          <resource>
+            <directory>${basedir}/src/main/resources</directory>
+            <includes>
+              <include>utils/**</include>
+            </includes>
+          </resource>
+        </resources>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
               <execution>
-                <id>process-resources</id>
+                <id>make-release</id>
                 <phase>package</phase>
                 <goals>
-                  <goal>resources</goal>
+                  <goal>single</goal>
                 </goals>
+                <configuration>
+                  <finalName>YADA-${project.version}</finalName>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <descriptors>
+                    <descriptor>src/main/resources/conf/assembly-release.xml</descriptor>
+                  </descriptors>
+                  <filters>
+                    <filter>src/main/resources/conf/build-release.properties</filter>
+                  </filters>
+                </configuration>
               </execution>
             </executions>
           </plugin>

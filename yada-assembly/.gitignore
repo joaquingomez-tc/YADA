@@ -1,4 +1,5 @@
 *.*
+!deploy.bash
 !pom.xml
 !assembly*.xml
 !.gitignore
