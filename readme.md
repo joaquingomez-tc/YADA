@@ -1,3 +1,13 @@
+# Table of Contents
+
+* [Build](#build)  
+* [Package](#package)  
+* [Deploy](#deploy)
+* [JSON Spec](#json-spec)
+  * [Examples](#examples)
+
+---
+
 # YADA Jar File Build and Deploy
 
 # Build
@@ -152,5 +162,114 @@ function yadalaunch {
 
   # launch command
   sudo -H -u ${YADA_USER} bash -c "java ${YADA_PROPS} -jar ${YADA_JAR} &> ${LOG} &"
+}
+```
+
+# JSON Specification
+YADA queries are stored in JSON documents in the local yada library repository. This repo can be managed centrally, i.e., github, or can exist just locally.  Locally, this repo's directory should be referenced by the `YADA_LIB` environment variable.
+
+`YADA_LIB` must be organized hierarchically, with "query" files located in "app" directories, e.g.,
+
+```
+│   
+└── YADATEST
+    ├── conf.json
+    ├── login.json
+    ├── resource access.json
+    ├── test DELETE with DATE.json
+    ├── test DELETE with INTEGER.json
+```
+
+Each "app" directory must contain a `conf.json` file which defines the datasource connection.
+
+The `conf.json` and query file JSON specifications are located in the YADA source tree at `YADA/yada-api/src/main/resources/conf/`
+
+```
+YADA
+├── yada-api
+│   ├── src
+│   │   ├── main
+│   │   │   └── resources
+│   │   │       ├── conf
+│   │   │       │   ├── YADAConfSpecification.json
+│   │   │       │   ├── YADAQuerySpecification.json
+```
+Other specs and default configs are located there as well.
+
+## Examples
+
+Here's an example `conf.json`:
+```
+{
+  "source": "jdbc:postgresql://localhost/yada",
+  "props": {
+    "username": "yada",
+    "password": "yada",
+    "autoCommit": "true",
+    "connectionTimeout": "300000",
+    "idleTimeout": "600000",
+    "maxLifetime": "1800000",
+    "minimumIdle": "5",
+    "maximumPoolSize": "100",
+    "driverClassName": "org.postgresql.Driver",
+    "poolName": "HikariPool-YADATEST",
+  }
+}
+```
+Here's a simple query, `test select.json`:
+```
+{
+  "query": "select * from yada_test"
+}
+```
+
+Here's a more complex one with a security plugin content policy config, `test sec get token.json`:
+```
+{
+  "query": "select * from yada_test",
+  "params": [
+    {
+      "name": "pl",
+      "value": "Gatekeeper",
+      "spec": {
+        "qualifier": ["ADMIN"],
+        "predicate": "userid=getQLoggedUser()",
+        "policy": "C"
+      },
+      "rule": 1
+    }
+  ]
+}
+```
+Here's an example with a default `pz=-1` param, i.e., "return all results":
+```
+{
+  "query": "select * v_dplmember_seq",
+  "params": [
+    {
+      "name": "pz",
+      "value": "-1",
+      "rule": 0
+    }
+  ]
+}
+```
+Here's an example of a REST POST query with custom `header`:
+```
+{
+  "query": "/users/_doc/?v",
+  "params": [
+    {
+      "name": "method",
+      "value": "POST",
+      "rule": 1
+    },
+    {
+      "name": "H",
+      "value": { "Content-Type": "application/json"},
+      "rule": 1
+    }
+
+  ]
 }
 ```
