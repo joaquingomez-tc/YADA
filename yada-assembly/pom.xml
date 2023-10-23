@@ -463,12 +463,12 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>com.novartis.opensource</groupId>
+      <groupId>com.novartis.opensource.aspirin</groupId>
       <artifactId>yada-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.novartis.opensource</groupId>
+      <groupId>com.novartis.opensource.aspirin</groupId>
       <artifactId>yada-api</artifactId>
       <version>${project.parent.version}</version>
       <type>test-jar</type>
