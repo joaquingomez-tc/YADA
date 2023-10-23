@@ -182,6 +182,7 @@ public class YADAServer {
     // context will be "/" if unset, or "/whatever" if set.
     yadaPropContextHandler.setContextPath(ctx.startsWith("/") ? ctx : "/"+ctx);  
     String ctxPath = yadaPropContextHandler.getContextPath();
+yadaPropContextHandler.setMaxFormContentSize(10 * 1024 * 1024);
     
         
     // Rewrites for path-style, converts /param/value/param/value 
