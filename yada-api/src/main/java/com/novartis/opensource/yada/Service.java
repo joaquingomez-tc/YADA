@@ -25,12 +25,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.eclipse.jetty.server.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
@@ -173,6 +175,8 @@ public class Service {
         && request.getHeader("Content-Type").startsWith("multipart/form-data"))
 		{
 		    LOG.info("multipart/form-data");
+			MultipartConfigElement multi_part_config = new MultipartConfigElement("/tmp");
+			request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multi_part_config);
 		    try
 	        {
 	          for(@SuppressWarnings("unused") Part p : request.getParts())
