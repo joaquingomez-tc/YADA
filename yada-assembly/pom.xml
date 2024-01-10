@@ -3,7 +3,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.novartis.opensource.aspirin</groupId>
+    <groupId>com.novartis.opensource</groupId>
     <artifactId>YADA</artifactId>
     <version>10.1.4-SNAPSHOT</version>
   </parent>
@@ -463,12 +463,12 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>com.novartis.opensource.aspirin</groupId>
+      <groupId>com.novartis.opensource</groupId>
       <artifactId>yada-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <!-- <dependency>
-      <groupId>com.novartis.opensource.aspirin</groupId>
+      <groupId>com.novartis.opensource</groupId>
       <artifactId>yada-api</artifactId>
       <version>${project.parent.version}</version>
       <type>test-jar</type>
