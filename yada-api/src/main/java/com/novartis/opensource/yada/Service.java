@@ -18,19 +18,18 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletException;
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.eclipse.jetty.server.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
@@ -173,14 +172,16 @@ public class Service {
         && request.getHeader("Content-Type").startsWith("multipart/form-data"))
 		{
 		    LOG.info("multipart/form-data");
+			String tmpDir = System.getProperty("java.io.tmpdir");
+			MultipartConfigElement multi_part_config = new MultipartConfigElement(tmpDir);
+			request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multi_part_config);
 		    try
-	        {
-	          for(@SuppressWarnings("unused") Part p : request.getParts())
-	          {
-	            
-	          }
+			{
+				List<FileItem> multiparts = new ServletFileUpload(
+						new DiskFileItemFactory()).parseRequest(request);
+				getYADARequest().setUploadItems(multiparts);
 	        }
-	        catch (IOException | ServletException e)
+	        catch (Exception e)
 	        {
 	          throw new YADARequestException(e);
 	        }		    
@@ -771,7 +772,10 @@ public class Service {
 	private String executeUpload() throws YADAPluginException, YADAExecutionException
 	{
 		//TODO move upload item processing to this method from YADARequest
-		String result = engageBypass(this.getYADARequest());
+		String result = null;
+		if(this.getYADARequest().getParameterMap().containsKey(YADARequest.PL_PLUGIN)) {
+			result = engageBypass(this.getYADARequest());
+		}
 		LOG.debug("Select bypass [result] is [{}]", result);
 		if (result != null)
 		{

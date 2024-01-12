@@ -1118,7 +1118,11 @@ public class QueryUtils
         // get table name
         Table  table = column.getTable();
         String tabName = "";
-        if(table.getAlias() != null
+        if(table == null) 
+        {
+          tabName = ""; // TODO: clarify why it can be null
+        }
+        else if(table.getAlias() != null
             && !table.getAlias().getName().contentEquals(""))
         {
           tabName = table.getAlias().getName().trim();

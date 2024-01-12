@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Keighty has <a href="https://katieleonard.ca/blog/2016/2016-03-29-preflight-check-with-cors/">a good explanation</a> of what's going on in here.</p>
@@ -26,6 +29,12 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
  *
  */
 public class YADACorsHandler extends AbstractHandler {
+
+  /**
+   * Local logger handle
+   */
+  static Logger             LOG             = LoggerFactory.getLogger(YADACorsHandler.class);
+ 
 
   /**
    * Constant equal to {@value}. Used for enabling cors
@@ -95,23 +104,31 @@ public class YADACorsHandler extends AbstractHandler {
         || val.length() == 0)
     {
       response.addHeader("Access-Control-Allow-Origin", CORS_WILDCARD);
+      return;
     }
     else if(val != null && val.length() > 0)
     {
-      String  origin    = request.getHeader("Origin");     
-      String  prop      = props.getProperty(CORS_ALLOW_ORIGIN);
-      String  rx        = prop.startsWith("http") ? prop : "^https?://"+prop;
-      Pattern allowOrig = Pattern.compile(rx);
-      Matcher origMatch = allowOrig.matcher(origin);      
-      if(origMatch.matches())
-      {
-        response.addHeader("Access-Control-Allow-Origin", origin);
+      String  origin    = request.getHeader("Origin"); 
+      String[] originsAllowed = val.split("\\s?,\\d?"); // allow comma separated values, with optional spaces around the comma    
+      for(String allowedOrigin : originsAllowed) {
+        if(allowedOrigin == null || allowedOrigin.equals("")) 
+          continue;
+        String  rx = allowedOrigin.startsWith("http") ? allowedOrigin : "^https?://"+allowedOrigin;
+        try {
+          Pattern allowOrig = Pattern.compile(rx);
+          Matcher origMatch = allowOrig.matcher(origin);      
+          if(origMatch.matches())
+          {
+            response.addHeader("Access-Control-Allow-Origin", origin);
+            return;
+          }
+        }catch(PatternSyntaxException pex) {
+          LOG.error("CORS configuration contains expression that cannot be compiled as a Regex pattern: " + allowedOrigin);
+        }
       }
-      else
-      {
-        fail(baseRequest);
-      }
-    }
+    }  
+
+    fail(baseRequest);
   }
   
   /**
