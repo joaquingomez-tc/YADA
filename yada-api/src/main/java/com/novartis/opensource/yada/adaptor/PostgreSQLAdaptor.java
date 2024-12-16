@@ -48,4 +48,35 @@ public class PostgreSQLAdaptor extends JDBCAdaptor {
 	{
 		super(yadaReq);
 	}
+    
+	/**
+	 * Enables checking for {@link JDBCAdaptor#ORACLE_DATE_FMT} if {@code val} does not conform to {@link JDBCAdaptor#STANDARD_DATE_FMT}
+	 * @since 5.1.1
+	 */
+	@Override
+	protected void setDateParameter(PreparedStatement pstmt, int index, char type, String val) throws SQLException 
+  {
+    if (EMPTY.equals(val) || val == null)
+    {
+      pstmt.setNull(index, java.sql.Types.DATE);
+    }
+    else
+    {
+      SimpleDateFormat sdf     = new SimpleDateFormat(STANDARD_DATE_FMT);
+      ParsePosition    pp      = new ParsePosition(0);
+      Date             dateVal = sdf.parse(val,pp);
+      if(dateVal == null)
+      {
+        sdf     = new SimpleDateFormat(ORACLE_DATE_FMT);
+        pp      = new ParsePosition(0);
+        dateVal = sdf.parse(val,pp);
+      }
+      if (dateVal != null)
+      {
+        long t = dateVal.getTime();
+        java.sql.Date sqlDateVal = new java.sql.Date(t);
+        pstmt.setDate(index, sqlDateVal);
+      }
+    }
+  }
 }
