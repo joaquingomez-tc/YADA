@@ -59,7 +59,7 @@ import com.novartis.opensource.yada.util.YADAUtils;
  * @since 4.0.0
  * @author David Varon
  * @see Service#execute()
- * @see Service#handleRequest(jakarta.servlet.http.HttpServletRequest)
+ * @see Service#handleRequest(javax.servlet.http.HttpServletRequest)
  */
 public class QueryManager {
   /**
