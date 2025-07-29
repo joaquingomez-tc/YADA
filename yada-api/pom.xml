@@ -515,17 +515,17 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>11.0.25</version>
+      <version>10.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.http2</groupId>
       <artifactId>http2-server</artifactId>
-      <version>11.0.25</version>
+      <version>10.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>11.0.25</version>
+      <version>10.0.3</version>
     </dependency>
     <dependency>
         <groupId>com.sun.xml.messaging.saaj</groupId>
