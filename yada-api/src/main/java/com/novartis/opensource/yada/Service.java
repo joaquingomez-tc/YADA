@@ -21,9 +21,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Dollection;
 
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -171,7 +173,7 @@ public class Service {
 		else if(null != request.getHeader("Content-Type") 
         && request.getHeader("Content-Type").startsWith("multipart/form-data"))
 		{
-			Collections<Part> parts = request.getParts();
+			Collection<Part> parts = request.getParts();
 			List<Part> uploadItems = new ArrayList<>(parts);
 			getYADARequest().setUploadItems(uploadItems);
 		    // LOG.info("multipart/form-data");
