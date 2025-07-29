@@ -21,8 +21,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Dollection;
 
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import org.apache.commons.io.IOUtils;
+import java.util.Collection;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
@@ -145,6 +149,29 @@ public class Service {
 		getYADARequest().setRequest(request);
 		handleRequest(request.getHeader("referer"), map);
 	}
+
+	private List<FileItem> partsToFileItems(Collection<Part> parts) throws IOException{
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		List<FileItem> items = new ArrayList<>(parts.size());
+
+		for (Part p: parts){
+			String fieldName = p.getName();
+			String fileName = p.getSubmittedFileName();
+			String contentType = p.getContentType();
+			Boolean isFormField = (fileName == null || fileName.isEmpty());
+
+			DiskFileItem item = (DiskFileItem) factory.createItem(fieldName, contentType, isFormField, fileName);
+
+			try(InputStream in = p.getInputStream();
+				OutputStream out = item.getOutputStream()){
+					IOUtils.copy(in, out);
+				}
+
+			items.add(item);
+		}
+
+		return items;
+	}
 	
 	/**
 	 * Stores the {@code request} in the {@link YADARequest} object and calls {@link #handleRequest(String, Map)}.
@@ -173,23 +200,24 @@ public class Service {
 		else if(null != request.getHeader("Content-Type") 
         && request.getHeader("Content-Type").startsWith("multipart/form-data"))
 		{
-			Collection<Part> parts = request.getParts();
-			List<Part> uploadItems = new ArrayList<>(parts);
-			getYADARequest().setUploadItems(uploadItems);
-		    // LOG.info("multipart/form-data");
-			// String tmpDir = System.getProperty("java.io.tmpdir");
-			// MultipartConfigElement multi_part_config = new MultipartConfigElement(tmpDir);
-			// request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multi_part_config);
-		    // try
-			// {
-			// 	List<FileItem> multiparts = new ServletFileUpload(
-			// 			new DiskFileItemFactory()).parseRequest(request);
-			// 	getYADARequest().setUploadItems(multiparts);
-	        // }
-	        // catch (Exception e)
-	        // {
-	        //   throw new YADARequestException(e);
-	        // }		    
+			
+		    LOG.info("multipart/form-data");
+			String tmpDir = System.getProperty("java.io.tmpdir");
+			MultipartConfigElement multi_part_config = new MultipartConfigElement(tmpDir);
+			request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multi_part_config);
+		    try
+			{
+				Collection<Part> parts = request.getParts();
+				List<FileItem> uploadItems = partsToFileItems(parts);
+				getYADARequest().setUploadItems(uploadItems);
+				// List<FileItem> multiparts = new ServletFileUpload(
+				// 		new DiskFileItemFactory()).parseRequest(request);
+				// getYADARequest().setUploadItems(multiparts);
+	        }
+	        catch (Exception e)
+	        {
+	          throw new YADARequestException(e);
+	        }		    
 		}
 		// could have "Content-Type: application/x-www-form-urlencoded"
 		else if(null != request.getParameterMap() && request.getParameterMap().size() > 0)
