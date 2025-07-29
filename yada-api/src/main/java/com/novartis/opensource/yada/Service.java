@@ -25,10 +25,10 @@ import java.util.regex.Pattern;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload2.core.FileItem;
-import org.apache.commons.fileupload2.disk.DiskFileItem;
-import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload2.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.jetty.server.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,20 +171,23 @@ public class Service {
 		else if(null != request.getHeader("Content-Type") 
         && request.getHeader("Content-Type").startsWith("multipart/form-data"))
 		{
-		    LOG.info("multipart/form-data");
-			String tmpDir = System.getProperty("java.io.tmpdir");
-			MultipartConfigElement multi_part_config = new MultipartConfigElement(tmpDir);
-			request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multi_part_config);
-		    try
-			{
-				List<FileItem> multiparts = new ServletFileUpload(
-						new DiskFileItemFactory()).parseRequest(request);
-				getYADARequest().setUploadItems(multiparts);
-	        }
-	        catch (Exception e)
-	        {
-	          throw new YADARequestException(e);
-	        }		    
+			Collections<Part> parts = request.getParts();
+			List<Part> uploadItems = new ArrayList<>(parts);
+			getYADARequest().setUploadItems(uploadItems);
+		    // LOG.info("multipart/form-data");
+			// String tmpDir = System.getProperty("java.io.tmpdir");
+			// MultipartConfigElement multi_part_config = new MultipartConfigElement(tmpDir);
+			// request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multi_part_config);
+		    // try
+			// {
+			// 	List<FileItem> multiparts = new ServletFileUpload(
+			// 			new DiskFileItemFactory()).parseRequest(request);
+			// 	getYADARequest().setUploadItems(multiparts);
+	        // }
+	        // catch (Exception e)
+	        // {
+	        //   throw new YADARequestException(e);
+	        // }		    
 		}
 		// could have "Content-Type: application/x-www-form-urlencoded"
 		else if(null != request.getParameterMap() && request.getParameterMap().size() > 0)
