@@ -90,12 +90,12 @@ public class JSONParams extends LinkedHashMap<String, JSONParamsEntry> {
 	 * <a href="https://github.com/Novartis/YADA/blob/master/src/site/markdown/jsonparams.md">JSONParams specification</a> 
 	 * is performed.</p> 
 	 * 
-	 * This is the constructor called by {@link Service#handleRequest(javax.servlet.http.HttpServletRequest)} when encountering a JSONParams url parameter.
+	 * This is the constructor called by {@link Service#handleRequest(jakarta.servlet.http.HttpServletRequest)} when encountering a JSONParams url parameter.
 	 * @since 4.0.0
 	 * @param jp an array containing json strings 
 	 * @throws YADAQueryConfigurationException when {@code jp} is not convertable into a {@link JSONParams} object 
 	 * @see YADARequest#setJsonParams(String[])
-	 * @see Service#handleRequest(javax.servlet.http.HttpServletRequest)
+	 * @see Service#handleRequest(jakarta.servlet.http.HttpServletRequest)
 	 */
   
 	public JSONParams(String[] jp) throws YADAQueryConfigurationException 

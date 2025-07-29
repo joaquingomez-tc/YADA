@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import jakarta.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -290,7 +290,7 @@ public abstract class AbstractPostprocessor implements Postprocess, Authorizatio
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()} Converts
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()} Converts
    * parameter string into {@link JSONObject}
    * 
    * @param httpHeaders the array of headers passed in the {@link YADARequest} 
