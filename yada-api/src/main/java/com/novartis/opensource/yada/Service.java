@@ -22,8 +22,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -1553,7 +1553,7 @@ public class Service {
 	/**
 	 * Takes the old-style argument parameters and appends them to the {@link YADARequest#PS_PLUGIN} parameter.
 	 * The new config is then handled downstream during normal plugin parameter processing
-	 * @param paraMap the {@link Map} passed in the {@link javax.servlet.http.HttpServletRequest}
+	 * @param paraMap the {@link Map} passed in the {@link jakarta.servlet.http.HttpServletRequest}
 	 * @param constant the {@link YADARequest} argument constant
 	 */
 	private void setDeprecatedPlugin(Map<String, String[]> paraMap, String constant)

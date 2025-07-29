@@ -17,7 +17,7 @@
  */
 package com.novartis.opensource.yada.security;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

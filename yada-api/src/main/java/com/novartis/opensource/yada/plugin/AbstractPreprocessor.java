@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -950,7 +950,7 @@ public abstract class AbstractPreprocessor
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()} Converts
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()} Converts
    * parameter string into {@link JSONObject}
    * 
    * @param httpHeaders the array of headers passed in the {@link YADARequest}
@@ -1057,7 +1057,7 @@ public abstract class AbstractPreprocessor
   /**
    * Standard mutator for variable
    * 
-   * @param request the {@link javax.servlet.http.HttpServletRequest} object
+   * @param request the {@link jakarta.servlet.http.HttpServletRequest} object
    *                passed from the app server
    */
   public void setRequest(HttpServletRequest request) {
@@ -1067,7 +1067,7 @@ public abstract class AbstractPreprocessor
   /**
    * Standard accessor for variable
    * 
-   * @return the {@link javax.servlet.http.HttpServletRequest} object passed from
+   * @return the {@link jakarta.servlet.http.HttpServletRequest} object passed from
    *         the app server
    */
   public HttpServletRequest getRequest() {
