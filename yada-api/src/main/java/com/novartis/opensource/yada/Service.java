@@ -58,6 +58,7 @@ import com.novartis.opensource.yada.plugin.YADAPluginException;
 import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.util.FileUtils;
 import com.novartis.opensource.yada.util.QueryUtils;
+import com.novartis.opensource.yada.util.YADAUtils;
 
 /**
  * Utility class handling process of execution of stored queries, and formatting of results via http requests.
@@ -150,44 +151,6 @@ public class Service {
 		getYADARequest().setRequest(request);
 		handleRequest(request.getHeader("referer"), map);
 	}
-
-	private List<FileItem> partsToFileItems(Collection<Part> parts) throws IOException{
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		return parts.stream().map(part -> {
-			DiskFileItem item = (DiskFileItem) factory.createItem(
-				part.getName(),
-				part.getContentType(),
-		 		part.getSubmittedFileName() == null,
-				part.getSubmittedFileName()
-			);
-			try(InputStream in = part.getInputStream();
-				OutputStream out = item.getOutputStream()){
-					IOUtils.copy(in, out);
-			}catch (IOException e){
-				throw new UncheckedIOException(e);
-			}
-			return item;
-		}).collect(Collectors.toList());
-		// List<FileItem> items = new ArrayList<>(parts.size());
-
-		// for (Part p: parts){
-		// 	String fieldName = p.getName();
-		// 	String fileName = p.getSubmittedFileName();
-		// 	String contentType = p.getContentType();
-		// 	Boolean isFormField = (fileName == null || fileName.isEmpty());
-
-		// 	DiskFileItem item = (DiskFileItem) factory.createItem(fieldName, contentType, isFormField, fileName);
-
-		// 	try(InputStream in = p.getInputStream();
-		// 		OutputStream out = item.getOutputStream()){
-		// 			IOUtils.copy(in, out);
-		// 		}
-
-		// 	items.add(item);
-		// }
-
-		// return items;
-	}
 	
 	/**
 	 * Stores the {@code request} in the {@link YADARequest} object and calls {@link #handleRequest(String, Map)}.
@@ -224,11 +187,8 @@ public class Service {
 		    try
 			{
 				Collection<Part> parts = request.getParts();
-				List<FileItem> uploadItems = partsToFileItems(parts);
+				List<FileItem> uploadItems = YADAUtils.partsToFileItems(parts);
 				getYADARequest().setUploadItems(uploadItems);
-				// List<FileItem> multiparts = new ServletFileUpload(
-				// 		new DiskFileItemFactory()).parseRequest(request);
-				// getYADARequest().setUploadItems(multiparts);
 	        }
 	        catch (Exception e)
 	        {

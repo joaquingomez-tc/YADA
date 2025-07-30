@@ -49,6 +49,14 @@ import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.adaptor.YADAAdaptorException;
 import com.novartis.opensource.yada.adaptor.YADAAdaptorExecutionException;
 
+import java.util.stream.Collectors;
+import java.io.UncheckedIOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import org.apache.commons.io.IOUtils;
+import java.util.Collection;
+import jakarta.servlet.http.Part;
+
 /**
  * Provider of convenience methods and "one-liners" for use primarily in plugins, but also
  * used in the guts of the framework.
@@ -239,6 +247,32 @@ public class YADAUtils {
 		Attributes attr = mf.getMainAttributes();
 		version = attr.getValue(YADA_VERSION);
 		return version;
+	}
+
+	/**
+	 * A wrapper function which transforms the values of the Parts collection into a list of FileItem.
+	 * @param parts Collection of Parts to be transformed into a list of FileItems
+	 * @return {@code List<FileItem>} containing the result of {@code partsToFileItems}
+	 * @throws IOException if function execution fails
+	 */
+
+	public static List<FileItem> partsToFileItems(Collection<Part> parts) throws IOException{
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		return parts.stream().map(part -> {
+			DiskFileItem item = (DiskFileItem) factory.createItem(
+				part.getName(),
+				part.getContentType(),
+		 		part.getSubmittedFileName() == null,
+				part.getSubmittedFileName()
+			);
+			try(InputStream in = part.getInputStream();
+				OutputStream out = item.getOutputStream()){
+					IOUtils.copy(in, out);
+			}catch (IOException e){
+				throw new UncheckedIOException(e);
+			}
+			return item;
+		}).collect(Collectors.toList());
 	}
 	
 	/**
