@@ -152,25 +152,40 @@ public class Service {
 
 	private List<FileItem> partsToFileItems(Collection<Part> parts) throws IOException{
 		DiskFileItemFactory factory = new DiskFileItemFactory();
-		List<FileItem> items = new ArrayList<>(parts.size());
-
-		for (Part p: parts){
-			String fieldName = p.getName();
-			String fileName = p.getSubmittedFileName();
-			String contentType = p.getContentType();
-			Boolean isFormField = (fileName == null || fileName.isEmpty());
-
-			DiskFileItem item = (DiskFileItem) factory.createItem(fieldName, contentType, isFormField, fileName);
-
-			try(InputStream in = p.getInputStream();
+		return parts.streams().map(part -> {
+			DiskFileItem item = (DiskFileItem) factory.createItem(
+				part.getName(),
+				part.getContentType(),
+		 		part.getSubmittedFileName() == null,
+				part.getSubmittedFileName()
+			);
+			try(InputStream in = part.getInputStream();
 				OutputStream out = item.getOutputStream()){
 					IOUtils.copy(in, out);
-				}
+			}catch (IOException e){
+				throw new UncheckedIOException(e);
+			}
+			return item;
+		}).collect(Collectors.toList());
+		// List<FileItem> items = new ArrayList<>(parts.size());
 
-			items.add(item);
-		}
+		// for (Part p: parts){
+		// 	String fieldName = p.getName();
+		// 	String fileName = p.getSubmittedFileName();
+		// 	String contentType = p.getContentType();
+		// 	Boolean isFormField = (fileName == null || fileName.isEmpty());
 
-		return items;
+		// 	DiskFileItem item = (DiskFileItem) factory.createItem(fieldName, contentType, isFormField, fileName);
+
+		// 	try(InputStream in = p.getInputStream();
+		// 		OutputStream out = item.getOutputStream()){
+		// 			IOUtils.copy(in, out);
+		// 		}
+
+		// 	items.add(item);
+		// }
+
+		// return items;
 	}
 	
 	/**
