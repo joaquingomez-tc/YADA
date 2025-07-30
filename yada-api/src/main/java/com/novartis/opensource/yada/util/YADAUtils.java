@@ -56,6 +56,10 @@ import java.io.OutputStream;
 import org.apache.commons.io.IOUtils;
 import java.util.Collection;
 import jakarta.servlet.http.Part;
+import java.util.List;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 
 /**
  * Provider of convenience methods and "one-liners" for use primarily in plugins, but also
