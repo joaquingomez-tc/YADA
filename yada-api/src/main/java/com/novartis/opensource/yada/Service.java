@@ -22,7 +22,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+import java.util.stream.Collectors;
+import java.io.UncheckedIOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.apache.commons.io.IOUtils;
@@ -152,7 +153,7 @@ public class Service {
 
 	private List<FileItem> partsToFileItems(Collection<Part> parts) throws IOException{
 		DiskFileItemFactory factory = new DiskFileItemFactory();
-		return parts.streams().map(part -> {
+		return parts.stream().map(part -> {
 			DiskFileItem item = (DiskFileItem) factory.createItem(
 				part.getName(),
 				part.getContentType(),
