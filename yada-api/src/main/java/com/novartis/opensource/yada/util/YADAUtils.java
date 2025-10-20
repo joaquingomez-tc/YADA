@@ -16,15 +16,20 @@ package com.novartis.opensource.yada.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.List;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +53,17 @@ import com.novartis.opensource.yada.YADAUnsupportedAdaptorException;
 import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.adaptor.YADAAdaptorException;
 import com.novartis.opensource.yada.adaptor.YADAAdaptorExecutionException;
+
+import java.io.UncheckedIOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import jakarta.servlet.http.Part;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 
 /**
  * Provider of convenience methods and "one-liners" for use primarily in plugins, but also
@@ -239,6 +255,32 @@ public class YADAUtils {
 		Attributes attr = mf.getMainAttributes();
 		version = attr.getValue(YADA_VERSION);
 		return version;
+	}
+
+	/**
+	 * A wrapper function which transforms the values of the Parts collection into a list of FileItem.
+	 * @param parts Collection of Parts to be transformed into a list of FileItems
+	 * @return {@code List<FileItem>} containing the result of {@code partsToFileItems}
+	 * @throws IOException if function execution fails
+	 */
+
+	public static List<FileItem> partsToFileItems(Collection<Part> parts) throws IOException{
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		return parts.stream().map(part -> {
+			DiskFileItem item = (DiskFileItem) factory.createItem(
+				part.getName(),
+				part.getContentType(),
+		 		part.getSubmittedFileName() == null,
+				part.getSubmittedFileName()
+			);
+			try(InputStream in = part.getInputStream();
+				OutputStream out = item.getOutputStream()){
+					IOUtils.copy(in, out);
+			}catch (IOException e){
+				throw new UncheckedIOException(e);
+			}
+			return item;
+		}).collect(Collectors.toList());
 	}
 	
 	/**

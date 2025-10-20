@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 import javax.xml.soap.SOAPConnection;
 
 import java.util.Base64;
@@ -59,7 +59,7 @@ import com.novartis.opensource.yada.util.YADAUtils;
  * @since 4.0.0
  * @author David Varon
  * @see Service#execute()
- * @see Service#handleRequest(javax.servlet.http.HttpServletRequest)
+ * @see Service#handleRequest(jakarta.servlet.http.HttpServletRequest)
  */
 public class QueryManager {
   /**

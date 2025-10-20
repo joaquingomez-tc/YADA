@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -1565,7 +1565,7 @@ public class YADARequest {
   /**
    * Standard mutator for variable
    *
-   * @param request the {@link javax.servlet.http.HttpServletRequest} object
+   * @param request the {@link jakarta.servlet.http.HttpServletRequest} object
    *                passed from the app server
    */
   public void setRequest(HttpServletRequest request) {
@@ -1575,7 +1575,7 @@ public class YADARequest {
   /**
    * Standard accessor for variable
    *
-   * @return the {@link javax.servlet.http.HttpServletRequest} object passed from
+   * @return the {@link jakarta.servlet.http.HttpServletRequest} object passed from
    *         the app server
    */
   public HttpServletRequest getRequest() {
@@ -1862,7 +1862,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()} This method
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()} This method
    * is used internally by {@link #invokeSetter(String,String[])} when args are
    * passed in a query string to the api, as in some test classes. The method
    * effectively mandates that only a single plugin will be handled, which is ok
@@ -1921,7 +1921,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}. Calls
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}. Calls
    * {@link #setColhead(String[])}.
    *
    * @since 4.0.0
@@ -1934,7 +1934,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param colhead flag for inclusion or exclusion of column headers in delimited
@@ -1964,7 +1964,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param compact flag to indicate whether or not to return default json
@@ -1981,7 +1981,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @param cookies the array of cookie names to pass to the REST query
    * @since 5.1.0
@@ -2012,7 +2012,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param count flag to indicate whether or not to execute the second query for
@@ -2042,7 +2042,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param countOnly flag to indicate whether or not to skip the data query and
@@ -2060,7 +2060,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param commitQuery flag to indicate whether or not to commit after each query
@@ -2091,7 +2091,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param export flag to indicate whether or not to dump results to a file and
@@ -2120,7 +2120,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param exportLimit maximim number of results to export
@@ -2148,7 +2148,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param filters json object conforming to filter spec
@@ -2168,7 +2168,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()} The
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()} The
    * implementation supports passage of a JSONObject or JSONArray. See the Harmony
    * Map Specification for details.
    *
@@ -2211,7 +2211,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()} Converts
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()} Converts
    * parameter string into {@link JSONObject}
    *
    * @param httpHeaders the {@link String} array originating in the
@@ -2291,7 +2291,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()} If
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()} If
    * {@code format} equals {@link #FORMAT_PIPE} or {@link #FORMAT_TSV}, then
    * {@link #delimiter} will be set with either {@link #FORMAT_PIPE_STRING} or
    * {@link #FORMAT_TSV_STRING}, accordingly
@@ -2311,7 +2311,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param delimiter the column separator for delimited output
@@ -2325,7 +2325,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param rowDelimiter the line separator for delimited output
@@ -2434,7 +2434,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @param jp json string compliant with the JSONParams specification
    * @throws YADARequestException when the JSONParams string passed in the request
@@ -3020,7 +3020,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @param postArgArr list of arguments to pass to the post processor plugin
    * @deprecated as of 7.1.0
@@ -3044,7 +3044,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @param preArgArr list of arguments to pass to the preprocessor
    * @since 4.0.0
@@ -3057,7 +3057,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @param preArgArr list of arguments to pass to the preprocessor
    * @since 4.0.0
@@ -3093,7 +3093,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param qname the query name
@@ -3117,7 +3117,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param sortKey the column on which to sort
@@ -3140,7 +3140,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param sortOrder the sort order, defaults to {@link #SORT_ASC}
@@ -3154,7 +3154,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @param updateStats flag indicating whether or not to execute the query access
    *                    statistics when the query is included in a request
@@ -3183,7 +3183,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param user the user id passed in the request, defaults to
@@ -3209,7 +3209,7 @@ public class YADARequest {
 
   /**
    * Array mutator for variable, preferred for compatibility with
-   * {@link javax.servlet.http.HttpServletRequest#getParameterMap()}
+   * {@link jakarta.servlet.http.HttpServletRequest#getParameterMap()}
    *
    * @since 4.0.0
    * @param viewLimit the maximum number of rows to retrieve, independent of
@@ -3883,7 +3883,7 @@ public class YADARequest {
 
   /**
    * Takes all parameters and values from {@code paraMap}, typically set in the
-   * {@link javax.servlet.http.HttpServletRequest}, and adds them to a local
+   * {@link jakarta.servlet.http.HttpServletRequest}, and adds them to a local
    * {@link java.util.Map}. This is called by
    * {@link Service#handleRequest(HttpServletRequest)}. The inclusion of the map
    * enables the use of otherwise unsupported url parameters in plugins.
@@ -3898,7 +3898,7 @@ public class YADARequest {
 
   /**
    * Returns the {@link java.util.Map} of parameters originally set in the
-   * {@link javax.servlet.http.HttpServletRequest}.
+   * {@link jakarta.servlet.http.HttpServletRequest}.
    *
    * @return the map of parameters derived from the request
    */

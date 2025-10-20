@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Dispatcher;
 import org.eclipse.jetty.server.Request;
@@ -116,12 +116,14 @@ public class YADARequestHandler extends AbstractHandler {
         if (YADARequest.FORMAT_JSON.equals(fmt))
         {
           response.setContentType("application/json;charset=UTF-8");
-          // timestamps
-          JSONObject jo = new JSONObject(result);          
-          // add 1 to account for remaining steps (tested this--it's very consistent)
-          long elapsed = (new Date().getTime() - baseRequest.getTimeStamp()) + 1;           
-          jo.put("elapsed", elapsed);
-          result = jo.toString();
+          // add timestamp to the JSON object, unless ... this is not a JSON object but a JSON array.
+          if(!result.startsWith("[")) {
+            JSONObject jo = new JSONObject(result);
+            // add 1 to account for remaining steps (tested this--it's very consistent)
+            long elapsed = (new Date().getTime() - baseRequest.getTimeStamp()) + 1;
+            jo.put("elapsed", elapsed);
+            result = jo.toString();
+          }
         }
         else if (YADARequest.FORMAT_XML.equals(fmt))
         {

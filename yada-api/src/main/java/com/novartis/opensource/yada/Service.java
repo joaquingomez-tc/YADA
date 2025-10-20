@@ -14,25 +14,36 @@
  */
 package com.novartis.opensource.yada;
 
+import java.io.UncheckedIOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.Collection;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
+
+import org.eclipse.jetty.server.Request;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +63,7 @@ import com.novartis.opensource.yada.plugin.YADAPluginException;
 import com.novartis.opensource.yada.security.YADASecurityException;
 import com.novartis.opensource.yada.util.FileUtils;
 import com.novartis.opensource.yada.util.QueryUtils;
+import com.novartis.opensource.yada.util.YADAUtils;
 
 /**
  * Utility class handling process of execution of stored queries, and formatting of results via http requests.
@@ -172,15 +184,18 @@ public class Service {
 		else if(null != request.getHeader("Content-Type") 
         && request.getHeader("Content-Type").startsWith("multipart/form-data"))
 		{
+			
 		    LOG.info("multipart/form-data");
+			String tmpDir = System.getProperty("java.io.tmpdir");
+			MultipartConfigElement multi_part_config = new MultipartConfigElement(tmpDir);
+			request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multi_part_config);
 		    try
-	        {
-	          for(@SuppressWarnings("unused") Part p : request.getParts())
-	          {
-	            
-	          }
+			{
+				Collection<Part> parts = request.getParts();
+				List<FileItem> uploadItems = YADAUtils.partsToFileItems(parts);
+				getYADARequest().setUploadItems(uploadItems);
 	        }
-	        catch (IOException | ServletException e)
+	        catch (Exception e)
 	        {
 	          throw new YADARequestException(e);
 	        }		    
@@ -771,7 +786,10 @@ public class Service {
 	private String executeUpload() throws YADAPluginException, YADAExecutionException
 	{
 		//TODO move upload item processing to this method from YADARequest
-		String result = engageBypass(this.getYADARequest());
+		String result = null;
+		if(this.getYADARequest().getParameterMap().containsKey(YADARequest.PL_PLUGIN)) {
+			result = engageBypass(this.getYADARequest());
+		}
 		LOG.debug("Select bypass [result] is [{}]", result);
 		if (result != null)
 		{
@@ -1549,7 +1567,7 @@ public class Service {
 	/**
 	 * Takes the old-style argument parameters and appends them to the {@link YADARequest#PS_PLUGIN} parameter.
 	 * The new config is then handled downstream during normal plugin parameter processing
-	 * @param paraMap the {@link Map} passed in the {@link javax.servlet.http.HttpServletRequest}
+	 * @param paraMap the {@link Map} passed in the {@link jakarta.servlet.http.HttpServletRequest}
 	 * @param constant the {@link YADARequest} argument constant
 	 */
 	private void setDeprecatedPlugin(Map<String, String[]> paraMap, String constant)
